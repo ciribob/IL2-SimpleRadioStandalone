@@ -1,0 +1,109 @@
+﻿<controls:MetroWindow x:Class="Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow.RadioCapabilities"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      
+                      Title="Radio Capabilities"
+                      Width="400"
+                      Height="250"
+                      ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Steel.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.3*" />
+            <ColumnDefinition Width="2*" />
+
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+           
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+    
+
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0"
+               Grid.Column="0"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="Intercom Hot Mic" />
+
+        <Label Name="IntercomHotMic"
+               Grid.Row="0"
+               Grid.Column="1"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="Unknown" />
+
+        <Label Grid.Row="1"
+               Grid.Column="0"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="DCS IFF" />
+
+        <Label Name="DCSIFF"
+               Grid.Row="1"
+               Grid.Column="1"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="Unknown" />
+
+        <Label Grid.Row="2"
+               Grid.Column="0"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="DCS Radio Switch Controls" />
+
+        <Label Name="DCSRadioSwitch"
+               Grid.Row="2"
+               Grid.Column="1"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="Available" />
+
+        <Label Grid.Row="3"
+               Grid.Column="0"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="DCS PTT Controls" />
+
+        <Label Name="DCSPTT"
+               Grid.Row="3"
+               Grid.Column="1"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+              
+               Content="Not Available - SRS Overlay Controls Only" />
+
+        <Label Name="Desc"
+               Grid.Row="4"
+               Grid.Column="0"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+                Grid.ColumnSpan="2"
+               Content="Unknown" />
+
+        <Button Grid.Row="5"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Width="80"
+                Height="30"
+                Margin="5,0,5,5"
+                Click="CloseButton_OnClick"
+                Content="Close" />
+
+
+    </Grid>
+    </controls:MetroWindow>

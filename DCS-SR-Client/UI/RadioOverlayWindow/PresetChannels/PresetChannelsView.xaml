@@ -1,0 +1,36 @@
+﻿<UserControl
+    x:Class="Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow.PresetChannels.PresetChannelsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.PresetChannels"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvvmEventBinding="clr-namespace:MvvmEventBinding;assembly=MvvmEventBinding"
+    xmlns:presetChannels="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow.PresetChannels"
+    d:DataContext="{d:DesignInstance presetChannels:PresetChannelsViewModel,
+                                              IsDesignTimeCreatable=False}"
+    d:DesignHeight="100"
+    d:DesignWidth="135"
+    mc:Ignorable="d">
+    <WrapPanel HorizontalAlignment="Center"
+               Background="#444"
+               Orientation="Vertical">
+        <ComboBox x:Name="FrequencyDropDown"
+                  Width="135"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Top"
+                  DropDownClosed="{mvvmEventBinding:EventBinding DropDownClosedCommand}"
+                  ItemsSource="{Binding Path=PresetChannels}"
+                  SelectedItem="{Binding Path=SelectedPresetChannel}" />
+
+        <Button Name="ReloadButton"
+                Width="50"
+                Height="20"
+                Margin="0,5,0,0"
+                HorizontalAlignment="Center"
+                Command="{Binding Path=ReloadCommand}"
+                Content="Reload"
+                Style="{x:Null}" />
+
+    </WrapPanel>
+</UserControl>

@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow.TransponderPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Overlay"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Name="IFFContainer"
+             Width="170"
+             Height="40">
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock x:Name="Transponder"
+                       Margin="2"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   FontSize="10"
+                   Foreground="#E7E7E7"
+                   Padding="0,0,0,0"
+                   Style="{x:Null}"
+                   Text="TRANSPONDER"
+                   TextAlignment="Center" />
+            <Ellipse x:Name="TransponderActive"
+                     Width="12"
+                     Height="12"
+                     Margin="2"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+                     Fill="#FF9900"
+                     MouseDown="TransponderPowerClick"
+                     Stroke="Black"
+                     Style="{x:Null}"
+                     ToolTip="Activate / Deactivate Transponder" />
+        </StackPanel>
+
+        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBox x:Name="Mode1"
+                   Width="28"
+                   FontSize="16"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Background="Black"
+                   Foreground="#00FF00"
+                   Style="{x:Null}"
+                   Text="00"
+                   TextAlignment="Center"
+                   BorderThickness="0"
+                   TextWrapping="NoWrap"/>
+            <Separator Width="5"></Separator>
+            <TextBox x:Name="Mode3"
+                     Width="40"
+                     FontSize="16"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Background="Black"
+                     Foreground="#00FF00"
+                     Style="{x:Null}"
+                     Text="0000"
+                     TextAlignment="Center"
+                     TextWrapping="NoWrap"
+                     BorderThickness="0"/>
+
+            <Button x:Name="Mode4Button"
+                    Width="20"
+                    FontSize="10"
+                    Height="20"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Center"
+                    Content="M4"
+                    IsEnabled="False"
+                    Foreground="Black"
+                    Style="{StaticResource DarkStyle-Button}"
+                    Click="Mode4ButtonOnClick"
+                    ToolTip="Mode 4" />
+            <Button x:Name="Ident"
+                    Width="35"
+                    FontSize="10"
+                    Height="20"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Center"
+                    Content="IDENT"
+                    IsEnabled="False"
+                    Foreground="Black"
+                    Click="IdentButtonOnClick"
+                    Style="{StaticResource DarkStyle-Button}"
+                    ToolTip="Mode 4" />
+
+        </WrapPanel>
+
+    </StackPanel>
+</UserControl>
