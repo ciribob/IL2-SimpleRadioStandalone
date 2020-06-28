@@ -23,13 +23,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Providers
             var effect = new CachedAudioEffect(effectType);
             _audioEffectShort = ConversionHelpers.ByteArrayToShortArray(effect.AudioEffectBytes);
 
-            var vol = Settings.GlobalSettingsStore.Instance.GetClientSetting(GlobalSettingsKeys.NATOToneVolume)
-                .FloatValue;
-            for (int i = 0; i < _audioEffectShort.Length; i++)
-            {
-                _audioEffectShort[i] = (short) (_audioEffectShort[i] * vol);
-            }
-
             this.source = source;
         }
 

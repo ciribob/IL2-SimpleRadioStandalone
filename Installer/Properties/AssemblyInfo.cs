@@ -6,11 +6,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("DCS-SimpleRadio Standalone Installer")]
-[assembly: AssemblyDescription("Client for DCS-SimpleRadio Installer")]
+[assembly: AssemblyTitle("IL2-SimpleRadio Standalone Installer")]
+[assembly: AssemblyDescription("Client for IL2-SimpleRadio Installer")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ciribob - GitHub.com/Ciribob")]
-[assembly: AssemblyProduct("DCS-SimpleRadio Standalone")]
+[assembly: AssemblyProduct("IL2-SimpleRadio Standalone")]
 [assembly: AssemblyCopyright("Copyright ©  2016 - Ciribob")]
 [assembly: AssemblyTrademark("Ciribob - GitHub.com/Ciribob")]
 [assembly: AssemblyCulture("")]

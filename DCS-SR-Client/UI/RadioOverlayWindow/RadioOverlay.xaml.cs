@@ -77,7 +77,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
         private void RadioRefresh(object sender, EventArgs eventArgs)
         {
-            var dcsPlayerRadioInfo = _clientStateSingleton.DcsPlayerRadioInfo;
+            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerRadioInfo;
 
            
             Radio1.RepaintRadioStatus();
@@ -99,11 +99,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
         private void FocusIL2()
         {
-            if (_globalSettings.GetClientSettingBool(GlobalSettingsKeys.RefocusDCS))
+            if (_globalSettings.GetClientSettingBool(GlobalSettingsKeys.RefocusIL2))
             {
                 var overlayWindow = new WindowInteropHelper(this).Handle;
 
-                //focus DCS if needed
+                //focus IL2 if needed
                 var foreGround = WindowHelper.GetForegroundWindow();
 
                 Process[] localByName = Process.GetProcessesByName("Il-2");
@@ -240,7 +240,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
         private void RadioOverlayWindow_OnLocationChanged(object sender, EventArgs e)
         {
-            //reset last focus so we dont switch back to dcs while dragging
+            //reset last focus so we dont switch back to IL2 while dragging
             _lastFocus = DateTime.Now.Ticks;
         }
     }

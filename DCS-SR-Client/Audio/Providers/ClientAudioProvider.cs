@@ -56,20 +56,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client
             _highPassFilter = BiQuadFilter.HighPassFilter(AudioManager.INPUT_SAMPLE_RATE, 520, 0.97f);
             _lowPassFilter = BiQuadFilter.LowPassFilter(AudioManager.INPUT_SAMPLE_RATE, 4130, 2.0f);
 
-            var effect = new CachedAudioEffect(CachedAudioEffect.AudioEffectTypes.NATO_TONE);
-            
-            if (effect.AudioEffectBytes.Length > 0)
-            {
-                natoTone = ConversionHelpers.ByteArrayToShortArray(effect.AudioEffectBytes);
-
-                var vol = Settings.GlobalSettingsStore.Instance.GetClientSetting(GlobalSettingsKeys.NATOToneVolume)
-                    .FloatValue;
-
-                for (int i = 0; i < natoTone.Length; i++)
-                {
-                    natoTone[i] = (short)(natoTone[i] * vol);
-                }
-            }
         }
 
         public JitterBufferProviderInterface JitterBufferProviderInterface { get; }

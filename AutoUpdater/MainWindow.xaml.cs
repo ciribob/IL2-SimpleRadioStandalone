@@ -32,7 +32,7 @@ namespace AutoUpdater
     public partial class MainWindow : Window
     {
         public static readonly string GITHUB_USERNAME = "ciribob";
-        public static readonly string GITHUB_REPOSITORY = "DCS-SimpleRadioStandalone";
+        public static readonly string GITHUB_REPOSITORY = "IL2-SimpleRadioStandalone";
         // Required for all requests against the GitHub API, as per https://developer.github.com/v3/#user-agent-required
         public static readonly string GITHUB_USER_AGENT = $"{GITHUB_USERNAME}_{GITHUB_REPOSITORY}";
         private Uri _uri;
@@ -50,7 +50,7 @@ namespace AutoUpdater
             QuitSimpleRadio();
             if (IsAnotherRunning())
             {
-                MessageBox.Show("Please close DCS-SimpleRadio Standalone before running", "SRS Auto Updater",
+                MessageBox.Show("Please close IL2-SimpleRadio Standalone before running", "SRS Auto Updater",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(0);
 
@@ -116,7 +116,7 @@ namespace AutoUpdater
 
                     foreach (var asset in release.Assets)
                     {
-                        if (asset.Name.ToLower().StartsWith("dcs-simpleradiostandalone") &&
+                        if (asset.Name.ToLower().StartsWith("IL2-simpleradiostandalone") &&
                             asset.Name.ToLower().Contains(".zip"))
                         {
                             changelogURL = release.HtmlUrl;
@@ -148,7 +148,7 @@ namespace AutoUpdater
 
         public void ShowError()
         {
-            MessageBox.Show("Error Auto Updating SRS - Please check internet connection and try again \n\nAlternatively: \n1. Download the latest DCS-SimpleRadioStandalone.zip from the SRS Github Release page\n2. Extract all the files to a temporary directory\n3. Run the installer.",
+            MessageBox.Show("Error Auto Updating SRS - Please check internet connection and try again \n\nAlternatively: \n1. Download the latest IL2-SimpleRadioStandalone.zip from the SRS Github Release page\n2. Extract all the files to a temporary directory\n3. Run the installer.",
                 "Auto Updater Error",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);

@@ -114,10 +114,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             if (radio != null)
             {
                 if (radio.modulation != RadioInformation.Modulation.DISABLED
-                    && ClientStateSingleton.Instance.DcsPlayerRadioInfo.control ==
-                    DCSPlayerRadioInfo.RadioSwitchControls.HOTAS)
+                    && ClientStateSingleton.Instance.PlayerRadioInfo.control ==
+                    PlayerRadioInfo.RadioSwitchControls.HOTAS)
                 {
-                    ClientStateSingleton.Instance.DcsPlayerRadioInfo.selected = (short) radioId;
+                    ClientStateSingleton.Instance.PlayerRadioInfo.selected = (short) radioId;
                     return true;
                 }
             }
@@ -127,12 +127,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
 
         public static RadioInformation GetRadio(int radio)
         {
-            var dcsPlayerRadioInfo = ClientStateSingleton.Instance.DcsPlayerRadioInfo;
+            var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerRadioInfo;
 
-            if ((dcsPlayerRadioInfo != null) && dcsPlayerRadioInfo.IsCurrent() &&
-                radio < dcsPlayerRadioInfo.radios.Length && (radio >= 0))
+            if ((IL2PlayerRadioInfo != null) && IL2PlayerRadioInfo.IsCurrent() &&
+                radio < IL2PlayerRadioInfo.radios.Length && (radio >= 0))
             {
-                return dcsPlayerRadioInfo.radios[radio];
+                return IL2PlayerRadioInfo.radios[radio];
             }
 
             return null;
@@ -141,14 +141,14 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
     
         public static void SelectNextRadio()
         {
-            var dcsPlayerRadioInfo = ClientStateSingleton.Instance.DcsPlayerRadioInfo;
+            var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerRadioInfo;
 
-            if ((dcsPlayerRadioInfo != null) && dcsPlayerRadioInfo.IsCurrent() &&
-                dcsPlayerRadioInfo.control == DCSPlayerRadioInfo.RadioSwitchControls.HOTAS)
+            if ((IL2PlayerRadioInfo != null) && IL2PlayerRadioInfo.IsCurrent() &&
+                IL2PlayerRadioInfo.control == PlayerRadioInfo.RadioSwitchControls.HOTAS)
             {
-                if (dcsPlayerRadioInfo.selected < 0
-                    || dcsPlayerRadioInfo.selected > dcsPlayerRadioInfo.radios.Length
-                    || dcsPlayerRadioInfo.selected + 1 > dcsPlayerRadioInfo.radios.Length)
+                if (IL2PlayerRadioInfo.selected < 0
+                    || IL2PlayerRadioInfo.selected > IL2PlayerRadioInfo.radios.Length
+                    || IL2PlayerRadioInfo.selected + 1 > IL2PlayerRadioInfo.radios.Length)
                 {
                     SelectRadio(1);
 
@@ -156,10 +156,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                 }
                 else
                 {
-                    int currentRadio = dcsPlayerRadioInfo.selected;
+                    int currentRadio = IL2PlayerRadioInfo.selected;
 
                     //find next radio
-                    for (int i = currentRadio + 1; i < dcsPlayerRadioInfo.radios.Length; i++)
+                    for (int i = currentRadio + 1; i < IL2PlayerRadioInfo.radios.Length; i++)
                     {
                         if (SelectRadio(i))
                         {
@@ -181,20 +181,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
 
         public static void SelectPreviousRadio()
         {
-            var dcsPlayerRadioInfo = ClientStateSingleton.Instance.DcsPlayerRadioInfo;
+            var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerRadioInfo;
 
-            if ((dcsPlayerRadioInfo != null) && dcsPlayerRadioInfo.IsCurrent() &&
-                dcsPlayerRadioInfo.control == DCSPlayerRadioInfo.RadioSwitchControls.HOTAS)
+            if ((IL2PlayerRadioInfo != null) && IL2PlayerRadioInfo.IsCurrent() &&
+                IL2PlayerRadioInfo.control == PlayerRadioInfo.RadioSwitchControls.HOTAS)
             {
-                if (dcsPlayerRadioInfo.selected < 0
-                    || dcsPlayerRadioInfo.selected > dcsPlayerRadioInfo.radios.Length)
+                if (IL2PlayerRadioInfo.selected < 0
+                    || IL2PlayerRadioInfo.selected > IL2PlayerRadioInfo.radios.Length)
                 {
-                    dcsPlayerRadioInfo.selected = 1;
+                    IL2PlayerRadioInfo.selected = 1;
                     return;
                 }
                 else
                 {
-                    int currentRadio = dcsPlayerRadioInfo.selected;
+                    int currentRadio = IL2PlayerRadioInfo.selected;
 
                     //find previous radio
                     for (int i = currentRadio - 1; i > 0; i--)
@@ -206,7 +206,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                     }
 
                     //search down to current radio
-                    for (int i = dcsPlayerRadioInfo.radios.Length; i < currentRadio; i--)
+                    for (int i = IL2PlayerRadioInfo.radios.Length; i < currentRadio; i--)
                     {
                         if (SelectRadio(i))
                         {
@@ -235,8 +235,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             if (currentRadio != null)
             {
                 if (currentRadio.modulation != RadioInformation.Modulation.DISABLED
-                    && ClientStateSingleton.Instance.DcsPlayerRadioInfo.control ==
-                    DCSPlayerRadioInfo.RadioSwitchControls.HOTAS)
+                    && ClientStateSingleton.Instance.PlayerRadioInfo.control ==
+                    PlayerRadioInfo.RadioSwitchControls.HOTAS)
                 {
                     //TODO
                 }
@@ -250,8 +250,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             if (currentRadio != null)
             {
                 if (currentRadio.modulation != RadioInformation.Modulation.DISABLED
-                    && ClientStateSingleton.Instance.DcsPlayerRadioInfo.control ==
-                    DCSPlayerRadioInfo.RadioSwitchControls.HOTAS)
+                    && ClientStateSingleton.Instance.PlayerRadioInfo.control ==
+                    PlayerRadioInfo.RadioSwitchControls.HOTAS)
                 {
                     //TODO
                 }

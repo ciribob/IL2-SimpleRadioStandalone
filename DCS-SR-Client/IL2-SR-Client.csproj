@@ -54,7 +54,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>DCS_SR_Client.App</StartupObject>
+    <StartupObject>IL2_SR_Client.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>

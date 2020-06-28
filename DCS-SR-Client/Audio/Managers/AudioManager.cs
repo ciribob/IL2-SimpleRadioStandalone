@@ -453,9 +453,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
 
         private void InitAudioBuffers()
         {
-            _effectsOutputBuffer = new RadioAudioProvider[_clientStateSingleton.DcsPlayerRadioInfo.radios.Length];
+            _effectsOutputBuffer = new RadioAudioProvider[_clientStateSingleton.PlayerRadioInfo.radios.Length];
 
-            for (var i = 0; i < _clientStateSingleton.DcsPlayerRadioInfo.radios.Length; i++)
+            for (var i = 0; i < _clientStateSingleton.PlayerRadioInfo.radios.Length; i++)
             {
                 _effectsOutputBuffer[i] = new RadioAudioProvider(INPUT_SAMPLE_RATE);
                 _clientAudioMixer.AddMixerInput(_effectsOutputBuffer[i].VolumeSampleProvider);

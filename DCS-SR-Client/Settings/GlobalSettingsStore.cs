@@ -16,7 +16,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
         MinimiseToTray,
         StartMinimised,
 
-        RefocusDCS,
+        RefocusIL2,
         ExpandControls,
         AutoConnectPrompt, //message about auto connect
         RadioOverlayTaskbarHide,
@@ -39,10 +39,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
         MicAudioOutputDeviceId,
 
         ClientIdLong,
-        DCSLOSOutgoingUDP, //9086
+        IL2LOSOutgoingUDP, //9086
         IL2IncomingUDP, //9084
         CommandListenerUDP, //=9040,
-        OutgoingDCSUDPInfo, //7080
+        OutgoingIL2UDPInfo, //7080
 
         AGC,
         AGCTarget,
@@ -65,11 +65,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
 
         RequireAdmin,
 
-    
         SettingsProfiles,
-        AutoSelectSettingsProfile,
-
-        NATOToneVolume,
 
         ShowTransmitterName
     }
@@ -198,9 +194,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
         private GlobalSettingsStore()
         {
 
-            //Try migrating
-            MigrateSettings();
-
             //check commandline
             var args = Environment.GetCommandLineArgs();
             
@@ -262,23 +255,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
             _profileSettingsStore = new ProfileSettingsStore(this);
         }
 
-        private void MigrateSettings()
-        {
-            try 
-            { 
-                if (File.Exists(Path + PREVIOUS_CFG_FILE_NAME) && !File.Exists(Path + CFG_FILE_NAME))
-                {
-                    Logger.Info($"Migrating {Path + PREVIOUS_CFG_FILE_NAME} to {Path + CFG_FILE_NAME}");
-                    File.Copy(Path + PREVIOUS_CFG_FILE_NAME, Path + CFG_FILE_NAME, true);
-                    Logger.Info($"Migrated {Path + PREVIOUS_CFG_FILE_NAME} to {Path + CFG_FILE_NAME}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex,"Error migrating global settings");
-            }
-        }
-
         public static GlobalSettingsStore Instance
         {
             get
@@ -304,7 +280,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
             {GlobalSettingsKeys.AutoConnectPrompt.ToString(), "false"},
             {GlobalSettingsKeys.AutoConnectMismatchPrompt.ToString(), "true"},
             {GlobalSettingsKeys.RadioOverlayTaskbarHide.ToString(), "false"},
-            {GlobalSettingsKeys.RefocusDCS.ToString(), "false"},
+            {GlobalSettingsKeys.RefocusIL2.ToString(), "false"},
             {GlobalSettingsKeys.ExpandControls.ToString(), "false"},
 
             {GlobalSettingsKeys.MinimiseToTray.ToString(), "false"},
@@ -337,10 +313,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
         //    {GlobalSettingsKeys.CliendIdShort.ToString(), ShortGuid.NewGuid().ToString()},
             {GlobalSettingsKeys.ClientIdLong.ToString(), Guid.NewGuid().ToString()},
 
-            {GlobalSettingsKeys.DCSLOSOutgoingUDP.ToString(), "9086"},
-            {GlobalSettingsKeys.IL2IncomingUDP.ToString(), "9084"},
-            {GlobalSettingsKeys.CommandListenerUDP.ToString(), "9040"},
-            {GlobalSettingsKeys.OutgoingDCSUDPInfo.ToString(), "7080"},
+            {GlobalSettingsKeys.IL2IncomingUDP.ToString(), "4322"},
+            {GlobalSettingsKeys.CommandListenerUDP.ToString(), "4330"},
+            {GlobalSettingsKeys.OutgoingIL2UDPInfo.ToString(), "4340"},
 
 
             {GlobalSettingsKeys.AGC.ToString(), "true"},
@@ -357,15 +332,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
 
             {GlobalSettingsKeys.AllowMultipleInstances.ToString(), "false"},
 
-            {GlobalSettingsKeys.DisableWindowVisibilityCheck.ToString(), "false"},
+            {GlobalSettingsKeys.DisableWindowVisibilityCheck.ToString(), "true"},
             {GlobalSettingsKeys.PlayConnectionSounds.ToString(), "true"},
 
             {GlobalSettingsKeys.RequireAdmin.ToString(),"true" },
-
-            {GlobalSettingsKeys.AutoSelectSettingsProfile.ToString(),"false" },
-
-
-            {GlobalSettingsKeys.NATOToneVolume.ToString(), "0.5"},
 
             {GlobalSettingsKeys.ShowTransmitterName.ToString(), "true"},
 

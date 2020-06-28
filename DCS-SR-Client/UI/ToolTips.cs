@@ -21,7 +21,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             });
             externalAWACSModeContent.Children.Add(new TextBlock
             {
-                Text = "External AWACS Mode (EAM) allows you to use the AWACS functionality of SRS without having to run DCS."
+                Text = "External AWACS Mode (EAM) allows you to use the AWACS functionality of SRS without having to run IL2."
             });
             externalAWACSModeContent.Children.Add(new TextBlock
             {

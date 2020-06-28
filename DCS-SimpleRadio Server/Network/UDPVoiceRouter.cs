@@ -46,9 +46,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
 
-            var freqString = _serverSettings.GetGeneralSetting(ServerSettingsKeys.TEST_FREQUENCIES).StringValue;
-            UpdateTestFrequencies(freqString);
-
             var globalFreqString = _serverSettings.GetGeneralSetting(ServerSettingsKeys.GLOBAL_LOBBY_FREQUENCIES).StringValue;
             UpdateGlobalLobbyFrequencies(globalFreqString);
         }
@@ -290,15 +287,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
         private OutgoingUDPPackets GenerateOutgoingPacket(UDPVoicePacket udpVoice, PendingPacket pendingPacket,
             SRClient fromClient)
         {
-            var nodeHopCount =
-                _serverSettings.GetGeneralSetting(ServerSettingsKeys.RETRANSMISSION_NODE_LIMIT).IntValue;
-
-            if (udpVoice.RetransmissionCount > nodeHopCount)
-            {
-                //not allowed to retransmit any further
-                return null;
-            }
-
             var outgoingList = new HashSet<IPEndPoint>();
 
             var coalitionSecurity =
@@ -319,7 +307,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                         {
                             foreach (var testFrequency in _globalFrequencies)
                             {
-                                if (DCSPlayerRadioInfo.FreqCloseEnough(testFrequency, udpVoice.Frequencies[i]))
+                                if (PlayerRadioInfo.FreqCloseEnough(testFrequency, udpVoice.Frequencies[i]))
                                 {
                                     //ignore everything as its global frequency
                                     global = true;
@@ -343,14 +331,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                                 for (int i = 0; i < udpVoice.Frequencies.Length; i++)
                                 {
                                     RadioReceivingState radioReceivingState = null;
-                                    bool decryptable;
                                     var receivingRadio = radioInfo.CanHearTransmission(udpVoice.Frequencies[i],
                                         (RadioInformation.Modulation)udpVoice.Modulations[i],
                                         udpVoice.Encryptions[i],
                                         udpVoice.UnitId,
                                         _emptyBlockedRadios,
-                                        out radioReceivingState,
-                                        out decryptable);
+                                        out radioReceivingState);
 
                                     //only send if we can hear!
                                     if (receivingRadio != null)
@@ -372,7 +358,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                         {
                             foreach (var testFrequency in _testFrequencies)
                             {
-                                if (DCSPlayerRadioInfo.FreqCloseEnough(testFrequency, frequency))
+                                if (PlayerRadioInfo.FreqCloseEnough(testFrequency, frequency))
                                 {
                                     //send back to sending client as its a test frequency
                                     outgoingList.Add(ip);

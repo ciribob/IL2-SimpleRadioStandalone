@@ -19,13 +19,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public DCSPlayerRadioInfo DcsPlayerRadioInfo { get; }
+        public PlayerRadioInfo PlayerRadioInfo { get; }
 
-        // Timestamp the last UDP Game GUI broadcast was received from DCS, used for determining active game connection
-        public long DcsGameGuiLastReceived { get; set; }
+        // Timestamp the last UDP Game GUI broadcast was received from IL2, used for determining active game connection
+        public long IL2GameGuiLastReceived { get; set; }
 
-        // Timestamp the last UDP Export broadcast was received from DCS, used for determining active game connection
-        public long DcsExportLastReceived { get; set; }
+        // Timestamp the last UDP Export broadcast was received from IL2, used for determining active game connection
+        public long IL2ExportLastReceived { get; set; }
 
         // Timestamp for the last time 
         public long LotATCLastReceived { get; set; }
@@ -85,8 +85,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
 
         public bool IsLotATCConnected { get { return LotATCLastReceived >= DateTime.Now.Ticks - 50000000; } }
 
-        public bool IsGameGuiConnected { get { return DcsGameGuiLastReceived >= DateTime.Now.Ticks - 100000000; } }
-        public bool IsGameExportConnected { get { return DcsExportLastReceived >= DateTime.Now.Ticks - 100000000; } }
+        public bool IsGameGuiConnected { get { return IL2GameGuiLastReceived >= DateTime.Now.Ticks - 100000000; } }
+        public bool IsGameExportConnected { get { return IL2ExportLastReceived >= DateTime.Now.Ticks - 100000000; } }
         // Indicates an active game connection has been detected (1 tick = 100ns, 100000000 ticks = 10s stale timer), not updated by EAM
         public bool IsGameConnected { get { return IsGameGuiConnected && IsGameExportConnected; } }
 
@@ -98,12 +98,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
             RadioReceivingState = new RadioReceivingState[11];
 
             ShortGUID = ShortGuid.NewGuid();
-            DcsPlayerRadioInfo = new DCSPlayerRadioInfo();
+            PlayerRadioInfo = new PlayerRadioInfo();
 
             // The following members are not updated due to events. Therefore we need to setup a polling action so that they are
             // periodically checked.
-            DcsGameGuiLastReceived = 0;
-            DcsExportLastReceived = 0;
+            IL2GameGuiLastReceived = 0;
+            IL2ExportLastReceived = 0;
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += (s, e) => {
                 NotifyPropertyChanged("IsGameConnected");
@@ -151,7 +151,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
 
             if (IsGameExportConnected)
             {
-                if (DcsPlayerRadioInfo.inAircraft)
+                if (PlayerRadioInfo.inAircraft)
                 {
                     return false;
                 }

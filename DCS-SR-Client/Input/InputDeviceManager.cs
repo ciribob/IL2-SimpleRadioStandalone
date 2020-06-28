@@ -573,9 +573,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                             {
                                 _lastActiveBinding = bindState.MainDevice.InputBind;
 
-                                var dcsPlayerRadioInfo = ClientStateSingleton.Instance.DcsPlayerRadioInfo;
+                                var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerRadioInfo;
 
-                                if (dcsPlayerRadioInfo != null && dcsPlayerRadioInfo.IsCurrent())
+                                if (IL2PlayerRadioInfo != null && IL2PlayerRadioInfo.IsCurrent())
                                 {
                                     switch (bindState.MainDevice.InputBind)
                                     {
@@ -586,10 +586,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                             RadioHelper.SelectPreviousRadio();
                                             break;
                                         case InputBinding.RadioChannelUp:
-                                            RadioHelper.RadioChannelUp(dcsPlayerRadioInfo.selected);
+                                            RadioHelper.RadioChannelUp(IL2PlayerRadioInfo.selected);
                                             break;
                                         case InputBinding.RadioChannelDown:
-                                            RadioHelper.RadioChannelDown(dcsPlayerRadioInfo.selected);
+                                            RadioHelper.RadioChannelDown(IL2PlayerRadioInfo.selected);
                                             break;
 
                                         default:

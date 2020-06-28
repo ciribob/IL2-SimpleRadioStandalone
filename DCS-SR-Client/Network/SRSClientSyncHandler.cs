@@ -122,15 +122,15 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
         private void ClientRadioUpdated()
         {
             Logger.Debug("Sending Radio Update to Server");
-            var sideInfo = _clientStateSingleton.DcsPlayerRadioInfo;
+            var sideInfo = _clientStateSingleton.PlayerRadioInfo;
             SendToServer(new NetworkMessage
             {
                 Client = new SRClient
                 {
-                    Coalition = sideInfo.side,
+                    Coalition = sideInfo.coalition,
                     Name = sideInfo.name,
                     ClientGuid = _guid,
-                    RadioInfo = _clientStateSingleton.DcsPlayerRadioInfo
+                    RadioInfo = _clientStateSingleton.PlayerRadioInfo
                 },
                 MsgType = NetworkMessage.MessageType.RADIO_UPDATE
             });
@@ -138,7 +138,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
         private void ClientCoalitionUpdate()
         {
-            var sideInfo = _clientStateSingleton.DcsPlayerRadioInfo;
+            var sideInfo = _clientStateSingleton.PlayerRadioInfo;
             SendToServer(new NetworkMessage
             {
                 Client = new SRClient
@@ -198,13 +198,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             {
                 try
                 {
-                    var sideInfo = _clientStateSingleton.PlayerCoaltionLocationMetadata;
+                    var sideInfo = _clientStateSingleton.PlayerRadioInfo;
                     //start the loop off by sending a SYNC Request
                     SendToServer(new NetworkMessage
                     {
                         Client = new SRClient
                         {
-                            Coalition = sideInfo.side,
+                            Coalition = sideInfo.coalition,
                             Name = sideInfo.name.Length > 0 ? sideInfo.name : _clientStateSingleton.LastSeenName,
                             ClientGuid = _guid
                         },
@@ -269,7 +269,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                         {
                                             var connectedClient = serverMessage.Client;
                                             connectedClient.LastUpdate = DateTime.Now.Ticks;
-
 
                                             _clients[serverMessage.Client.ClientGuid] = connectedClient;
 
@@ -386,8 +385,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                 }
             }
 
-            //disconnected - reset DCS Info
-            ClientStateSingleton.Instance.DcsPlayerRadioInfo.LastUpdate = 0;
+            //disconnected - reset IL2 Info
+            ClientStateSingleton.Instance.PlayerRadioInfo.LastUpdate = 0;
 
             //clear the clients list
             _clients.Clear();

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoUpdater"
         mc:Ignorable="d"
-        Title="DCS-SRS Auto Updater" Height="150" Width="300" Closing="OnClosing">
+        Title="IL2-SRS Auto Updater" Height="150" Width="300" Closing="OnClosing">
     <StackPanel Height="100" Width="300" HorizontalAlignment="Center" >
         <Label x:Name="Status"  Content="Downloading SRS Update" HorizontalAlignment="Center" Margin="0,0,0,0" />
         <ProgressBar x:Name="DownloadProgress" Minimum="0" Maximum="100" HorizontalAlignment="Center" Height="20" Margin="0,5,0,0" VerticalAlignment="Top" Width="220"/>

@@ -24,14 +24,14 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
         private void RadioSelectSwitch(object sender, RoutedEventArgs e)
         {
-            var currentRadio = _clientStateSingleton.DcsPlayerRadioInfo.radios[RadioId];
+            var currentRadio = _clientStateSingleton.PlayerRadioInfo.radios[RadioId];
 
             if (currentRadio.modulation != RadioInformation.Modulation.DISABLED)
             {
-                if (_clientStateSingleton.DcsPlayerRadioInfo.control ==
-                    DCSPlayerRadioInfo.RadioSwitchControls.HOTAS)
+                if (_clientStateSingleton.PlayerRadioInfo.control ==
+                    PlayerRadioInfo.RadioSwitchControls.HOTAS)
                 {
-                    _clientStateSingleton.DcsPlayerRadioInfo.selected = (short) RadioId;
+                    _clientStateSingleton.PlayerRadioInfo.selected = (short) RadioId;
                 }
             }
         }
@@ -44,13 +44,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
         private void RadioVolume_DragCompleted(object sender, RoutedEventArgs e)
         {
-            var currentRadio = _clientStateSingleton.DcsPlayerRadioInfo.radios[RadioId];
+            var currentRadio = _clientStateSingleton.PlayerRadioInfo.radios[RadioId];
 
             if (currentRadio.modulation != RadioInformation.Modulation.DISABLED)
             {
                 if (currentRadio.volMode == RadioInformation.VolumeMode.OVERLAY)
                 {
-                    var clientRadio = _clientStateSingleton.DcsPlayerRadioInfo.radios[RadioId];
+                    var clientRadio = _clientStateSingleton.PlayerRadioInfo.radios[RadioId];
 
                     clientRadio.volume = (float) RadioVolume.Value / 100.0f;
                 }
@@ -61,9 +61,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
         internal void RepaintRadioStatus()
         {
-            var dcsPlayerRadioInfo = _clientStateSingleton.DcsPlayerRadioInfo;
+            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerRadioInfo;
 
-            if ((dcsPlayerRadioInfo == null) || !dcsPlayerRadioInfo.IsCurrent())
+            if ((IL2PlayerRadioInfo == null) || !IL2PlayerRadioInfo.IsCurrent())
             {
                 RadioActive.Fill = new SolidColorBrush(Colors.Red);
 
@@ -74,9 +74,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
             }
             else
             {
-                var currentRadio = dcsPlayerRadioInfo.radios[RadioId];
+                var currentRadio = IL2PlayerRadioInfo.radios[RadioId];
                 var transmitting = _clientStateSingleton.RadioSendingState;
-                if (RadioId == dcsPlayerRadioInfo.selected || transmitting.IsSending && (transmitting.SendingOn == RadioId))
+                if (RadioId == IL2PlayerRadioInfo.selected || transmitting.IsSending && (transmitting.SendingOn == RadioId))
                 {
 
                     if (transmitting.IsSending && (transmitting.SendingOn == RadioId))

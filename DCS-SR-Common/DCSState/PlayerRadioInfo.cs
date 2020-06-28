@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 {
-    public class DCSPlayerRadioInfo
+    public class PlayerRadioInfo
     {
         //HOTAS or IN COCKPIT controls
         public enum RadioSwitchControls
@@ -36,6 +36,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         public short selected = 0;
 
         public string unit = "";
+
+        public short coalition = 0;
         
         public uint unitId;
 
@@ -49,15 +51,15 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         [JsonNetworkIgnoreSerialization]
         public SimultaneousTransmissionControl simultaneousTransmissionControl =
-            SimultaneousTransmissionControl.EXTERNAL_DCS_CONTROL;
+            SimultaneousTransmissionControl.EXTERNAL_IL2_CONTROL;
 
         public enum SimultaneousTransmissionControl
         {
             ENABLED_INTERNAL_SRS_CONTROLS = 1,
-            EXTERNAL_DCS_CONTROL = 0,
+            EXTERNAL_IL2_CONTROL = 0,
         }
 
-        public DCSPlayerRadioInfo()
+        public PlayerRadioInfo()
         {
             for (var i = 0; i < radios.Length; i++)
             {
@@ -74,8 +76,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             ptt = false;
             selected = 0;
             unit = "";
-            simultaneousTransmissionControl = SimultaneousTransmissionControl.EXTERNAL_DCS_CONTROL;
+            simultaneousTransmissionControl = SimultaneousTransmissionControl.ENABLED_INTERNAL_SRS_CONTROLS;
             LastUpdate = 0;
+            coalition = 0;
 
             for (var i = 0; i < radios.Length; i++)
             {
@@ -94,7 +97,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                     return false;
                 }
 
-                var compareRadio = compare as DCSPlayerRadioInfo;
+                var compareRadio = compare as PlayerRadioInfo;
 
                 if (control != compareRadio.control)
                 {
@@ -255,9 +258,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             return bestMatchingRadio;
         }
 
-        public DCSPlayerRadioInfo DeepClone()
+        public PlayerRadioInfo DeepClone()
         {
-            var clone = (DCSPlayerRadioInfo) this.MemberwiseClone();
+            var clone = (PlayerRadioInfo) this.MemberwiseClone();
 
             //ignore position
             clone.radios = new RadioInformation[11];

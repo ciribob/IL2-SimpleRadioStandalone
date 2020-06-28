@@ -78,7 +78,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
         [JsonIgnore]
         public long LastRadioUpdateSent { get; set; }
 
-        public DCSPlayerRadioInfo RadioInfo { get; set; }
+        public PlayerRadioInfo RadioInfo { get; set; }
 
         // Used by server client list to display last frequency client transmitted on
         private string _transmittingFrequency;

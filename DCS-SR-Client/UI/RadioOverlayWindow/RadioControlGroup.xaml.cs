@@ -60,11 +60,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
 
         private void RadioVolume_DragCompleted(object sender, RoutedEventArgs e)
         {
-            var currentRadio = _clientStateSingleton.DcsPlayerRadioInfo.radios[RadioId];
+            var currentRadio = _clientStateSingleton.PlayerRadioInfo.radios[RadioId];
 
             if (currentRadio.volMode == RadioInformation.VolumeMode.OVERLAY)
             {
-                var clientRadio = _clientStateSingleton.DcsPlayerRadioInfo.radios[RadioId];
+                var clientRadio = _clientStateSingleton.PlayerRadioInfo.radios[RadioId];
 
                 clientRadio.volume = (float) RadioVolume.Value / 100.0f;
             }
@@ -109,9 +109,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
         internal void RepaintRadioStatus()
         {
 
-            var dcsPlayerRadioInfo = _clientStateSingleton.DcsPlayerRadioInfo;
+            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerRadioInfo;
 
-            if ((dcsPlayerRadioInfo == null) || !dcsPlayerRadioInfo.IsCurrent())
+            if ((IL2PlayerRadioInfo == null) || !IL2PlayerRadioInfo.IsCurrent())
             {
                 RadioActive.Fill = new SolidColorBrush(Colors.Red);
                 RadioFrequency.Text = "Unknown";
@@ -127,7 +127,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
             }
             else
             {
-                var currentRadio = dcsPlayerRadioInfo.radios[RadioId];
+                var currentRadio = IL2PlayerRadioInfo.radios[RadioId];
 
                 if (currentRadio == null)
                 {
@@ -135,7 +135,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                 }
 
                 var transmitting = _clientStateSingleton.RadioSendingState;
-                if (RadioId == dcsPlayerRadioInfo.selected)
+                if (RadioId == IL2PlayerRadioInfo.selected)
                 {
 
                     if (transmitting.IsSending && (transmitting.SendingOn == RadioId))
@@ -247,8 +247,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
 
         internal void RepaintRadioReceive()
         {
-            var dcsPlayerRadioInfo = _clientStateSingleton.DcsPlayerRadioInfo;
-            if (dcsPlayerRadioInfo == null)
+            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerRadioInfo;
+            if (IL2PlayerRadioInfo == null)
             {
                 RadioFrequency.Foreground = new SolidColorBrush((Color) ColorConverter.ConvertFromString("#00FF00"));
             }

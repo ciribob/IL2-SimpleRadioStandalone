@@ -67,7 +67,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                     }
                     catch (Exception ex)
                     {
-                        Logger.Warn(ex, $"Unable to bind to the DCS Export Listener Socket Port: {localEp.Port}");
+                        Logger.Warn(ex, $"Unable to bind to the IL2 Export Listener Socket Port: {localEp.Port}");
                         Thread.Sleep(500);
                     }
                 }
@@ -83,7 +83,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                             bytes, 0, bytes.Length).Trim();
 
                         var message =
-                            JsonConvert.DeserializeObject<DCSPlayerRadioInfo>(str);
+                            JsonConvert.DeserializeObject<PlayerRadioInfo>(str);
 
                         Logger.Debug($"Recevied Message from IL2 {str}");
 
@@ -92,7 +92,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                             _clientStateSingleton.LastSeenName = message.name;
                         }
 
-                        _clientStateSingleton.DcsExportLastReceived = DateTime.Now.Ticks;
+                        _clientStateSingleton.IL2ExportLastReceived = DateTime.Now.Ticks;
 
                         //sync with others
                         //Radio info is marked as Stale for FC3 aircraft after every frequency change
@@ -104,12 +104,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                         // SocketException is raised when closing app/disconnecting, ignore so we don't log "irrelevant" exceptions
                         if (!_stop)
                         {
-                            Logger.Error(e, "SocketException Handling DCS Message");
+                            Logger.Error(e, "SocketException Handling IL2 Message");
                         }
                     }
                     catch (Exception e)
                     {
-                        Logger.Error(e, "Exception Handling DCS Message");
+                        Logger.Error(e, "Exception Handling IL2 Message");
                     }
                 }
 
@@ -119,23 +119,23 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e, "Exception stoping DCS listener ");
+                    Logger.Error(e, "Exception stoping IL2 listener ");
                 }
                 
             });
         }
 
 
-        public void ProcessRadioInfo(DCSPlayerRadioInfo message)
+        public void ProcessRadioInfo(PlayerRadioInfo message)
         {
           
             // determine if its changed by comparing old to new
             var update = UpdateRadio(message);
 
-            //send to DCS UI
-            SendRadioUpdateToDCS();
+            //send to IL2 UI
+            SendRadioUpdateToIL2();
 
-            Logger.Debug("Update sent to DCS");
+            Logger.Debug("Update sent to IL2");
 
             var diff = new TimeSpan( DateTime.Now.Ticks - _clientStateSingleton.LastSent);
 
@@ -149,8 +149,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             }
         }
 
-        //send updated radio info back to DCS for ingame GUI
-        private void SendRadioUpdateToDCS()
+        //send updated radio info back to IL2 for ingame GUI
+        private void SendRadioUpdateToIL2()
         {
             if (_il2RadioUpdateSender == null)
             {
@@ -163,13 +163,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                 int[] tunedClients = new int[11];
 
                 if (_clientStateSingleton.IsConnected
-                    && _clientStateSingleton.DcsPlayerRadioInfo !=null
-                    && _clientStateSingleton.DcsPlayerRadioInfo.IsCurrent())
+                    && _clientStateSingleton.PlayerRadioInfo !=null
+                    && _clientStateSingleton.PlayerRadioInfo.IsCurrent())
                 {
 
                     for (int i = 0; i < tunedClients.Length; i++)
                     {
-                        var clientRadio = _clientStateSingleton.DcsPlayerRadioInfo.radios[i];
+                        var clientRadio = _clientStateSingleton.PlayerRadioInfo.radios[i];
                         
                         if (clientRadio.modulation != RadioInformation.Modulation.DISABLED)
                         {
@@ -181,7 +181,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                 //get currently transmitting or receiving
                 var combinedState = new CombinedRadioState()
                 {
-                    RadioInfo = _clientStateSingleton.DcsPlayerRadioInfo,
+                    RadioInfo = _clientStateSingleton.PlayerRadioInfo,
                     RadioSendingState = _clientStateSingleton.RadioSendingState,
                     RadioReceivingState = _clientStateSingleton.RadioReceivingState,
                     ClientCountConnected = _clients.Total,
@@ -191,29 +191,29 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                 var message = JsonConvert.SerializeObject(combinedState, new JsonSerializerSettings
                 {
                  //   NullValueHandling = NullValueHandling.Ignore,
-                    ContractResolver = new JsonDCSPropertiesResolver(),
+                    ContractResolver = new JsonIL2PropertiesResolver(),
                 }) + "\n";
 
                 var byteData =
                     Encoding.UTF8.GetBytes(message);
 
-                //Logger.Info("Sending Update over UDP 7080 DCS - 7082 Flight Panels: \n"+message);
+                //Logger.Info("Sending Update over UDP 7080 IL2 - 7082 Flight Panels: \n"+message);
 
                 _il2RadioUpdateSender.Send(byteData, byteData.Length,
                     new IPEndPoint(IPAddress.Parse("127.0.0.1"),
-                        _globalSettings.GetNetworkSetting(GlobalSettingsKeys.OutgoingDCSUDPInfo))); //send to DCS
+                        _globalSettings.GetNetworkSetting(GlobalSettingsKeys.OutgoingIL2UDPInfo))); //send to IL2
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Exception Sending DCS Radio Update Message");
+                Logger.Error(e, "Exception Sending IL2 Radio Update Message");
             }
         }
 
-        private bool UpdateRadio(DCSPlayerRadioInfo message)
+        private bool UpdateRadio(PlayerRadioInfo message)
         {
             var expansion = _serverSettings.GetSettingAsBool(ServerSettingsKeys.RADIO_EXPANSION);
 
-            var playerRadioInfo = _clientStateSingleton.DcsPlayerRadioInfo;
+            var playerRadioInfo = _clientStateSingleton.PlayerRadioInfo;
 
             //copy and compare to look for changes
             var beforeUpdate = playerRadioInfo.DeepClone();
@@ -225,8 +225,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
             if (_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AlwaysAllowHotasControls))
             {
-                message.control = DCSPlayerRadioInfo.RadioSwitchControls.HOTAS;
-                playerRadioInfo.control = DCSPlayerRadioInfo.RadioSwitchControls.HOTAS;
+                message.control = PlayerRadioInfo.RadioSwitchControls.HOTAS;
+                playerRadioInfo.control = PlayerRadioInfo.RadioSwitchControls.HOTAS;
             }
             else
             {
@@ -241,8 +241,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
             var newAircraft = playerRadioInfo.unitId != message.unitId || !playerRadioInfo.IsCurrent();
 
-            if (message.unitId >= DCSPlayerRadioInfo.UnitIdOffset &&
-                playerRadioInfo.unitId >= DCSPlayerRadioInfo.UnitIdOffset)
+            if (message.unitId >= PlayerRadioInfo.UnitIdOffset &&
+                playerRadioInfo.unitId >= PlayerRadioInfo.UnitIdOffset)
             {
                 //overriden so leave as is
             }
@@ -254,10 +254,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
             if (newAircraft)
             {
-                if (_globalSettings.GetClientSettingBool(GlobalSettingsKeys.AutoSelectSettingsProfile))
-                {
+                
                     _newAircraftCallback(message.unit);
-                }
+                
 
             }
 
@@ -266,7 +265,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                 playerRadioInfo.selected = message.selected;
             }
 
-            if (playerRadioInfo.control == DCSPlayerRadioInfo.RadioSwitchControls.IN_COCKPIT)
+            if (playerRadioInfo.control == PlayerRadioInfo.RadioSwitchControls.IN_COCKPIT)
             {
                 playerRadioInfo.selected = message.selected;
             }
@@ -411,13 +410,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                         // }
                     }
                 }
-            }
-
-
-            if (playerRadioInfo.simultaneousTransmissionControl ==
-                DCSPlayerRadioInfo.SimultaneousTransmissionControl.EXTERNAL_DCS_CONTROL)
-            {
-                playerRadioInfo.simultaneousTransmission = simul;
             }
 
             //change PTT last

@@ -8,7 +8,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Helpers
 {
-    public class JsonDCSPropertiesResolver : DefaultContractResolver
+    public class JsonIL2PropertiesResolver : DefaultContractResolver
     {
         protected override List<MemberInfo> GetSerializableMembers(Type objectType)
         {

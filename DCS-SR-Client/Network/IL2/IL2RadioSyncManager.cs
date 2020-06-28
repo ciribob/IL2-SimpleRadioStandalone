@@ -51,13 +51,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
         private void CheckIfRadioIsStale(object sender, EventArgs e)
         {
-            if (!_clientStateSingleton.DcsPlayerRadioInfo.IsCurrent())
+            if (!_clientStateSingleton.PlayerRadioInfo.IsCurrent())
             {
                 //check if we've had an update
-                if (_clientStateSingleton.DcsPlayerRadioInfo.LastUpdate > 0)
+                if (_clientStateSingleton.PlayerRadioInfo.LastUpdate > 0)
                 {
-                    _clientStateSingleton.PlayerCoaltionLocationMetadata.Reset();
-                    _clientStateSingleton.DcsPlayerRadioInfo.Reset();
+                    _clientStateSingleton.PlayerRadioInfo.Reset();
 
                     _clientRadioUpdate();
                     _clientSideUpdate();

@@ -16,7 +16,7 @@ using NLog.Config;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
 
-namespace DCS_SR_Client
+namespace IL2_SR_Client
 {
     /// <summary>
     ///     Interaction logic for App.xaml

@@ -94,12 +94,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                         // SocketException is raised when closing app/disconnecting, ignore so we don't log "irrelevant" exceptions
                         if (!_stop)
                         {
-                            Logger.Error(e, "SocketException Handling DCS  Message");
+                            Logger.Error(e, "SocketException Handling IL2  Message");
                         }
                     }
                     catch (Exception e)
                     {
-                        Logger.Error(e, "Exception Handling DCS  Message");
+                        Logger.Error(e, "Exception Handling IL2  Message");
                     }
                 }
 
@@ -109,7 +109,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e, "Exception stoping DCS listener ");
+                    Logger.Error(e, "Exception stoping IL2 listener ");
                 }
                 
             });

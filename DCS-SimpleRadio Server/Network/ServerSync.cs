@@ -165,12 +165,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                     case NetworkMessage.MessageType.SERVER_SETTINGS:
                         HandleServerSettingsMessage();
                         break;
-                    case NetworkMessage.MessageType.EXTERNAL_AWACS_MODE_PASSWORD:
-                        HandleExternalAWACSModePassword(state, message.ExternalAWACSModePassword, message.Client);
-                        break;
-                    case NetworkMessage.MessageType.EXTERNAL_AWACS_MODE_DISCONNECT:
-                        HandleExternalAWACSModeDisconnect(state, message.Client);
-                        break;
                     default:
                         Logger.Warn("Recevied unknown message type");
                         break;
@@ -262,7 +256,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                     client.LastUpdate = DateTime.Now.Ticks;
                     client.Name = message.Client.Name;
                     client.Coalition = message.Client.Coalition;
-                    client.LatLngPosition = message.Client.LatLngPosition;
                     client.Seat = message.Client.Seat;
 
                     //send update to everyone
@@ -275,7 +268,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                             ClientGuid = client.ClientGuid,
                             Coalition = client.Coalition,
                             Name = client.Name,
-                            LatLngPosition = client.LatLngPosition,
                             Seat = client.Seat
                         }
                     };
@@ -321,7 +313,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                     //shouldnt be the case but just incase...
                     if (message.Client.RadioInfo == null)
                     {
-                        message.Client.RadioInfo = new DCSPlayerRadioInfo();
+                        message.Client.RadioInfo = new PlayerRadioInfo();
                     }
                     //update to local ticks
                     message.Client.RadioInfo.LastUpdate = DateTime.Now.Ticks;
@@ -343,7 +335,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                     client.Coalition = message.Client.Coalition;
                     client.Seat = message.Client.Seat;
                     client.RadioInfo = message.Client.RadioInfo;
-                    client.LatLngPosition = message.Client.LatLngPosition;
                     client.Seat = message.Client.Seat;
 
                     TimeSpan lastSent = new TimeSpan(DateTime.Now.Ticks - client.LastRadioUpdateSent);
@@ -364,7 +355,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                                     ClientGuid = client.ClientGuid,
                                     Coalition = client.Coalition,
                                     Name = client.Name,
-                                    LatLngPosition = client.LatLngPosition,
                                     RadioInfo = client.RadioInfo, //send radio info
                                     Seat = client.Seat
                                 }
@@ -401,89 +391,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
             };
 
             Multicast(update.Encode());
-        }
-
-        private void HandleExternalAWACSModePassword(SRSClientSession session, string password, SRClient client)
-        {
-            // Response of clientCoalition = 0 indicates authentication success (or external AWACS mode disabled)
-            int clientCoalition = 0;
-            if (_serverSettings.GetGeneralSetting(ServerSettingsKeys.EXTERNAL_AWACS_MODE).BoolValue
-                && !string.IsNullOrWhiteSpace(password))
-            {
-                if (_serverSettings.GetExternalAWACSModeSetting(ServerSettingsKeys.EXTERNAL_AWACS_MODE_BLUE_PASSWORD).StringValue == password)
-                {
-                    clientCoalition = 2;
-                }
-                else if (_serverSettings.GetExternalAWACSModeSetting(ServerSettingsKeys.EXTERNAL_AWACS_MODE_RED_PASSWORD).StringValue == password)
-                {
-                    clientCoalition = 1;
-                }
-            }
-
-            if (_clients.ContainsKey(client.ClientGuid))
-            {
-                _clients[client.ClientGuid].Coalition = clientCoalition;
-                _clients[client.ClientGuid].Name = client.Name;
-
-                _eventAggregator.PublishOnUIThread(new ServerStateMessage(true,
-                    new List<SRClient>(_clients.Values)));
-            }
-
-            var replyMessage = new NetworkMessage
-            {
-                Client = new SRClient
-                {
-                    Coalition = clientCoalition
-                },
-                MsgType = NetworkMessage.MessageType.EXTERNAL_AWACS_MODE_PASSWORD,
-            };
-
-            session.Send(replyMessage.Encode());
-
-            var message = new NetworkMessage
-            {
-                MsgType = NetworkMessage.MessageType.UPDATE,
-                Client = new SRClient
-                {
-                    ClientGuid = client.ClientGuid,
-                    Coalition = clientCoalition,
-                    Name = client.Name,
-                    LastUpdate = client.LastUpdate,
-                    LatLngPosition = client.LatLngPosition,
-                    Seat = client.Seat
-                }
-            };
-
-            Multicast(message.Encode());
-        }
-
-        private void HandleExternalAWACSModeDisconnect(SRSClientSession session, SRClient client)
-        {
-            if (_clients.ContainsKey(client.ClientGuid))
-            {
-                _clients[client.ClientGuid].Coalition = 0;
-                _clients[client.ClientGuid].Name = "";
-
-                _eventAggregator.PublishOnUIThread(new ServerStateMessage(true,
-                    new List<SRClient>(_clients.Values)));
-
-                var message = new NetworkMessage
-                {
-                    MsgType = NetworkMessage.MessageType.RADIO_UPDATE,
-                    Client = new SRClient
-                    {
-                        ClientGuid = client.ClientGuid,
-                        Coalition = client.Coalition,
-                        Name = client.Name,
-                        LastUpdate = client.LastUpdate,
-                        RadioInfo = new DCSPlayerRadioInfo(),
-                        LatLngPosition = client.LatLngPosition,
-                        Seat = client.Seat
-                    }
-                };
-
-                MulticastAllExeceptOne(message.Encode(), session.Id);
-            }
         }
 
         public void RequestStop()

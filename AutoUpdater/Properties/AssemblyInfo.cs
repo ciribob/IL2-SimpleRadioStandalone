@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DCS-SimpleRadio Standalone Auto Updater")]
-[assembly: AssemblyDescription("Auto Updater for DCS-SimpleRadio Standalone")]
+[assembly: AssemblyTitle("IL2-SimpleRadio Standalone Auto Updater")]
+[assembly: AssemblyDescription("Auto Updater for IL2-SimpleRadio Standalone")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ciribob - GitHub.com/Ciribob")]
-[assembly: AssemblyProduct("DCS-SimpleRadio Standalone")]
+[assembly: AssemblyProduct("IL2-SimpleRadio Standalone")]
 [assembly: AssemblyCopyright("Copyright ©  2016 - Ciribob")]
 [assembly: AssemblyTrademark("Ciribob - GitHub.com/Ciribob")]
 [assembly: AssemblyCulture("")]

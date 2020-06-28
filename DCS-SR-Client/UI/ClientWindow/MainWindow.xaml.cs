@@ -122,11 +122,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                 Hide();
                 WindowState = WindowState.Minimized;
 
-                Logger.Info("Started DCS-SimpleRadio Client " + UpdaterChecker.VERSION + " minimized");
+                Logger.Info("Started IL2-SimpleRadio Client " + UpdaterChecker.VERSION + " minimized");
             }
             else
             {
-                Logger.Info("Started DCS-SimpleRadio Client " + UpdaterChecker.VERSION);
+                Logger.Info("Started IL2-SimpleRadio Client " + UpdaterChecker.VERSION);
             }
 
             _guid = ClientStateSingleton.Instance.ShortGUID;
@@ -451,7 +451,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             AutoConnectMismatchPromptToggle.IsChecked = _globalSettings.GetClientSettingBool(GlobalSettingsKeys.AutoConnectMismatchPrompt);
             RadioOverlayTaskbarItem.IsChecked =
                 _globalSettings.GetClientSettingBool(GlobalSettingsKeys.RadioOverlayTaskbarHide);
-            RefocusDCS.IsChecked = _globalSettings.GetClientSettingBool(GlobalSettingsKeys.RefocusDCS);
+            RefocusIL2.IsChecked = _globalSettings.GetClientSettingBool(GlobalSettingsKeys.RefocusIL2);
             ExpandInputDevices.IsChecked = _globalSettings.GetClientSettingBool(GlobalSettingsKeys.ExpandControls);
 
             MinimiseToTray.IsChecked = _globalSettings.GetClientSettingBool(GlobalSettingsKeys.MinimiseToTray);
@@ -488,7 +488,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             AutoSelectChannel.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AutoSelectPresetChannel);
 
             AlwaysAllowHotas.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AlwaysAllowHotasControls);
-            AllowDCSPTT.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AllowIL2PTT);
+            AllowIL2PTT.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AllowIL2PTT);
             AlwaysAllowTransponderOverlay.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AlwaysAllowTransponderOverlay);
         }
 
@@ -654,7 +654,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                 _client = null;
             }
 
-            ClientState.DcsPlayerRadioInfo.Reset();
+            ClientState.PlayerRadioInfo.Reset();
         }
 
         private void SaveSelectedInputAndOutput()
@@ -930,7 +930,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         {
             string connection = $"{address}:{port}";
 
-            Logger.Info($"Received AutoConnect DCS-SRS @ {connection}");
+            Logger.Info($"Received AutoConnect IL2-SRS @ {connection}");
 
             if (ClientState.IsConnected)
             {
@@ -950,7 +950,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
                 if (string.Equals(address, currentAddress, StringComparison.OrdinalIgnoreCase) && port == currentPort)
                 {
-                    // Current connection matches SRS server advertised by DCS, all good
+                    // Current connection matches SRS server advertised by IL2, all good
                     Logger.Info($"Current SRS connection {currentConnection} matches advertised server {connection}, ignoring autoconnect");
                     return;
                 }
@@ -1031,7 +1031,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                     WindowHelper.BringProcessToFront(Process.GetCurrentProcess());
 
                     var result = MessageBox.Show(this,
-                        $"Would you like to try to auto-connect to DCS-SRS @ {address}:{port}? ", "Auto Connect",
+                        $"Would you like to try to auto-connect to IL2-SRS @ {address}:{port}? ", "Auto Connect",
                         MessageBoxButton.YesNo,
                         MessageBoxImage.Question);
 
@@ -1059,7 +1059,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                 WindowHelper.BringProcessToFront(Process.GetCurrentProcess());
 
                 var result = MessageBox.Show(this,
-                    $"The SRS server advertised by DCS @ {advertisedConnection} does not match the SRS server @ {currentConnection} you are currently connected to.\n\n" +
+                    $"The SRS server advertised by IL2 @ {advertisedConnection} does not match the SRS server @ {currentConnection} you are currently connected to.\n\n" +
                     $"Would you like to connect to the advertised SRS server?",
                     "Auto Connect Mismatch",
                     MessageBoxButton.YesNo,
@@ -1134,9 +1134,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
          
         }
 
-        private void DCSRefocus_OnClick_Click(object sender, RoutedEventArgs e)
+        private void IL2Refocus_OnClick_Click(object sender, RoutedEventArgs e)
         {
-            _globalSettings.SetClientSetting(GlobalSettingsKeys.RefocusDCS, (bool) RefocusDCS.IsChecked);
+            _globalSettings.SetClientSetting(GlobalSettingsKeys.RefocusIL2, (bool) RefocusIL2.IsChecked);
         }
 
         private void ExpandInputDevices_OnClick_Click(object sender, RoutedEventArgs e)
@@ -1217,9 +1217,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             _globalSettings.SetClientSetting(GlobalSettingsKeys.StartMinimised,(bool)StartMinimised.IsChecked);
         }
 
-        private void AllowDCSPTT_OnClick(object sender, RoutedEventArgs e)
+        private void AllowIL2PTT_OnClick(object sender, RoutedEventArgs e)
         {
-            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.AllowIL2PTT,(bool)AllowDCSPTT.IsChecked);
+            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.AllowIL2PTT,(bool)AllowIL2PTT.IsChecked);
         }
 
         private void AlwaysAllowHotas_OnClick(object sender, RoutedEventArgs e)
@@ -1250,7 +1250,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
         private void SetSRSPath_Click(object sender, RoutedEventArgs e)
         {
-            Registry.SetValue("HKEY_CURRENT_USER\\SOFTWARE\\DCS-SR-Standalone","SRPathStandalone",Directory.GetCurrentDirectory());
+            Registry.SetValue("HKEY_CURRENT_USER\\SOFTWARE\\IL2-SR-Standalone","SRPathStandalone",Directory.GetCurrentDirectory());
 
             MessageBox.Show(this,
                 "SRS Path set to: " + Directory.GetCurrentDirectory(),

@@ -17,7 +17,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
             {
                 BaseAddress = new Uri("http://www.google-analytics.com/")
             };
-            http.DefaultRequestHeaders.Add("User-Agent", "DCS-SRS");
+            http.DefaultRequestHeaders.Add("User-Agent", "IL2-SRS");
             http.DefaultRequestHeaders.ExpectContinue = false;
 
             try

@@ -86,7 +86,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             {
                 return false;
             }
-            if (!DCSPlayerRadioInfo.FreqCloseEnough(freq , compare.freq))
+            if (!PlayerRadioInfo.FreqCloseEnough(freq , compare.freq))
             {
                 return false;
             }
@@ -98,7 +98,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             {
                 return false;
             }
-            if (!DCSPlayerRadioInfo.FreqCloseEnough(secFreq, compare.secFreq))
+            if (!PlayerRadioInfo.FreqCloseEnough(secFreq, compare.secFreq))
             {
                 return false;
             }

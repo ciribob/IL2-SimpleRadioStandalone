@@ -28,7 +28,7 @@
                  Margin="10,87,0,0"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Top"
-                 Text="C:\Program Files\DCS-SimpleRadio-Standalone"
+                 Text="C:\Program Files\IL2-SimpleRadio-Standalone"
                  TextWrapping="Wrap" />
         <Button x:Name="srPathButton"
                 Width="75"
@@ -45,7 +45,7 @@
                FontSize="20" />
 
 
-        <TextBox x:Name="dcsScriptsPath"
+        <TextBox x:Name="IL2ScriptsPath"
                  Width="330"
                  Height="23"
                  Margin="10,197,0,0"
@@ -53,7 +53,7 @@
                  VerticalAlignment="Top"
                  Text="Saved Games"
                  TextWrapping="Wrap" />
-        <Button x:Name="dcsPathButton"
+        <Button x:Name="IL2PathButton"
                 Width="75"
                 Margin="365,198,0,0"
                 HorizontalAlignment="Left"
@@ -97,7 +97,7 @@
                Content="Step 3: Install Or Remove IL2-SRS"
                FontSize="20" />
         <CheckBox x:Name="InstallScriptsCheckbox"
-            Content="Install DCS Client Scripts - Only required for SRS Client NOT Server Only Installs"
+            Content="Install IL2 Client Scripts - Only required for SRS Client NOT Server Only Installs"
             Height="20"
             Margin="17,162,10,197"
             IsChecked="True"

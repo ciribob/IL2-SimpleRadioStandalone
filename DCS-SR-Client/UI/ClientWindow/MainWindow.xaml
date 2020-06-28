@@ -183,7 +183,7 @@
                                 Click="ShowOverlay_OnClick"
                                 Content="Toggle Radio Overlay"
                                 Style="{DynamicResource SquareButtonStyle}" />
-                        
+
                         <Button x:Name="ShowClientList"
                                 Width="125"
                                 Margin="0,15,0,0"
@@ -206,7 +206,7 @@
                                 HorizontalAlignment="Center"
                                 Orientation="Vertical"/>
                     </StackPanel>
-                        <StackPanel Margin="0"
+                    <StackPanel Margin="0"
                                 HorizontalAlignment="Center"
                                 Orientation="Horizontal"/>
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,5">
@@ -230,7 +230,7 @@
                             </Label.Content>
                         </Label>
                     </StackPanel>
-                   
+
                     <StackPanel Margin="0"
                                 HorizontalAlignment="Center"
                                 Orientation="Horizontal">
@@ -262,100 +262,100 @@
 
         <TabItem Header="Controls">
             <GroupBox x:Name="ControlsGroupBox" Header="Controls">
-               
-             <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Visible">
-                 <StackPanel>
-                     <Button Width="150px" Content="Rescan Input Devices" Click="RescanInputDevices" />
+
+                <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Visible">
+                    <StackPanel>
+                        <Button Width="150px" Content="Rescan Input Devices" Click="RescanInputDevices" />
                         <Grid>
                             <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="1*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
 
-                        <Label x:Name="DeviceLabel"
+                            <Label x:Name="DeviceLabel"
                                Grid.Row="0"
                                Grid.Column="1"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
                                Content="Device" />
-                        <Label x:Name="ButtonLabel"
+                            <Label x:Name="ButtonLabel"
                                Grid.Row="0"
                                Grid.Column="2"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
                                Content="Button" />
 
-                        <local:InputBindingControl x:Name="Radio1"
+                            <local:InputBindingControl x:Name="Radio1"
                                                    Grid.Row="1"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.Switch1}"
                                                    InputName="Radio 1" />
-                        <local:InputBindingControl x:Name="PTT"
+                            <local:InputBindingControl x:Name="PTT"
                                                    Grid.Row="2"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.Ptt}"
                                                    InputName="Common PTT" />
-                        <local:InputBindingControl x:Name="Intercom"
+                            <local:InputBindingControl x:Name="Intercom"
                                                    Grid.Row="3"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.Intercom}"
                                                    InputName="Intercom Select" />
 
-                        <local:InputBindingControl x:Name="RadioOverlay"
+                            <local:InputBindingControl x:Name="RadioOverlay"
                                                    Grid.Row="4"
                                                    Grid.ColumnSpan="6"
                                                    ControlInputBinding="{x:Static settings:InputBinding.OverlayToggle}"
                                                    InputName="Overlay Toggle" />
 
 
-                        <local:InputBindingControl x:Name="NextRadio"
+                            <local:InputBindingControl x:Name="NextRadio"
                                                    Grid.Row="5"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.NextRadio}"
                                                    InputName="Next Radio" />
 
 
-                        <local:InputBindingControl x:Name="PreviousRadio"
+                            <local:InputBindingControl x:Name="PreviousRadio"
                                                    Grid.Row="6"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.PreviousRadio}"
                                                    InputName="Previous Radio" />
 
-                        <local:InputBindingControl x:Name="RadioChannelUp"
+                            <local:InputBindingControl x:Name="RadioChannelUp"
                                                    Grid.Row="7"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.RadioChannelUp}"
                                                    InputName="Radio Channel Up" />
 
-                        <local:InputBindingControl x:Name="RadioChannelDown"
+                            <local:InputBindingControl x:Name="RadioChannelDown"
                                                    Grid.Row="8"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.RadioChannelDown}"
                                                    InputName="Radio Channel Down" />
 
 
-                    </Grid>
-                 </StackPanel>
+                        </Grid>
+                    </StackPanel>
                 </ScrollViewer>
-             
+
             </GroupBox>
-            
+
         </TabItem>
 
         <TabItem x:Name="FavouritesSeversTab" Header="Favourites">
@@ -364,14 +364,15 @@
             </GroupBox>
         </TabItem>
 
-        <TabItem Header="Settings"> <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Visible">
-            <StackPanel>  
-                <GroupBox Header="Global Settings">
-                 
+        <TabItem Header="Settings">
+            <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Visible">
+                <StackPanel>
+                    <GroupBox Header="Global Settings">
+
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" />
-                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="271" />
+                                <ColumnDefinition />
 
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -516,12 +517,12 @@
                                VerticalContentAlignment="Center"
                                Content="Auto Refocus IL2" />
 
-                            <ToggleButton Name="RefocusDCS"
+                            <ToggleButton Name="RefocusIL2"
                                       Grid.Row="4"
                                       Grid.Column="1"
                                       HorizontalContentAlignment="Center"
                                       VerticalContentAlignment="Center"
-                                      Click="DCSRefocus_OnClick_Click">
+                                      Click="IL2Refocus_OnClick_Click">
                                 <ToggleButton.Style>
                                     <Style TargetType="{x:Type ToggleButton}">
                                         <Setter Property="Content" Value="ON" />
@@ -755,7 +756,7 @@
                                     </Style>
                                 </ToggleButton.Style>
                             </ToggleButton>
-                           
+
                             <Label Grid.Row="16"
                                    Grid.Column="0"
                                    HorizontalContentAlignment="Center"
@@ -783,23 +784,23 @@
                                 </ToggleButton.Style>
                             </ToggleButton>
                         </Grid>
-                   
-                </GroupBox>
-                 <GroupBox Header="Profile">
-                     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="10">
-                         <ComboBox x:Name="ControlsProfile"
+
+                    </GroupBox>
+                    <GroupBox Header="Profile">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="10">
+                            <ComboBox x:Name="ControlsProfile"
                                    Width="200"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Top" Margin="5"  Padding="5" />
-                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-                             <Button Margin="5" Padding="5" Content="Create Profile" Click="CreateProfile" />
-                             <Button Margin="5" Padding="5" Content="Copy Profile" Click="CopyProfile" />
-                             <Button  Margin="5"  Padding="5" Content="Rename Profile" Click="RenameProfile" />
-                             <Button  Margin="5"  Padding="5" Content="Delete Profile" Click="DeleteProfile" />
-                         </StackPanel>
-                     </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                                <Button Margin="5" Padding="5" Content="Create Profile" Click="CreateProfile" />
+                                <Button Margin="5" Padding="5" Content="Copy Profile" Click="CopyProfile" />
+                                <Button  Margin="5"  Padding="5" Content="Rename Profile" Click="RenameProfile" />
+                                <Button  Margin="5"  Padding="5" Content="Delete Profile" Click="DeleteProfile" />
+                            </StackPanel>
+                        </StackPanel>
                     </GroupBox>
-                <GroupBox Header="Profile Settings">
+                    <GroupBox Header="Profile Settings">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*" />
@@ -828,20 +829,7 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
+                   
                             </Grid.RowDefinitions>
 
                             <Label Grid.Row="0"
@@ -909,110 +897,55 @@
                                    VerticalAlignment="Center"
                                    Orientation="Vertical">
                                 <WrapPanel Orientation="Horizontal">
-                                <Label>Start</Label>
+                                    <Label>Start</Label>
 
-                                <ToggleButton Name="RadioTxStartToggle"
+                                    <ToggleButton Name="RadioTxStartToggle"
                                           HorizontalContentAlignment="Center"
                                           VerticalContentAlignment="Center"
                                           Click="RadioTxStart_Click">
-                                    <ToggleButton.Style>
-                                        <Style TargetType="{x:Type ToggleButton}">
-                                            <Setter Property="Content" Value="ON" />
-                                            <Style.Triggers>
-                                                <Trigger Property="IsChecked" Value="True">
-                                                    <Setter Property="Content" Value="ON" />
-                                                </Trigger>
-                                                <Trigger Property="IsChecked" Value="False">
-                                                    <Setter Property="Content" Value="OFF" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ToggleButton.Style>
-                                </ToggleButton>
-                                <Label Content="End" />
-                                <ToggleButton Name="RadioTxEndToggle"
+                                        <ToggleButton.Style>
+                                            <Style TargetType="{x:Type ToggleButton}">
+                                                <Setter Property="Content" Value="ON" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter Property="Content" Value="ON" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsChecked" Value="False">
+                                                        <Setter Property="Content" Value="OFF" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ToggleButton.Style>
+                                    </ToggleButton>
+                                    <Label Content="End" />
+                                    <ToggleButton Name="RadioTxEndToggle"
                                           HorizontalContentAlignment="Center"
                                           VerticalContentAlignment="Center"
                                           Click="RadioTxEnd_Click">
-                                    <ToggleButton.Style>
-                                        <Style TargetType="{x:Type ToggleButton}">
-                                            <Setter Property="Content" Value="ON" />
-                                            <Style.Triggers>
-                                                <Trigger Property="IsChecked" Value="True">
-                                                    <Setter Property="Content" Value="ON" />
-                                                </Trigger>
-                                                <Trigger Property="IsChecked" Value="False">
-                                                    <Setter Property="Content" Value="OFF" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ToggleButton.Style>
-                                </ToggleButton>
+                                        <ToggleButton.Style>
+                                            <Style TargetType="{x:Type ToggleButton}">
+                                                <Setter Property="Content" Value="ON" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter Property="Content" Value="ON" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsChecked" Value="False">
+                                                        <Setter Property="Content" Value="OFF" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ToggleButton.Style>
+                                    </ToggleButton>
                                 </WrapPanel>
-                             
+
                             </WrapPanel>
 
-                            <Label Grid.Row="2"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Radio Encryption Effects &#xD;&#xA;Requires Tx or Rx Effects On" />
-
-                            <ToggleButton Name="RadioEncryptionEffectsToggle"
-                                      Grid.Row="2"
-                                      Grid.Column="1"
-                                      HorizontalContentAlignment="Center"
-                                      VerticalContentAlignment="Center"
-                                      Click="RadioEncryptionEffects_Click">
-                                <ToggleButton.Style>
-                                    <Style TargetType="{x:Type ToggleButton}">
-                                        <Setter Property="Content" Value="ON" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter Property="Content" Value="ON" />
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="False">
-                                                <Setter Property="Content" Value="OFF" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ToggleButton.Style>
-                            </ToggleButton>
-
-                            <Label Grid.Row="3"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="MIDS Tx &amp; Rx Effect &#xD;&#xA;Requires Tx or Rx Effects On" />
-
-                            <ToggleButton Name="RadioMIDSToggle"
-                                      Grid.Row="3"
-                                      Grid.Column="1"
-                                          HorizontalContentAlignment="Center"
-                                          VerticalContentAlignment="Center"
-                                          Click="RadioMIDS_Click">
-                                <ToggleButton.Style>
-                                    <Style TargetType="{x:Type ToggleButton}">
-                                        <Setter Property="Content" Value="ON" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter Property="Content" Value="ON" />
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="False">
-                                                <Setter Property="Content" Value="OFF" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ToggleButton.Style>
-                            </ToggleButton>
-
-               
 
                             <Label Grid.Row="4"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Radio Switch works as Push To Talk (PTT)" />
+                                   Grid.Column="0"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalContentAlignment="Center"
+                                   Content="Radio Switch works as Push To Talk (PTT)" />
 
                             <ToggleButton Name="RadioSwitchIsPTT"
                                       Grid.Row="4"
@@ -1093,59 +1026,6 @@
                             </ToggleButton>
 
 
-                            <Label Grid.Row="7"
-                                   Grid.Column="0"
-                                   HorizontalContentAlignment="Center"
-                                   VerticalContentAlignment="Center"
-                                   Content="Enable FM Radio Tone (Requires Radio effects on!)" />
-
-                            <ToggleButton Name="NATORadioToneToggle"
-                                          Grid.Row="7"
-                                          Grid.Column="1"
-                                          HorizontalContentAlignment="Center"
-                                          VerticalContentAlignment="Center"
-                                          Click="NATORadioTone_Click">
-                                <ToggleButton.Style>
-                                    <Style TargetType="{x:Type ToggleButton}">
-                                        <Setter Property="Content" Value="ON" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter Property="Content" Value="ON" />
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="False">
-                                                <Setter Property="Content" Value="OFF" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ToggleButton.Style>
-                            </ToggleButton>
-
-                            <Label Grid.Row="8"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Auto Select First Channel Preset" />
-
-                            <ToggleButton Name="AutoSelectChannel"
-                                      Grid.Row="8"
-                                      Grid.Column="1"
-                                      HorizontalContentAlignment="Center"
-                                      VerticalContentAlignment="Center"
-                                      Click="AudioSelectChannel_OnClick">
-                                <ToggleButton.Style>
-                                    <Style TargetType="{x:Type ToggleButton}">
-                                        <Setter Property="Content" Value="ON" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter Property="Content" Value="ON" />
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="False">
-                                                <Setter Property="Content" Value="OFF" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ToggleButton.Style>
-                            </ToggleButton>
 
                             <Label Grid.Row="9"
                                Grid.Column="0"
@@ -1174,45 +1054,18 @@
                                 </ToggleButton.Style>
                             </ToggleButton>
 
-                            <Label Grid.Row="10"
+                            <Label Grid.Row="11"
                                    Grid.Column="0"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
-                                   Content="ALWAYS allow Transponder Overlay Controls" />
+                                   Content="Allow IL2 Controlled PTT" />
 
-                            <ToggleButton Name="AlwaysAllowTransponderOverlay"
-                                          Grid.Row="10"
-                                          Grid.Column="1"
-                                          HorizontalContentAlignment="Center"
-                                          VerticalContentAlignment="Center"
-                                          Click="AlwaysAllowTransponderOverlay_OnClick">
-                                <ToggleButton.Style>
-                                    <Style TargetType="{x:Type ToggleButton}">
-                                        <Setter Property="Content" Value="ON" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter Property="Content" Value="ON" />
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="False">
-                                                <Setter Property="Content" Value="OFF" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ToggleButton.Style>
-                            </ToggleButton>
-
-                            <Label Grid.Row="11"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Allow INCOCKPIT DCS Controlled PTT" />
-
-                            <ToggleButton Name="AllowDCSPTT"
+                            <ToggleButton Name="AllowIL2PTT"
                                       Grid.Row="11"
                                       Grid.Column="1"
                                       HorizontalContentAlignment="Center"
                                       VerticalContentAlignment="Center"
-                                      Click="AllowDCSPTT_OnClick">
+                                      Click="AllowIL2PTT_OnClick">
                                 <ToggleButton.Style>
                                     <Style TargetType="{x:Type ToggleButton}">
                                         <Setter Property="Content" Value="ON" />
@@ -1227,114 +1080,34 @@
                                     </Style>
                                 </ToggleButton.Style>
                             </ToggleButton>
+
+                            <Label Grid.Row="22"
+                                   Grid.Column="0"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalContentAlignment="Center"
+                                   Content="Intercom Audio Channel" />
+                            <local:RadioChannelConfigUi x:Name="IntercomConfig"
+                                                        Grid.Row="22"
+                                                        Grid.Column="1"
+                                                        ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.IntercomChannel}" />
 
                             <Label Grid.Row="12"
                                Grid.Column="0"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
-                               Content="Radio 1 Audio Channel" />
-                        <local:RadioChannelConfigUi x:Name="Radio1Config"
+                               Content="Radio Audio Channel" />
+                            <local:RadioChannelConfigUi x:Name="Radio1Config"
                                                     Grid.Row="12"
                                                     Grid.Column="1"
                                                     ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio1Channel}" />
 
-                        <Label Grid.Row="13"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Radio 2 Audio Channel" />
-                        <local:RadioChannelConfigUi x:Name="Radio2Config"
-                                                    Grid.Row="13"
-                                                    Grid.Column="1"
-                                                    ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio2Channel}" />
 
-                        <Label Grid.Row="14"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Radio 3 Audio Channel" />
-                        <local:RadioChannelConfigUi x:Name="Radio3Config"
-                                                    Grid.Row="14"
-                                                    Grid.Column="1"
-                                                    ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio3Channel}" />
-                        <Label Grid.Row="15"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Radio 4 Audio Channel" />
-                        <local:RadioChannelConfigUi x:Name="Radio4Config"
-                                                    Grid.Row="15"
-                                                    Grid.Column="1"
-                                                    ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio4Channel}" />
-                        <Label Grid.Row="16"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Radio 5 Audio Channel" />
-                        <local:RadioChannelConfigUi x:Name="Radio5Config"
-                                                    Grid.Row="16"
-                                                    Grid.Column="1"
-                                                    ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio5Channel}" />
-                        <Label Grid.Row="17"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Radio 6 Audio Channel" />
-                        <local:RadioChannelConfigUi x:Name="Radio6Config"
-                                                    Grid.Row="17"
-                                                    Grid.Column="1"
-                                                    ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio6Channel}" />
-                        <Label Grid.Row="18"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Radio 7 Audio Channel" />
-                        <local:RadioChannelConfigUi x:Name="Radio7Config"
-                                                    Grid.Row="18"
-                                                    Grid.Column="1"
-                                                    ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio7Channel}" />
-                        <Label Grid.Row="19"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Radio 8 Audio Channel" />
-                        <local:RadioChannelConfigUi x:Name="Radio8Config"
-                                                    Grid.Row="19"
-                                                    Grid.Column="1"
-                                                    ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio8Channel}" />
-                        <Label Grid.Row="20"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Radio 9 Audio Channel" />
-                        <local:RadioChannelConfigUi x:Name="Radio9Config"
-                                                    Grid.Row="20"
-                                                    Grid.Column="1"
-                                                    ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio9Channel}" />
-                        <Label Grid.Row="21"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Radio 10 Audio Channel" />
-                        <local:RadioChannelConfigUi x:Name="Radio10Config"
-                                                    Grid.Row="21"
-                                                    Grid.Column="1"
-                                                    ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio10Channel}" />
+                            
+                        </Grid>
+                    </GroupBox>
 
-                        <Label Grid.Row="22"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="Intercom Audio Channel" />
-                        <local:RadioChannelConfigUi x:Name="IntercomConfig"
-                                                    Grid.Row="22"
-                                                    Grid.Column="1"
-                                                    ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.IntercomChannel}" />
-                            </Grid>
-                </GroupBox> 
-               
-            </StackPanel>
-          </ScrollViewer>
+                </StackPanel>
+            </ScrollViewer>
 
         </TabItem>
 
