@@ -579,60 +579,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                 {
                                     switch (bindState.MainDevice.InputBind)
                                     {
-                                        case InputBinding.Up100:
-                                            RadioHelper.UpdateRadioFrequency(100, dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.Up10:
-                                            RadioHelper.UpdateRadioFrequency(10, dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.Up1:
-                                            RadioHelper.UpdateRadioFrequency(1, dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.Up01:
-                                            RadioHelper.UpdateRadioFrequency(0.1, dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.Up001:
-                                            RadioHelper.UpdateRadioFrequency(0.01, dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.Up0001:
-                                            RadioHelper.UpdateRadioFrequency(0.001, dcsPlayerRadioInfo.selected);
-                                            break;
-
-                                        case InputBinding.Down100:
-                                            RadioHelper.UpdateRadioFrequency(-100, dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.Down10:
-                                            RadioHelper.UpdateRadioFrequency(-10, dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.Down1:
-                                            RadioHelper.UpdateRadioFrequency(-1, dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.Down01:
-                                            RadioHelper.UpdateRadioFrequency(-0.1, dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.Down001:
-                                            RadioHelper.UpdateRadioFrequency(-0.01, dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.Down0001:
-                                            RadioHelper.UpdateRadioFrequency(-0.001, dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.ToggleGuard:
-                                            RadioHelper.ToggleGuard(dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.ToggleEncryption:
-                                            RadioHelper.ToggleEncryption(dcsPlayerRadioInfo.selected);
-                                            break;
                                         case InputBinding.NextRadio:
                                             RadioHelper.SelectNextRadio();
                                             break;
                                         case InputBinding.PreviousRadio:
                                             RadioHelper.SelectPreviousRadio();
-                                            break;
-                                        case InputBinding.EncryptionKeyIncrease:
-                                            RadioHelper.IncreaseEncryptionKey(dcsPlayerRadioInfo.selected);
-                                            break;
-                                        case InputBinding.EncryptionKeyDecrease:
-                                            RadioHelper.DecreaseEncryptionKey(dcsPlayerRadioInfo.selected);
                                             break;
                                         case InputBinding.RadioChannelUp:
                                             RadioHelper.RadioChannelUp(dcsPlayerRadioInfo.selected);
@@ -640,7 +591,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                         case InputBinding.RadioChannelDown:
                                             RadioHelper.RadioChannelDown(dcsPlayerRadioInfo.selected);
                                             break;
-
 
                                         default:
                                             break;

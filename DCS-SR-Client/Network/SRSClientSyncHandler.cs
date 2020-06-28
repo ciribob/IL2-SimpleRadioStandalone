@@ -34,7 +34,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
         private ConnectCallback _callback;
         private ExternalAWACSModeConnectCallback _externalAWACSModeCallback;
         private UpdateUICallback _updateUICallback;
-        private readonly DCSRadioSyncHandler.NewAircraft _newAircraft;
+        private readonly IL2RadioSyncHandler.NewAircraft _newAircraft;
         private IPEndPoint _serverEndpoint;
         private TcpClient _tcpClient;
 
@@ -43,11 +43,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
         private readonly ConnectedClientsSingleton _clients = ConnectedClientsSingleton.Instance;
 
 
-        private DCSRadioSyncManager _radioDCSSync = null;
+        private IL2RadioSyncManager radioIl2Sync = null;
 
         private static readonly int MAX_DECODE_ERRORS = 5;
 
-        public SRSClientSyncHandler(string guid, UpdateUICallback uiCallback, DCSRadioSyncHandler.NewAircraft _newAircraft)
+        public SRSClientSyncHandler(string guid, UpdateUICallback uiCallback, IL2RadioSyncHandler.NewAircraft _newAircraft)
         {
             _guid = guid;
             _updateUICallback = uiCallback;
@@ -64,55 +64,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             tcpThread.Start();
         }
 
-        public void ConnectExternalAWACSMode(string password, ExternalAWACSModeConnectCallback callback)
-        {
-            if (_clientStateSingleton.ExternalAWACSModelSelected)
-            {
-                return;
-            }
 
-            _externalAWACSModeCallback = callback;
-
-            var sideInfo = _clientStateSingleton.PlayerCoaltionLocationMetadata;
-            sideInfo.name = _clientStateSingleton.LastSeenName;
-            SendToServer(new NetworkMessage
-            {
-                Client = new SRClient
-                {
-                    Coalition = sideInfo.side,
-                    Name = sideInfo.name,
-                    LatLngPosition = sideInfo.LngLngPosition,
-                    ClientGuid = _guid
-                },
-                ExternalAWACSModePassword = password,
-                MsgType = NetworkMessage.MessageType.EXTERNAL_AWACS_MODE_PASSWORD
-            });
-        }
-
-        public void DisconnectExternalAWACSMode()
-        {
-            if (!_clientStateSingleton.ExternalAWACSModelSelected || _radioDCSSync == null)
-            {
-                return;
-            }
-
-            _radioDCSSync.StopExternalAWACSModeLoop();
-
-            CallExternalAWACSModeOnMain(false, 0);
-        }
-
+      
         private void Connect()
         {
-            if (_radioDCSSync != null)
+            if (radioIl2Sync != null)
             {
-                _radioDCSSync.Stop();
-                _radioDCSSync = null;
+                radioIl2Sync.Stop();
+                radioIl2Sync = null;
             }
         
 
             bool connectionError = false;
 
-            _radioDCSSync = new DCSRadioSyncManager(ClientRadioUpdated, ClientCoalitionUpdate, _guid,_newAircraft);
+            radioIl2Sync = new IL2RadioSyncManager(ClientRadioUpdated, ClientCoalitionUpdate, _guid,_newAircraft);
 
             using (_tcpClient = new TcpClient())
             {
@@ -126,7 +91,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
                     if (_tcpClient.Connected)
                     {
-                        _radioDCSSync.Start();
+                        radioIl2Sync.Start();
                       
 
                         _tcpClient.NoDelay = true;
@@ -149,7 +114,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                 }
             }
 
-            _radioDCSSync.Stop();
+            radioIl2Sync.Stop();
             //disconnect callback
             CallOnMain(false, connectionError);
         }
@@ -157,17 +122,15 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
         private void ClientRadioUpdated()
         {
             Logger.Debug("Sending Radio Update to Server");
-            var sideInfo = _clientStateSingleton.PlayerCoaltionLocationMetadata;
+            var sideInfo = _clientStateSingleton.DcsPlayerRadioInfo;
             SendToServer(new NetworkMessage
             {
                 Client = new SRClient
                 {
                     Coalition = sideInfo.side,
                     Name = sideInfo.name,
-                    Seat = sideInfo.seat,
                     ClientGuid = _guid,
-                    RadioInfo = _clientStateSingleton.DcsPlayerRadioInfo,
-                    LatLngPosition = sideInfo.LngLngPosition
+                    RadioInfo = _clientStateSingleton.DcsPlayerRadioInfo
                 },
                 MsgType = NetworkMessage.MessageType.RADIO_UPDATE
             });
@@ -175,15 +138,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
         private void ClientCoalitionUpdate()
         {
-            var sideInfo = _clientStateSingleton.PlayerCoaltionLocationMetadata;
+            var sideInfo = _clientStateSingleton.DcsPlayerRadioInfo;
             SendToServer(new NetworkMessage
             {
                 Client = new SRClient
                 {
-                    Coalition = sideInfo.side,
+                    Coalition = sideInfo.coalition,
                     Name = sideInfo.name,
-                    Seat = sideInfo.seat,
-                    LatLngPosition = sideInfo.LngLngPosition,
                     ClientGuid = _guid
                 },
                 MsgType = NetworkMessage.MessageType.UPDATE
@@ -245,7 +206,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                         {
                             Coalition = sideInfo.side,
                             Name = sideInfo.name.Length > 0 ? sideInfo.name : _clientStateSingleton.LastSeenName,
-                            LatLngPosition = sideInfo.LngLngPosition,
                             ClientGuid = _guid
                         },
                         MsgType = NetworkMessage.MessageType.SYNC,
@@ -284,8 +244,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                                 srClient.Name = updatedSrClient.Name;
                                                 srClient.Coalition = updatedSrClient.Coalition;
 
-                                                srClient.LatLngPosition = updatedSrClient.LatLngPosition;
-
                                                 if (updatedSrClient.RadioInfo != null)
                                                 {
                                                     srClient.RadioInfo = updatedSrClient.RadioInfo;
@@ -312,10 +270,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                             var connectedClient = serverMessage.Client;
                                             connectedClient.LastUpdate = DateTime.Now.Ticks;
 
-                                            //init with LOS true so you can hear them incase of bad DCS install where
-                                            //LOS isnt working
-                                            connectedClient.LineOfSightLoss = 0.0f;
-                                            //0.0 is NO LOSS therefore full Line of sight
 
                                             _clients[serverMessage.Client.ClientGuid] = connectedClient;
 
@@ -325,11 +279,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                             //             serverMessage.Client.Coalition);
                                         }
 
-                                        if (_clientStateSingleton.ExternalAWACSModelSelected &&
-                                            !_serverSettings.GetSettingAsBool(Common.Setting.ServerSettingsKeys.EXTERNAL_AWACS_MODE))
-                                        {
-                                            DisconnectExternalAWACSMode();
-                                        }
 
                                         CallUpdateUIOnMain();
 
@@ -365,21 +314,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                             foreach (var client in serverMessage.Clients)
                                             {
                                                 client.LastUpdate = DateTime.Now.Ticks;
-                                                //init with LOS true so you can hear them incase of bad DCS install where
-                                                //LOS isnt working
-                                                client.LineOfSightLoss = 0.0f;
-                                                //0.0 is NO LOSS therefore full Line of sight
                                                 _clients[client.ClientGuid] = client;
                                             }
                                         }
                                         //add server settings
                                         _serverSettings.Decode(serverMessage.ServerSettings);
 
-                                        if (_clientStateSingleton.ExternalAWACSModelSelected &&
-                                            !_serverSettings.GetSettingAsBool(Common.Setting.ServerSettingsKeys.EXTERNAL_AWACS_MODE))
-                                        {
-                                            DisconnectExternalAWACSMode();
-                                        }
+                                       
 
                                         CallUpdateUIOnMain();
 
@@ -389,12 +330,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
                                         _serverSettings.Decode(serverMessage.ServerSettings);
                                         ServerVersion = serverMessage.Version;
-
-                                        if (_clientStateSingleton.ExternalAWACSModelSelected &&
-                                            !_serverSettings.GetSettingAsBool(Common.Setting.ServerSettingsKeys.EXTERNAL_AWACS_MODE))
-                                        {
-                                            DisconnectExternalAWACSMode();
-                                        }
 
                                         CallUpdateUIOnMain();
 
@@ -416,22 +351,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                         ShowVersionMistmatchWarning(serverMessage.Version);
 
                                         Disconnect();
-                                        break;
-                                    case NetworkMessage.MessageType.EXTERNAL_AWACS_MODE_PASSWORD:
-                                        if (serverMessage.Client.Coalition == 0)
-                                        {
-                                            Logger.Info("External AWACS mode authentication failed");
-
-                                            CallExternalAWACSModeOnMain(false, 0);
-                                        }
-                                        else if (_radioDCSSync != null && _radioDCSSync.IsListening)
-                                        {
-                                            Logger.Info("External AWACS mode authentication succeeded, coalition {0}", serverMessage.Client.Coalition == 1 ? "red" : "blue");
-
-                                            CallExternalAWACSModeOnMain(true, serverMessage.Client.Coalition);
-
-                                            _radioDCSSync.StartExternalAWACSModeLoop();
-                                        }
                                         break;
                                     default:
                                         Logger.Error("Recevied unknown " + line);
@@ -521,8 +440,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
         public void Disconnect()
         {
             _stop = true;
-
-            DisconnectExternalAWACSMode();
 
             try
             {

@@ -138,60 +138,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             return null;
         }
 
-        public static void ToggleEncryption(int radioId)
-        {
-            var radio = GetRadio(radioId);
-
-            if (radio != null)
-            {
-                if (radio.modulation != RadioInformation.Modulation.DISABLED) // disabled
-                {
-                    //update stuff
-                    if (radio.encMode == RadioInformation.EncryptionMode.ENCRYPTION_JUST_OVERLAY)
-                    {
-                        if (radio.enc)
-                        {
-                            radio.enc = false;
-                        }
-                        else
-                        {
-                            radio.enc = true;
-                        }
-
-                        //make radio data stale to force resysnc
-                        ClientStateSingleton.Instance.LastSent = 0;
-                    }
-                }
-            }
-        }
-
-        public static void SetEncryptionKey(int radioId, int encKey)
-        {
-            var currentRadio = RadioHelper.GetRadio(radioId);
-
-            if (currentRadio != null &&
-                currentRadio.modulation != RadioInformation.Modulation.DISABLED) // disabled
-            {
-                if (currentRadio.modulation != RadioInformation.Modulation.DISABLED) // disabled
-                {
-                    //update stuff
-                    if ((currentRadio.encMode ==
-                         RadioInformation.EncryptionMode.ENCRYPTION_COCKPIT_TOGGLE_OVERLAY_CODE) ||
-                        (currentRadio.encMode == RadioInformation.EncryptionMode.ENCRYPTION_JUST_OVERLAY))
-                    {
-                        if (encKey > 252)
-                            encKey = 252;
-                        else if (encKey < 1)
-                            encKey = 1;
-
-                        currentRadio.encKey = (byte) encKey;
-                        //make radio data stale to force resysnc
-                        ClientStateSingleton.Instance.LastSent = 0;
-                    }
-                }
-            }
-        }
-
+    
         public static void SelectNextRadio()
         {
             var dcsPlayerRadioInfo = ClientStateSingleton.Instance.DcsPlayerRadioInfo;
@@ -270,26 +217,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             }
         }
 
-        public static void IncreaseEncryptionKey(int radioId)
-        {
-            var currentRadio = RadioHelper.GetRadio(radioId);
-
-            if (currentRadio != null)
-            {
-                SetEncryptionKey(radioId, currentRadio.encKey + 1);
-            }
-        }
-
-        public static void DecreaseEncryptionKey(int radioId)
-        {
-            var currentRadio = RadioHelper.GetRadio(radioId);
-
-            if (currentRadio != null)
-            {
-                SetEncryptionKey(radioId, currentRadio.encKey - 1);
-            }
-        }
-
+       
         public static void SelectRadioChannel(PresetChannel selectedPresetChannel, int radioId)
         {
             if (UpdateRadioFrequency((double) selectedPresetChannel.Value, radioId, false, false))
@@ -310,32 +238,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                     && ClientStateSingleton.Instance.DcsPlayerRadioInfo.control ==
                     DCSPlayerRadioInfo.RadioSwitchControls.HOTAS)
                 {
-                    var fixedChannels = ClientStateSingleton.Instance.FixedChannels;
-
-                    //now get model
-                    if (fixedChannels != null && fixedChannels[radioId - 1] != null)
-                    {
-                        var radioChannels = fixedChannels[radioId - 1];
-
-                        if (radioChannels.PresetChannels.Count > 0)
-                        {
-                            int next = currentRadio.channel + 1;
-
-                            if (radioChannels.PresetChannels.Count < next || currentRadio.channel < 1)
-                            {
-                                //set to first radio
-                                SelectRadioChannel(radioChannels.PresetChannels[0], radioId);
-                                radioChannels.SelectedPresetChannel = radioChannels.PresetChannels[0];
-                            }
-                            else
-                            {
-                                var preset = radioChannels.PresetChannels[next - 1];
-
-                                SelectRadioChannel(preset, radioId);
-                                radioChannels.SelectedPresetChannel = preset;
-                            }
-                        }
-                    }
+                    //TODO
                 }
             }
         }
@@ -350,32 +253,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                     && ClientStateSingleton.Instance.DcsPlayerRadioInfo.control ==
                     DCSPlayerRadioInfo.RadioSwitchControls.HOTAS)
                 {
-                    var fixedChannels = ClientStateSingleton.Instance.FixedChannels;
-
-                    //now get model
-                    if (fixedChannels != null && fixedChannels[radioId - 1] != null)
-                    {
-                        var radioChannels = fixedChannels[radioId - 1];
-
-                        if (radioChannels.PresetChannels.Count > 0)
-                        {
-                            int previous = currentRadio.channel - 1;
-
-                            if (previous < 1)
-                            {
-                                //set to last radio
-                                SelectRadioChannel(radioChannels.PresetChannels.Last(), radioId);
-                                radioChannels.SelectedPresetChannel = radioChannels.PresetChannels.Last();
-                            }
-                            else
-                            {
-                                var preset = radioChannels.PresetChannels[previous - 1];
-                                //set to previous radio
-                                SelectRadioChannel(preset, radioId);
-                                radioChannels.SelectedPresetChannel = preset;
-                            }
-                        }
-                    }
+                    //TODO
                 }
             }
         }
@@ -400,21 +278,5 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             }
         }
 
-        public static void ToggleRetransmit(int radioId)
-        {
-            var radio = GetRadio(radioId);
-
-            if (radio != null)
-            {
-                if (radio.rtMode == RadioInformation.RetransmitMode.OVERLAY)
-                {
-                    radio.retransmit = !radio.retransmit;
-
-                    //make radio data stale to force resysnc
-                    ClientStateSingleton.Instance.LastSent = 0;
-                }
-            }
-
-        }
     }
 }

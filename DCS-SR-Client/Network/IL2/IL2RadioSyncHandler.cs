@@ -6,8 +6,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using Ciribob.IL2.SimpleRadio.Standalone.Client.UI.AwacsRadioOverlayWindow;
-using Ciribob.IL2.SimpleRadio.Standalone.Common.Network;
 using Newtonsoft.Json;
 using NLog;
 using System.Threading;
@@ -16,15 +14,14 @@ using Ciribob.IL2.SimpleRadio.Standalone.Client.Settings;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Utils;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
-using Ciribob.IL2.SimpleRadio.Standalone.Common.DCSState;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Helpers;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Setting;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 {
-    public class DCSRadioSyncHandler
+    public class IL2RadioSyncHandler
     {
-        private readonly DCSRadioSyncManager.SendRadioUpdate _radioUpdate;
+        private readonly IL2RadioSyncManager.SendRadioUpdate _radioUpdate;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly ClientStateSingleton _clientStateSingleton = ClientStateSingleton.Instance;
@@ -34,8 +31,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
         private static readonly int RADIO_UPDATE_PING_INTERVAL = 60; //send update regardless of change every X seconds
 
 
-        private UdpClient _dcsUdpListener;
-        private UdpClient _dcsRadioUpdateSender;
+        private UdpClient _il2UdpListener;
+        private UdpClient _il2RadioUpdateSender;
 
         private readonly GlobalSettingsStore _globalSettings = GlobalSettingsStore.Instance;
 
@@ -47,7 +44,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
         private long _identStart = 0;
 
-        public DCSRadioSyncHandler(DCSRadioSyncManager.SendRadioUpdate radioUpdate, NewAircraft _newAircraft)
+        public IL2RadioSyncHandler(IL2RadioSyncManager.SendRadioUpdate radioUpdate, NewAircraft _newAircraft)
         {
             _radioUpdate = radioUpdate;
             _newAircraftCallback = _newAircraft;
@@ -62,10 +59,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             {
                 while (!_stop)
                 {
-                    var localEp = new IPEndPoint(IPAddress.Any, _globalSettings.GetNetworkSetting(GlobalSettingsKeys.DCSIncomingUDP));
+                    var localEp = new IPEndPoint(IPAddress.Any, _globalSettings.GetNetworkSetting(GlobalSettingsKeys.IL2IncomingUDP));
                     try
                     {
-                        _dcsUdpListener = new UdpClient(localEp);
+                        _il2UdpListener = new UdpClient(localEp);
                         break;
                     }
                     catch (Exception ex)
@@ -80,7 +77,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                     try
                     {
                         var groupEp = new IPEndPoint(IPAddress.Any,0);
-                        var bytes = _dcsUdpListener.Receive(ref groupEp);
+                        var bytes = _il2UdpListener.Receive(ref groupEp);
 
                         var str = Encoding.UTF8.GetString(
                             bytes, 0, bytes.Length).Trim();
@@ -88,7 +85,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                         var message =
                             JsonConvert.DeserializeObject<DCSPlayerRadioInfo>(str);
 
-                        Logger.Debug($"Recevied Message from DCS {str}");
+                        Logger.Debug($"Recevied Message from IL2 {str}");
 
                         if (!string.IsNullOrWhiteSpace(message.name) && message.name != "Unknown" && message.name != _clientStateSingleton.LastSeenName)
                         {
@@ -118,7 +115,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
                 try
                 {
-                    _dcsUdpListener.Close();
+                    _il2UdpListener.Close();
                 }
                 catch (Exception e)
                 {
@@ -155,9 +152,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
         //send updated radio info back to DCS for ingame GUI
         private void SendRadioUpdateToDCS()
         {
-            if (_dcsRadioUpdateSender == null)
+            if (_il2RadioUpdateSender == null)
             {
-                _dcsRadioUpdateSender = new UdpClient();
+                _il2RadioUpdateSender = new UdpClient();
             }
 
             try
@@ -202,7 +199,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
                 //Logger.Info("Sending Update over UDP 7080 DCS - 7082 Flight Panels: \n"+message);
 
-                _dcsRadioUpdateSender.Send(byteData, byteData.Length,
+                _il2RadioUpdateSender.Send(byteData, byteData.Length,
                     new IPEndPoint(IPAddress.Parse("127.0.0.1"),
                         _globalSettings.GetNetworkSetting(GlobalSettingsKeys.OutgoingDCSUDPInfo))); //send to DCS
             }
@@ -225,7 +222,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             playerRadioInfo.name = message.name;
             playerRadioInfo.inAircraft = message.inAircraft;
             playerRadioInfo.intercomHotMic = message.intercomHotMic;
-            playerRadioInfo.capabilities = message.capabilities;
 
             if (_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AlwaysAllowHotasControls))
             {
@@ -241,12 +237,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
             playerRadioInfo.unit = message.unit;
 
-
-            if (!_clientStateSingleton.ShouldUseLotATCPosition())
-            {
-                _clientStateSingleton.UpdatePlayerPosition(message.latLng);
-            }
-            
             var overrideFreqAndVol = false;
 
             var newAircraft = playerRadioInfo.unitId != message.unitId || !playerRadioInfo.IsCurrent();
@@ -269,7 +259,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                     _newAircraftCallback(message.unit);
                 }
 
-                playerRadioInfo.iff = message.iff;
             }
 
             if (overrideFreqAndVol)
@@ -300,12 +289,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                     clientRadio.retransmit = false;
                     clientRadio.modulation = RadioInformation.Modulation.DISABLED;
                     clientRadio.name = "No Radio";
-                    clientRadio.rtMode = RadioInformation.RetransmitMode.DISABLED;
                     clientRadio.retransmit = false;
 
                     clientRadio.freqMode = RadioInformation.FreqMode.COCKPIT;
                     clientRadio.guardFreqMode = RadioInformation.FreqMode.COCKPIT;
-                    clientRadio.encMode = RadioInformation.EncryptionMode.NO_ENCRYPTION;
                     clientRadio.volMode = RadioInformation.VolumeMode.COCKPIT;
 
                     continue;
@@ -325,12 +312,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                     clientRadio.retransmit = false;
                     clientRadio.modulation = RadioInformation.Modulation.DISABLED;
                     clientRadio.name = "No Radio";
-                    clientRadio.rtMode = RadioInformation.RetransmitMode.DISABLED;
                     clientRadio.retransmit = false;
 
                     clientRadio.freqMode = RadioInformation.FreqMode.COCKPIT;
                     clientRadio.guardFreqMode = RadioInformation.FreqMode.COCKPIT;
-                    clientRadio.encMode = RadioInformation.EncryptionMode.NO_ENCRYPTION;
                     clientRadio.volMode = RadioInformation.VolumeMode.COCKPIT;
                 }
                 else
@@ -339,16 +324,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                     clientRadio.freqMin = updateRadio.freqMin;
                     clientRadio.freqMax = updateRadio.freqMax;
 
-                    if (playerRadioInfo.simultaneousTransmissionControl == DCSPlayerRadioInfo.SimultaneousTransmissionControl.EXTERNAL_DCS_CONTROL)
-                    { 
-                        clientRadio.simul = updateRadio.simul;
-                    }
-
-                    if (updateRadio.simul)
-                    {
-                        simul = true;
-                    }
-
                     clientRadio.name = updateRadio.name;
 
                     clientRadio.modulation = updateRadio.modulation;
@@ -356,16 +331,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                     //update modes
                     clientRadio.freqMode = updateRadio.freqMode;
                     clientRadio.guardFreqMode = updateRadio.guardFreqMode;
-                    clientRadio.rtMode = updateRadio.rtMode;
 
-                    if (_serverSettings.GetSettingAsBool(ServerSettingsKeys.ALLOW_RADIO_ENCRYPTION))
-                    {
-                        clientRadio.encMode = updateRadio.encMode;
-                    }
-                    else
-                    {
-                        clientRadio.encMode = RadioInformation.EncryptionMode.NO_ENCRYPTION;
-                    }
 
                     clientRadio.volMode = updateRadio.volMode;
 
@@ -417,41 +383,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                         }
                     }
 
-                    //reset encryption
-                    if (overrideFreqAndVol)
-                    {
-                        clientRadio.enc = false;
-                        clientRadio.encKey = 0;
-                    }
-
-                    //Handle Encryption
-                    if (updateRadio.encMode == RadioInformation.EncryptionMode.ENCRYPTION_JUST_OVERLAY)
-                    {
-                        if (clientRadio.encKey == 0)
-                        {
-                            clientRadio.encKey = 1;
-                        }
-                    }
-                    else if (clientRadio.encMode ==
-                             RadioInformation.EncryptionMode.ENCRYPTION_COCKPIT_TOGGLE_OVERLAY_CODE)
-                    {
-                        clientRadio.enc = updateRadio.enc;
-
-                        if (clientRadio.encKey == 0)
-                        {
-                            clientRadio.encKey = 1;
-                        }
-                    }
-                    else if (clientRadio.encMode == RadioInformation.EncryptionMode.ENCRYPTION_FULL)
-                    {
-                        clientRadio.enc = updateRadio.enc;
-                        clientRadio.encKey = updateRadio.encKey;
-                    }
-                    else
-                    {
-                        clientRadio.enc = false;
-                        clientRadio.encKey = 0;
-                    }
 
                     //handle volume
                     if ((updateRadio.volMode == RadioInformation.VolumeMode.COCKPIT) || overrideFreqAndVol)
@@ -459,38 +390,25 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                         clientRadio.volume = updateRadio.volume;
                     }
 
-                    //handle Retransmit mode
-                    if ((updateRadio.rtMode == RadioInformation.RetransmitMode.COCKPIT))
-                    {
-                        clientRadio.rtMode = updateRadio.rtMode;
-                        clientRadio.retransmit = updateRadio.retransmit;
-                    }else if (updateRadio.rtMode == RadioInformation.RetransmitMode.DISABLED)
-                    {
-                        clientRadio.rtMode = updateRadio.rtMode;
-                        clientRadio.retransmit = false;
-                    }
-
                     //handle Channels load for radios
                     if (newAircraft && i > 0)
                     {
-                        if (clientRadio.freqMode == RadioInformation.FreqMode.OVERLAY)
-                        {
-                            var channelModel = _clientStateSingleton.FixedChannels[i - 1];
-                            channelModel.Max = clientRadio.freqMax;
-                            channelModel.Min = clientRadio.freqMin;
-                            channelModel.Reload();
-                            clientRadio.channel = -1; //reset channel
-
-                            if (_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AutoSelectPresetChannel))
-                            {
-                                RadioHelper.RadioChannelUp(i);
-                            }
-                        }
-                        else
-                        {
-                            _clientStateSingleton.FixedChannels[i - 1].Clear();
-                            //clear
-                        }
+                        // if (clientRadio.freqMode == RadioInformation.FreqMode.OVERLAY)
+                        // {
+                        //     var channelModel = _clientStateSingleton.FixedChannels[i - 1];
+                        //     channelModel.Reload();
+                        //     clientRadio.channel = -1; //reset channel
+                        //
+                        //     if (_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AutoSelectPresetChannel))
+                        //     {
+                        //         RadioHelper.RadioChannelUp(i);
+                        //     }
+                        // }
+                        // else
+                        // {
+                        //     _clientStateSingleton.FixedChannels[i - 1].Clear();
+                        //     //clear
+                        // }
                     }
                 }
             }
@@ -503,61 +421,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             }
 
             //change PTT last
-            if (!_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AllowDCSPTT))
+            if (!_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AllowIL2PTT))
             {
                 playerRadioInfo.ptt = false;
             }
             else
             {
                 playerRadioInfo.ptt = message.ptt;
-            }
-
-            //HANDLE IFF/TRANSPONDER UPDATE
-            //TODO tidy up the IFF/Transponder handling and this giant function in general as its silly big :(
-
-
-            if (_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys
-                .AlwaysAllowTransponderOverlay))
-            {
-                if (message.iff.control != Transponder.IFFControlMode.DISABLED)
-                {
-                    playerRadioInfo.iff.control = Transponder.IFFControlMode.OVERLAY;
-                    message.iff.control = Transponder.IFFControlMode.OVERLAY;
-                }
-            }
-
-            if (message.iff.control == Transponder.IFFControlMode.COCKPIT)
-            {
-                playerRadioInfo.iff = message.iff;
-            }
-
-
-            //HANDLE MIC IDENT
-            if (!playerRadioInfo.ptt && playerRadioInfo.iff.mic >0 && _clientStateSingleton.RadioSendingState.IsSending)
-            {
-                if (_clientStateSingleton.RadioSendingState.SendingOn == playerRadioInfo.iff.mic)
-                {
-                    playerRadioInfo.iff.status = Transponder.IFFStatus.IDENT;
-                }
-            }
-
-            //Handle IDENT only lasting for 40 seconds at most - need to toggle it
-            if (playerRadioInfo.iff.status == Transponder.IFFStatus.IDENT)
-            {
-                if (_identStart == 0)
-                {
-                    _identStart = DateTime.Now.Ticks;
-                }
-
-                if (TimeSpan.FromTicks(DateTime.Now.Ticks -_identStart).TotalSeconds > 40)
-                {
-                    playerRadioInfo.iff.status = Transponder.IFFStatus.NORMAL;
-                }
-
-            }
-            else
-            {
-                _identStart = 0;
             }
 
             //                }
@@ -574,7 +444,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             _stop = true;
             try
             {
-                _dcsUdpListener?.Close();
+                _il2UdpListener?.Close();
             }
             catch (Exception ex)
             {
@@ -582,7 +452,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
             try
             {
-                _dcsRadioUpdateSender?.Close();
+                _il2RadioUpdateSender?.Close();
             }
             catch (Exception ex)
             {

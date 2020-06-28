@@ -470,13 +470,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
                 return;
             }
 
-            bool midsTone = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.MIDSRadioEffect);
-
-            if (modulation == RadioInformation.Modulation.MIDS && midsTone)
-            {
-                //no tone for MIDS
-                return;
-            }
 
             var _effectsBuffer = _effectsOutputBuffer[transmitOnRadio];
 
@@ -496,7 +489,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
             }
         }
 
-        public void PlaySoundEffectStartTransmit(int transmitOnRadio, bool encrypted, float volume, RadioInformation.Modulation modulation)
+        public void PlaySoundEffectStartTransmit(int transmitOnRadio, float volume, RadioInformation.Modulation modulation)
         {
             if (!_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioTxEffects_Start))
             {
@@ -505,29 +498,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
 
             var _effectBuffer = _effectsOutputBuffer[transmitOnRadio];
 
-            bool midsTone = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.MIDSRadioEffect);
-
-            if (encrypted && (_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioEncryptionEffects)))
-            {
-                _effectBuffer.VolumeSampleProvider.Volume = volume;
-                _effectBuffer.AddAudioSamples(
-                    _cachedAudioEffects[(int) CachedAudioEffect.AudioEffectTypes.KY_58_TX].AudioEffectBytes,
-                    transmitOnRadio);
-            }
-            else if (modulation == RadioInformation.Modulation.MIDS && midsTone)
-            {
-                _effectBuffer.VolumeSampleProvider.Volume = volume;
-                _effectBuffer.AddAudioSamples(
-                    _cachedAudioEffects[(int)CachedAudioEffect.AudioEffectTypes.MIDS_TX].AudioEffectBytes,
-                    transmitOnRadio);
-            }
-            else
-            {
-                _effectBuffer.VolumeSampleProvider.Volume = volume;
-                _effectBuffer.AddAudioSamples(
-                    _cachedAudioEffects[(int) CachedAudioEffect.AudioEffectTypes.RADIO_TX].AudioEffectBytes,
-                    transmitOnRadio);
-            }
+            _effectBuffer.VolumeSampleProvider.Volume = volume;
+            _effectBuffer.AddAudioSamples(
+                _cachedAudioEffects[(int) CachedAudioEffect.AudioEffectTypes.RADIO_TX].AudioEffectBytes,
+                transmitOnRadio);
         }
 
 
@@ -539,14 +513,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
                 return;
             }
 
-            bool midsTone = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.MIDSRadioEffect);
-
-            if (modulation == RadioInformation.Modulation.MIDS && midsTone)
-            {
-                //no tone for MIDS
-                return;
-            }
-
             var _effectsBuffer = _effectsOutputBuffer[transmitOnRadio];
 
             _effectsBuffer.VolumeSampleProvider.Volume = volume;
@@ -555,32 +521,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
                 transmitOnRadio);
         }
 
-        public void PlaySoundEffectEndTransmit(int transmitOnRadio, float volume, RadioInformation.Modulation modulation)
+        public void PlaySoundEffectEndTransmit(int transmitOnRadio, float volume,
+            RadioInformation.Modulation modulation)
         {
             if (!_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioTxEffects_End))
             {
                 return;
             }
 
-            bool midsTone = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.MIDSRadioEffect);
             var _effectBuffer = _effectsOutputBuffer[transmitOnRadio];
 
-            if (modulation == RadioInformation.Modulation.MIDS && midsTone)
-            {
-                _effectBuffer.VolumeSampleProvider.Volume = volume;
-                _effectBuffer.AddAudioSamples(
-                    _cachedAudioEffects[(int)CachedAudioEffect.AudioEffectTypes.MIDS_TX_END].AudioEffectBytes,
-                    transmitOnRadio);
-            }
-            else{
-
-                _effectBuffer.VolumeSampleProvider.Volume = volume;
-                _effectBuffer.AddAudioSamples(
-                    _cachedAudioEffects[(int)CachedAudioEffect.AudioEffectTypes.RADIO_RX].AudioEffectBytes,
-                    transmitOnRadio);
-            }
-
-         
+            _effectBuffer.VolumeSampleProvider.Volume = volume;
+            _effectBuffer.AddAudioSamples(
+                _cachedAudioEffects[(int) CachedAudioEffect.AudioEffectTypes.RADIO_RX].AudioEffectBytes,
+                transmitOnRadio);
         }
 
         private int _errorCount = 0;

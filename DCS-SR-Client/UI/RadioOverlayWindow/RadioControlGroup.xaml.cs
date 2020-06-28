@@ -9,7 +9,6 @@ using Ciribob.IL2.SimpleRadio.Standalone.Client.Settings.RadioChannels;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Network;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Settings;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
-using Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow.PresetChannels;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Utils;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
 
@@ -24,8 +23,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
         private bool _dragging;
         private readonly ClientStateSingleton _clientStateSingleton = ClientStateSingleton.Instance;
         private readonly ConnectedClientsSingleton _connectClientsSingleton = ConnectedClientsSingleton.Instance;
-
-        public PresetChannelsViewModel ChannelViewModel { get; set; }
 
         public RadioControlGroup()
         {
@@ -42,67 +39,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
             set
             {
                 _radioId = value;
-                UpdateBinding();
             }
-        }
-
-        //updates the binding so the changes are picked up for the linked FixedChannelsModel
-        private void UpdateBinding()
-        {
-            ChannelViewModel = _clientStateSingleton.FixedChannels[_radioId - 1];
-
-            var bindingExpression = PresetChannelsView.GetBindingExpression(DataContextProperty);
-            bindingExpression?.UpdateTarget();
-        }
-
-        private void Up0001_Click(object sender, RoutedEventArgs e)
-        {
-            RadioHelper.UpdateRadioFrequency(0.001, RadioId);
-        }
-
-        private void Up001_Click(object sender, RoutedEventArgs e)
-        {
-            RadioHelper.UpdateRadioFrequency(0.01, RadioId);
-        }
-
-        private void Up01_Click(object sender, RoutedEventArgs e)
-        {
-            RadioHelper.UpdateRadioFrequency(0.1, RadioId);
-        }
-
-        private void Up1_Click(object sender, RoutedEventArgs e)
-        {
-            RadioHelper.UpdateRadioFrequency(1, RadioId);
-        }
-
-        private void Up10_Click(object sender, RoutedEventArgs e)
-        {
-            RadioHelper.UpdateRadioFrequency(10, RadioId);
-        }
-
-        private void Down10_Click(object sender, RoutedEventArgs e)
-        {
-            RadioHelper.UpdateRadioFrequency(-10, RadioId);
-        }
-
-        private void Down1_Click(object sender, RoutedEventArgs e)
-        {
-            RadioHelper.UpdateRadioFrequency(-1, RadioId);
-        }
-
-        private void Down01_Click(object sender, RoutedEventArgs e)
-        {
-            RadioHelper.UpdateRadioFrequency(-0.1, RadioId);
-        }
-
-        private void Down001_Click(object sender, RoutedEventArgs e)
-        {
-            RadioHelper.UpdateRadioFrequency(-0.01, RadioId);
-        }
-
-        private void Down0001_Click(object sender, RoutedEventArgs e)
-        {
-            RadioHelper.UpdateRadioFrequency(-0.001, RadioId);
         }
 
         private void RadioSelectSwitch(object sender, RoutedEventArgs e)
@@ -113,11 +50,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
         private void RadioFrequencyText_Click(object sender, MouseButtonEventArgs e)
         {
             RadioHelper.SelectRadio(RadioId);
-        }
-
-        private void RadioFrequencyText_RightClick(object sender, MouseButtonEventArgs e)
-        {
-            RadioHelper.ToggleGuard(RadioId);
         }
 
         private void RadioVolume_DragStarted(object sender, RoutedEventArgs e)
@@ -144,68 +76,44 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
         {
             if (enable)
             {
-                Up10.Visibility = Visibility.Visible;
-                Up1.Visibility = Visibility.Visible;
-                Up01.Visibility = Visibility.Visible;
-                Up001.Visibility = Visibility.Visible;
-                Up0001.Visibility = Visibility.Visible;
+                Channel1.Visibility = Visibility.Visible;
+                Channel2.Visibility = Visibility.Visible;
+                Channel3.Visibility = Visibility.Visible;
+                Channel4.Visibility = Visibility.Visible;
+                Channel5.Visibility = Visibility.Visible;
 
-                Down10.Visibility = Visibility.Visible;
-                Down1.Visibility = Visibility.Visible;
-                Down01.Visibility = Visibility.Visible;
-                Down001.Visibility = Visibility.Visible;
-                Down0001.Visibility = Visibility.Visible;
+                Channel1.IsEnabled = true;
+                Channel2.IsEnabled = true;
+                Channel3.IsEnabled = true;
+                Channel4.IsEnabled = true;
+                Channel5.IsEnabled = true;
 
-                Up10.IsEnabled = true;
-                Up1.IsEnabled = true;
-                Up01.IsEnabled = true;
-                Up001.IsEnabled = true;
-                Up0001.IsEnabled = true;
-
-                Down10.IsEnabled = true;
-                Down1.IsEnabled = true;
-                Down01.IsEnabled = true;
-                Down001.IsEnabled = true;
-                Down0001.IsEnabled = true;
-
-                //  ReloadButton.IsEnabled = true;
-                //LoadFromFileButton.IsEnabled = true;
-
-                PresetChannelsView.IsEnabled = true;
-
-                ChannelTab.Visibility = Visibility.Visible;
             }
             else
             {
-                Up10.Visibility = Visibility.Hidden;
-                Up1.Visibility = Visibility.Hidden;
-                Up01.Visibility = Visibility.Hidden;
-                Up001.Visibility = Visibility.Hidden;
-                Up0001.Visibility = Visibility.Hidden;
+                Channel1.Visibility = Visibility.Hidden;
+                Channel2.Visibility = Visibility.Hidden;
+                Channel3.Visibility = Visibility.Hidden;
+                Channel4.Visibility = Visibility.Hidden;
+                Channel5.Visibility = Visibility.Hidden;
 
-                Down10.Visibility = Visibility.Hidden;
-                Down1.Visibility = Visibility.Hidden;
-                Down01.Visibility = Visibility.Hidden;
-                Down001.Visibility = Visibility.Hidden;
-                Down0001.Visibility = Visibility.Hidden;
+                Channel1.IsEnabled = true;
+                Channel2.IsEnabled = true;
+                Channel3.IsEnabled = true;
+                Channel4.IsEnabled = true;
+                Channel5.IsEnabled = true;
 
-                PresetChannelsView.IsEnabled = false;
-
-                ChannelTab.Visibility = Visibility.Collapsed;
             }
         }
 
         internal void RepaintRadioStatus()
         {
-            HandleEncryptionStatus();
-            HandleRetransmitStatus();
 
             var dcsPlayerRadioInfo = _clientStateSingleton.DcsPlayerRadioInfo;
 
             if ((dcsPlayerRadioInfo == null) || !dcsPlayerRadioInfo.IsCurrent())
             {
                 RadioActive.Fill = new SolidColorBrush(Colors.Red);
-                RadioLabel.Text = "No Radio";
                 RadioFrequency.Text = "Unknown";
 
                 RadioVolume.IsEnabled = false;
@@ -241,29 +149,15 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                 }
                 else
                 {
-                    if (currentRadio.simul && dcsPlayerRadioInfo.simultaneousTransmission)
-                    {
-                        // if (transmitting.IsSending)
-                        // {
-                        //     RadioActive.Fill = new SolidColorBrush(Colors.LightBlue);
-                        // }
-                        // else
-                        // {
-                            RadioActive.Fill = new SolidColorBrush(Colors.DarkBlue);
-                        // }
-                       
-                    }
-                    else
-                    {
-                        RadioActive.Fill = new SolidColorBrush(Colors.Orange);
-                    }
+                   
+                    RadioActive.Fill = new SolidColorBrush(Colors.Orange);
+                    
                     
                 }
 
                 if (currentRadio.modulation == RadioInformation.Modulation.DISABLED) // disabled
                 {
                     RadioActive.Fill = new SolidColorBrush(Colors.Red);
-                    RadioLabel.Text = "No Radio";
                     RadioFrequency.Text = "Unknown";
 
                     RadioVolume.IsEnabled = false;
@@ -271,8 +165,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                     TunedClients.Visibility = Visibility.Hidden;
 
                     ToggleButtons(false);
-
-                    ChannelTab.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -281,18 +173,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                 if (currentRadio.modulation == RadioInformation.Modulation.INTERCOM) //intercom
                 {
                     RadioFrequency.Text = "INTERCOM";
-                }
-                else if (currentRadio.modulation == RadioInformation.Modulation.MIDS) //MIDS
-                {
-                    RadioFrequency.Text = "MIDS";
-                    if (currentRadio.channel >= 0)
-                    {
-                        RadioFrequency.Text += " CHN " + currentRadio.channel;
-                    }
-                    else
-                    {
-                        RadioFrequency.Text += " OFF";
-                    }
                 }
                 else
                 {
@@ -307,10 +187,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                     else if(currentRadio.modulation == RadioInformation.Modulation.FM)
                     {
                         RadioFrequency.Text += "FM";
-                    }
-                    else if (currentRadio.modulation == RadioInformation.Modulation.HAVEQUICK)
-                    {
-                        RadioFrequency.Text += "HQ";
                     }
                     else
                     {
@@ -327,11 +203,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                         RadioFrequency.Text += " C" + currentRadio.channel;
                     }
 
-                    if (currentRadio.enc && (currentRadio.encKey > 0))
-                    {
-                        RadioFrequency.Text += " E" + currentRadio.encKey; // ENCRYPTED
-                    }
-                
                 }
 
 
@@ -347,7 +218,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                     TunedClients.Visibility = Visibility.Hidden;
                 }
 
-                RadioLabel.Text = dcsPlayerRadioInfo.radios[RadioId].name;
 
                 if (currentRadio.volMode == RadioInformation.VolumeMode.OVERLAY)
                 {
@@ -373,115 +243,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                
             }
 
-            TabItem item = TabControl.SelectedItem as TabItem;
-
-            if (item?.Visibility != Visibility.Visible)
-            {
-                TabControl.SelectedIndex = 0;
-            }
-        }
-
-        private void HandleEncryptionStatus()
-        {
-            var dcsPlayerRadioInfo = _clientStateSingleton.DcsPlayerRadioInfo;
-
-            if ((dcsPlayerRadioInfo != null) && dcsPlayerRadioInfo.IsCurrent())
-            {
-                var currentRadio = dcsPlayerRadioInfo.radios[RadioId];
-
-                EncryptionKeySpinner.Value = currentRadio.encKey;
-
-                //update stuff
-                if ((currentRadio.encMode == RadioInformation.EncryptionMode.NO_ENCRYPTION)
-                    || (currentRadio.encMode == RadioInformation.EncryptionMode.ENCRYPTION_FULL)
-                    || (currentRadio.modulation == RadioInformation.Modulation.INTERCOM))
-                {
-                    //Disable everything
-                    EncryptionKeySpinner.IsEnabled = false;
-                    EncryptionButton.IsEnabled = false;
-                    EncryptionButton.Visibility = Visibility.Hidden;
-                    EncryptionButton.Content = "Enable";
-
-                    EncryptionTab.Visibility = Visibility.Collapsed;
-                }
-                else if (currentRadio.encMode ==
-                         RadioInformation.EncryptionMode.ENCRYPTION_COCKPIT_TOGGLE_OVERLAY_CODE)
-                {
-                    //allow spinner
-                    EncryptionKeySpinner.IsEnabled = true;
-
-                    //disallow encryption toggle
-                    EncryptionButton.IsEnabled = false;
-                    EncryptionButton.Content = "Enable";
-                    EncryptionButton.Visibility = Visibility.Visible;
-                    EncryptionTab.Visibility = Visibility.Visible;
-                }
-                else if (currentRadio.encMode ==
-                         RadioInformation.EncryptionMode.ENCRYPTION_JUST_OVERLAY)
-                {
-                    EncryptionKeySpinner.IsEnabled = true;
-                    EncryptionButton.IsEnabled = true;
-                    EncryptionButton.Visibility = Visibility.Visible;
-
-                    if (currentRadio.enc)
-                    {
-                        EncryptionButton.Content = "Disable";
-                    }
-                    else
-                    {
-                        EncryptionButton.Content = "Enable";
-                    }
-                    EncryptionTab.Visibility = Visibility.Visible;
-                }
-            }
-            else
-            {
-                //Disable everything
-                EncryptionKeySpinner.IsEnabled = false;
-                EncryptionButton.IsEnabled = false;
-                EncryptionButton.Visibility = Visibility.Hidden;
-                EncryptionButton.Content = "Enable";
-                EncryptionTab.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        public void HandleRetransmitStatus()
-        {
-            var serverSettings = SyncedServerSettings.Instance;
-            var dcsPlayerRadioInfo = _clientStateSingleton.DcsPlayerRadioInfo;
-
-            if ((dcsPlayerRadioInfo != null) && dcsPlayerRadioInfo.IsCurrent() && serverSettings.RetransmitNodeLimit > 0)
-            {
-                var currentRadio = dcsPlayerRadioInfo.radios[RadioId];
-
-                if (currentRadio.rtMode == RadioInformation.RetransmitMode.DISABLED)
-                {
-                    Retransmit.Visibility = Visibility.Hidden;
-                }
-                else if(currentRadio.rtMode == RadioInformation.RetransmitMode.COCKPIT)
-                {
-                    Retransmit.Visibility = Visibility.Visible;
-                    Retransmit.IsEnabled = false;
-                }
-                else
-                {
-                    Retransmit.Visibility = Visibility.Visible;
-                    Retransmit.IsEnabled = true;
-                }
-
-                if (currentRadio.retransmit)
-                {
-                    Retransmit.Foreground = new SolidColorBrush(Colors.Red);
-                }
-                else
-                {
-                    Retransmit.Foreground = new SolidColorBrush(Colors.White);
-                }
-            }
-            else
-            {
-                Retransmit.Visibility = Visibility.Hidden;
-            }
         }
 
         internal void RepaintRadioReceive()
@@ -526,39 +287,32 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
         }
 
 
-        private void Encryption_ButtonClick(object sender, RoutedEventArgs e)
+        private void ChannelOne_Click(object sender, RoutedEventArgs e)
         {
-            var currentRadio = RadioHelper.GetRadio(RadioId);
-
-            if (currentRadio != null &&
-                currentRadio.modulation != RadioInformation.Modulation.DISABLED) // disabled
-            {
-                //update stuff
-                if (currentRadio.encMode == RadioInformation.EncryptionMode.ENCRYPTION_JUST_OVERLAY)
-                {
-                    RadioHelper.ToggleEncryption(RadioId);
-
-                    if (currentRadio.enc)
-                    {
-                        EncryptionButton.Content = "Enable";
-                    }
-                    else
-                    {
-                        EncryptionButton.Content = "Disable";
-                    }
-                }
-            }
+            
         }
 
-        private void EncryptionKeySpinner_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void ChannelTwo_Click(object sender, RoutedEventArgs e)
         {
-            if (EncryptionKeySpinner?.Value != null)
-                RadioHelper.SetEncryptionKey(RadioId, (byte) EncryptionKeySpinner.Value);
+            
+
         }
 
-        private void RetransmitClick(object sender, RoutedEventArgs e)
+        private void ChannelThree_Click(object sender, RoutedEventArgs e)
         {
-            RadioHelper.ToggleRetransmit(RadioId);
+            
+
+        }
+
+        private void ChannelFour_Click(object sender, RoutedEventArgs e)
+        {
+            
+
+        }
+
+        private void ChannelFive_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

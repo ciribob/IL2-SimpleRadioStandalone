@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Helpers
 {
-    public class JsonDCSIgnoreSerializationAttribute :Attribute
+    public class JsonIL2IgnoreSerializationAttribute :Attribute
     {
     }
 }

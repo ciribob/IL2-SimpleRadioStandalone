@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using Ciribob.IL2.SimpleRadio.Standalone.Common.DCSState;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Helpers;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Network;
@@ -77,7 +76,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
         {
             _stop = false;
 
-            string exportFilePath = ServerSettingsStore.Instance.GetServerSetting(ServerSettingsKeys.CLIENT_EXPORT_FILE_PATH).StringValue;
+            string exportFilePath = ServerSettingsStore.Instance
+                .GetServerSetting(ServerSettingsKeys.CLIENT_EXPORT_FILE_PATH).StringValue;
             if (string.IsNullOrWhiteSpace(exportFilePath) || exportFilePath == DEFAULT_CLIENT_EXPORT_FILE)
             {
                 // Make sure we're using a full file path in case we're falling back to default values
@@ -98,9 +98,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                 try
                 {
                     Directory.CreateDirectory(exportFileDirectory);
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
-                    Logger.Error(ex, $"Failed to create client export directory \"{exportFileDirectory}\", falling back to default path");
+                    Logger.Error(ex,
+                        $"Failed to create client export directory \"{exportFileDirectory}\", falling back to default path");
 
                     // Failed to create desired client export directory, fall back to default path in current application directory
                     exportFilePath = NormalizePath(Path.Combine(GetCurrentDirectory(), DEFAULT_CLIENT_EXPORT_FILE));
@@ -111,10 +113,14 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
             {
                 while (!_stop)
                 {
-                    if (ServerSettingsStore.Instance.GetGeneralSetting(ServerSettingsKeys.CLIENT_EXPORT_ENABLED).BoolValue)
+                    if (ServerSettingsStore.Instance.GetGeneralSetting(ServerSettingsKeys.CLIENT_EXPORT_ENABLED)
+                        .BoolValue)
                     {
-                        ClientListExport data = new ClientListExport { Clients = _connectedClients.Values, ServerVersion = UpdaterChecker.VERSION };
-                        var json = JsonConvert.SerializeObject(data, new JsonSerializerSettings { ContractResolver = new JsonNetworkPropertiesResolver() }) + "\n";
+                        ClientListExport data = new ClientListExport
+                            {Clients = _connectedClients.Values, ServerVersion = UpdaterChecker.VERSION};
+                        var json = JsonConvert.SerializeObject(data,
+                            new JsonSerializerSettings
+                                {ContractResolver = new JsonNetworkPropertiesResolver()}) + "\n";
                         try
                         {
                             File.WriteAllText(exportFilePath, json);
@@ -125,110 +131,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                         }
 
                     }
+
                     Thread.Sleep(5000);
-                }
-            });
-
-            var udpSocket = new UdpClient();
-           
-
-            Task.Factory.StartNew(() =>
-            {
-                using (udpSocket)
-                {
-                    while (!_stop)
-                    {
-                        try
-                        {
-                            if (ServerSettingsStore.Instance.GetGeneralSetting(ServerSettingsKeys.LOTATC_EXPORT_ENABLED)
-                                .BoolValue)
-                            {
-                                var host = new IPEndPoint(IPAddress.Parse(ServerSettingsStore.Instance.GetGeneralSetting(ServerSettingsKeys.LOTATC_EXPORT_IP).StringValue),
-                                    ServerSettingsStore.Instance.GetGeneralSetting(ServerSettingsKeys.LOTATC_EXPORT_PORT).IntValue);
-
-                                ClientListExport data = new ClientListExport { ServerVersion = UpdaterChecker.VERSION, Clients = new List<SRClient>()};
-
-                                Dictionary<uint, SRClient> firstSeatDict = new Dictionary<uint, SRClient>();
-                                Dictionary<uint, SRClient> secondSeatDict = new Dictionary<uint, SRClient>();
-                                
-                                foreach (var srClient in _connectedClients.Values)
-                                {
-                                    if (srClient.RadioInfo?.iff != null)
-                                    {
-                                        var newClient = new SRClient()
-                                        {
-                                            ClientGuid = srClient.ClientGuid,
-                                            RadioInfo = new DCSPlayerRadioInfo()
-                                            {
-                                                radios = null,
-                                                unitId = srClient.RadioInfo.unitId,
-                                                iff = srClient.RadioInfo.iff,
-                                                unit = srClient.RadioInfo.unit,
-                                            },
-                                            Coalition = srClient.Coalition,
-                                            Name = srClient.Name,
-                                            LatLngPosition = srClient?.LatLngPosition,
-                                            Seat = srClient.Seat
-
-                                        };
-
-                                        data.Clients.Add(newClient);
-
-                                        //will need to be expanded as more aircraft have more seats and transponder controls
-                                        if(newClient.Seat == 0)
-                                        {
-                                            firstSeatDict[newClient.RadioInfo.unitId] = newClient;
-                                        } else{
-                                            secondSeatDict[newClient.RadioInfo.unitId] = newClient;
-                                        }
-                                    }
-                                }
-
-                                //now look for other seats and handle the logic
-                                foreach (KeyValuePair<uint, SRClient> secondSeatPair in secondSeatDict)
-                                {
-                                    SRClient firstSeat = null;
-                                    
-                                    firstSeatDict.TryGetValue(secondSeatPair.Key, out firstSeat);
-                                    //copy second seat 
-                                    if (firstSeat!=null)
-                                    {
-                                        //F-14 has RIO IFF Control so use the second seat IFF
-                                        if (firstSeat.RadioInfo.unit.StartsWith("F-14"))
-                                        {
-                                            //copy second to first
-                                            firstSeat.RadioInfo.iff = secondSeatPair.Value.RadioInfo.iff;
-                                        }
-                                        else{
-                                            //copy first to second
-                                            secondSeatPair.Value.RadioInfo.iff = firstSeat.RadioInfo.iff;
-                                        }
-                                    }
-                                }
-                                
-                                var byteData =
-                                    Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data, new JsonSerializerSettings { ContractResolver = new JsonNetworkPropertiesResolver() }) + "\n");
-
-                                udpSocket.Send(byteData, byteData.Length, host);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.Error(e, "Exception Sending LotATC Client Info");
-                        }
-
-                        //every 2s
-                        Thread.Sleep(2000);
-                    }
-
-                    try
-                    {
-                        udpSocket.Close();
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e, "Exception stoping LotATC Client Info");
-                    }
                 }
             });
         }

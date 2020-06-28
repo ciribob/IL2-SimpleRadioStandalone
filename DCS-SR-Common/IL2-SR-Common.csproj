@@ -106,15 +106,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DCSState\DCSAircraftCapabilities.cs" />
-    <Compile Include="DCSState\DCSLatLngPosition.cs" />
-    <Compile Include="DCSState\Transponder.cs" />
     <Compile Include="DCSState\RadioReceivingPriority.cs" />
     <Compile Include="DCSState\RadioReceivingState.cs" />
     <Compile Include="Helpers\CircularBuffer.cs" />
     <Compile Include="Helpers\ConversionHelpers.cs" />
-    <Compile Include="DCSState\DCSPlayerSideInfo.cs" />
-    <Compile Include="Helpers\JsonDCSIgnoreSerializationAttribute.cs" />
+    <Compile Include="Helpers\JsonIL2IgnoreSerializationAttribute.cs" />
     <Compile Include="Helpers\JsonNetworkIgnoreSerializationAttribute.cs" />
     <Compile Include="Helpers\JsonDCSPropertiesResolver.cs" />
     <Compile Include="Helpers\JsonNetworkPropertiesResolver.cs" />

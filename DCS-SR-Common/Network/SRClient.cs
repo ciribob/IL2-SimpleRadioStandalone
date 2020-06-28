@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Media;
-using Ciribob.IL2.SimpleRadio.Standalone.Common.DCSState;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Helpers;
 using Newtonsoft.Json;
 
@@ -12,9 +11,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
     public class SRClient : INotifyPropertyChanged
     {
         private int _coalition;
-
-        [JsonIgnore] 
-        private float _lineOfSightLoss; // 0.0 is NO Loss therefore Full line of sight
 
         public string ClientGuid { get; set; }
         private string _name= "";
@@ -84,27 +80,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
 
         public DCSPlayerRadioInfo RadioInfo { get; set; }
 
-        [JsonDCSIgnoreSerialization]
-        public DCSLatLngPosition LatLngPosition { get; set; }
-
-        [JsonIgnore]
-        public float LineOfSightLoss
-        {
-            get
-            {
-                if (_lineOfSightLoss == 0)
-                {
-                    return 0;
-                }
-                if ((LatLngPosition.lat == 0) && (LatLngPosition.lng == 0))
-                {
-                    return 0;
-                }
-                return _lineOfSightLoss;
-            }
-            set { _lineOfSightLoss = value; }
-        }
-
         // Used by server client list to display last frequency client transmitted on
         private string _transmittingFrequency;
         [JsonIgnore]
@@ -147,7 +122,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
             {
                 side = "Spectator";
             }
-            return Name == "" ? "Unknown" : Name + " - " + side + " LOS Loss " + _lineOfSightLoss + " Pos" + LatLngPosition;
+            return Name == "" ? "Unknown" : Name + " - " + side;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
         AutoSelectPresetChannel, //auto select preset channel
 
         AlwaysAllowHotasControls,
-        AllowDCSPTT,
+        AllowIL2PTT,
         RadioSwitchIsPTT,
 
 
@@ -71,7 +71,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
             {ProfileSettingsKeys.AutoSelectPresetChannel.ToString(), "true"},
 
             {ProfileSettingsKeys.AlwaysAllowHotasControls.ToString(),"false" },
-            {ProfileSettingsKeys.AllowDCSPTT.ToString(),"true" },
+            {ProfileSettingsKeys.AllowIL2PTT.ToString(),"true" },
             {ProfileSettingsKeys.RadioSwitchIsPTT.ToString(), "false"},
             {ProfileSettingsKeys.RadioSwitchIsPTTOnlyWhenValid.ToString(), "false"},
             {ProfileSettingsKeys.AlwaysAllowTransponderOverlay.ToString(), "false"},

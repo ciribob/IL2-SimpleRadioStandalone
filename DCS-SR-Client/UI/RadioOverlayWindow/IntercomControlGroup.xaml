@@ -5,42 +5,42 @@
              xmlns:local="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Overlay"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Name="RadioControlContainer"
-             Width="170"
-             Height="35">
-    <WrapPanel>
+             Width="130"
+             Height="40">
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="3">
 
-        <TextBlock x:Name="RadioLabel"
-                   Width="135"
-                   Margin="13,0,0,0"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Top"
-                   FontSize="10"
-                   Foreground="#E7E7E7"
-                   Padding="0,0,0,0"
-                   Style="{x:Null}"
-                   Text="INTERCOM"
-                   TextAlignment="Center" />
+            <TextBlock x:Name="RadioLabel"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       FontSize="10"
+                       Foreground="#E7E7E7"
+                       Padding="0,0,0,0"
+                       Style="{x:Null}"
+                       Text="INTERCOM"
+                       TextAlignment="Center" />
 
-        <Ellipse x:Name="RadioActive"
-                 Width="12"
-                 Height="12"
-                 Margin="2"
-                 HorizontalAlignment="Right"
-                 VerticalAlignment="Center"
-                 Fill="#FF9900"
-                 MouseDown="RadioSelectSwitch"
-                 Stroke="Black"
-                 Style="{x:Null}"
-                 ToolTip="Selected Radio" />
+            <Ellipse x:Name="RadioActive"
+                     Width="12"
+                     Height="12"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+                     Fill="#FF9900"
+                     MouseDown="RadioSelectSwitch"
+                     Stroke="Black"
+                     Style="{x:Null}"
+                     ToolTip="Selected Radio" />
+
+        </StackPanel>
+       
         <Slider x:Name="RadioVolume"
-                Width="115"
-                Height="15"
-                Margin="22,0,0,0"
+                Width="100"
+                Height="20"
                 IsEnabled="False"
                 Maximum="100"
                 Style="{x:Null}"
                 Thumb.DragCompleted="RadioVolume_DragCompleted"
                 Thumb.DragStarted="RadioVolume_DragStarted" />
 
-    </WrapPanel>
+    </StackPanel>
 </UserControl>

@@ -6,9 +6,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using Ciribob.IL2.SimpleRadio.Standalone.Client;
-using Ciribob.IL2.SimpleRadio.Standalone.Client.Network;
-using Ciribob.IL2.SimpleRadio.Standalone.Client.UI;
 using NLog;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Settings;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
@@ -25,8 +22,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
         private  double _aspectRatio;
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly Client.UI.RadioOverlayWindow.RadioControlGroup[] radioControlGroup =
-            new Client.UI.RadioOverlayWindow.RadioControlGroup[4];
 
         private readonly DispatcherTimer _updateTimer;
 
@@ -53,11 +48,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
             AllowsTransparency = true;
             Opacity = _globalSettings.GetPositionSetting(GlobalSettingsKeys.RadioOpacity).DoubleValue;
             WindowOpacitySlider.Value = Opacity;
-
-            radioControlGroup[0] = Radio1;
-            radioControlGroup[1] = Radio2;
-            radioControlGroup[2] = Radio3;
-            radioControlGroup[3] = Radio4;
 
             //allows click and drag anywhere on the window
             ContainerPanel.MouseLeftButtonDown += WrapPanel_MouseLeftButtonDown;
@@ -89,95 +79,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
         {
             var dcsPlayerRadioInfo = _clientStateSingleton.DcsPlayerRadioInfo;
 
-            foreach (var radio in radioControlGroup)
-            {
-                radio.RepaintRadioStatus();
-                radio.RepaintRadioReceive();
-            }
+           
+            Radio1.RepaintRadioStatus();
+            Radio1.RepaintRadioReceive();
 
             Intercom.RepaintRadioStatus();
 
-            TransponderPanel.RepaintTransponderStatus();
-
-           
-         
-            if ((dcsPlayerRadioInfo != null) && dcsPlayerRadioInfo.IsCurrent())
-            {
-                var avalilableRadios = 0;
-
-                //handle 4th radio on the overlay or not
-                if (dcsPlayerRadioInfo.radios.Length < 5)
-                {
-                    Radio4.Visibility = Visibility.Collapsed;
-                    if (MinHeight != _originalMinHeight)
-                    {
-                        MinHeight = _originalMinHeight;
-                        Recalculate();
-                    }
-                }
-                else
-                {
-                    if (dcsPlayerRadioInfo.radios[4].modulation == RadioInformation.Modulation.DISABLED)
-                    {
-                        Radio4.Visibility = Visibility.Collapsed;
-                        if (MinHeight != _originalMinHeight)
-                        {
-                            MinHeight = _originalMinHeight;
-                            Recalculate();
-                        }
-                    }
-                    else
-                    {
-                        //show it
-                        Radio4.Visibility = Visibility.Visible;
-
-                        if (MinHeight == _originalMinHeight)
-                        {
-                            MinHeight += Radio4.Height;
-                            Recalculate();
-                        }
-                    }
-                }
-
-                for (var i = 0; i < dcsPlayerRadioInfo.radios.Length; i++)
-                {
-                    if (dcsPlayerRadioInfo.radios[i].modulation != RadioInformation.Modulation.DISABLED)
-                    {
-                        avalilableRadios++;
-
-                    }
-                }
-
-                if (avalilableRadios > 1)
-                {
-                    if (dcsPlayerRadioInfo.control == DCSPlayerRadioInfo.RadioSwitchControls.HOTAS)
-                    {
-                        ControlText.Text = "HOTAS Controls";
-                    }
-                    else
-                    {
-                        ControlText.Text = "Cockpit Controls";
-                    }
-                }
-                else
-                {
-                    ControlText.Text = "";
-                    
-                }
-            }
-            else
-            {
-                Radio4.Visibility = Visibility.Collapsed;
-                if(MinHeight != _originalMinHeight)
-                {
-                    MinHeight = _originalMinHeight;
-                    Recalculate();
-                }
-
-                ControlText.Text = "";
-            }
-
-            FocusDCS();
+            FocusIL2();
         }
 
         private void Recalculate()
@@ -188,9 +96,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
         }
 
         private long _lastFocus;
-        private RadioCapabilities _radioCapabilitiesWindow;
 
-        private void FocusDCS()
+        private void FocusIL2()
         {
             if (_globalSettings.GetClientSettingBool(GlobalSettingsKeys.RefocusDCS))
             {
@@ -199,11 +106,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
                 //focus DCS if needed
                 var foreGround = WindowHelper.GetForegroundWindow();
 
-                Process[] localByName = Process.GetProcessesByName("dcs");
+                Process[] localByName = Process.GetProcessesByName("Il-2");
 
                 if (localByName != null && localByName.Length > 0)
                 {
-                    //either DCS is in focus OR Overlay window is not in focus
+                    //either IL2 is in focus OR Overlay window is not in focus
                     if (foreGround == localByName[0].MainWindowHandle || overlayWindow != foreGround ||
                         this.IsMouseOver)
                     {
@@ -246,27 +153,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
             {
                 WindowState = WindowState.Minimized;
             }
-        }
-
-        private void Button_About(object sender, RoutedEventArgs e)
-        {
-            //Show Radio Capabilities
-            if ((_radioCapabilitiesWindow == null) || !_radioCapabilitiesWindow.IsVisible ||
-                (_radioCapabilitiesWindow.WindowState == WindowState.Minimized))
-            {
-                _radioCapabilitiesWindow?.Close();
-
-                _radioCapabilitiesWindow = new RadioCapabilities();
-                _radioCapabilitiesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                _radioCapabilitiesWindow.Owner = this;
-                _radioCapabilitiesWindow.ShowDialog();
-            }
-            else
-            {
-                _radioCapabilitiesWindow?.Close();
-                _radioCapabilitiesWindow = null;
-            }
-
         }
 
 

@@ -56,11 +56,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0"
-                       Margin="0,0,5,0"
-                       VerticalAlignment="Center"
-                       Text="EAM coalition password" />
-            <TextBox Grid.Column="1" Text="{Binding Path=NewEAMCoalitionPassword}" />
+            
             <Button Grid.Column="2"
                     Height="23"
                     Margin="5,0,0,0"

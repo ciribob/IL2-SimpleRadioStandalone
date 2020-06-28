@@ -90,22 +90,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
                 }
                 else
                 {
-                    if (currentRadio.simul && dcsPlayerRadioInfo.simultaneousTransmission)
-                    {
-                        // if (transmitting.IsSending)
-                        // {
-                        //     RadioActive.Fill = new SolidColorBrush(Colors.LightBlue);
-                        // }
-                        // else
-                        // {
-                        RadioActive.Fill = new SolidColorBrush(Colors.DarkBlue);
-                        // }
-
-                    }
-                    else
-                    {
-                        RadioActive.Fill = new SolidColorBrush(Colors.Orange);
-                    }
+                    RadioActive.Fill = new SolidColorBrush(Colors.Orange);
+                    
 
                 }
 

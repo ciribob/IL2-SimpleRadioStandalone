@@ -6,19 +6,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 {
     public class RadioInformation
     {
-        public enum EncryptionMode
-        {
-            NO_ENCRYPTION = 0,
-            ENCRYPTION_JUST_OVERLAY = 1,
-            ENCRYPTION_FULL = 2,
-            ENCRYPTION_COCKPIT_TOGGLE_OVERLAY_CODE = 3
-
-            // 0  is no controls
-            // 1 is FC3 Gui Toggle + Gui Enc key setting
-            // 2 is InCockpit toggle + Incockpit Enc setting
-            // 3 is Incockpit toggle + Gui Enc Key setting
-        }
-
         public enum VolumeMode
         {
             COCKPIT = 0,
@@ -31,35 +18,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             OVERLAY = 1,
         }
 
-        public enum RetransmitMode
-        {
-            COCKPIT = 0,
-            OVERLAY = 1,
-            DISABLED = 2,
-        }
 
         public enum Modulation
         {
             AM = 0,
             FM = 1,
             INTERCOM = 2,
-            DISABLED = 3,
-            HAVEQUICK = 4,
-            SATCOM = 5,
-            MIDS = 6,
+            DISABLED = 3
         }
 
-        public bool enc = false; // encryption enabled
-        public byte encKey = 0;
-
-        [JsonNetworkIgnoreSerialization]
-        public EncryptionMode encMode = EncryptionMode.NO_ENCRYPTION;
-
-        [JsonDCSIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
         [JsonNetworkIgnoreSerialization]
         public double freqMax = 1;
 
-        [JsonDCSIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
         [JsonNetworkIgnoreSerialization]
         public double freqMin = 1;
 
@@ -72,10 +44,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         
         public double secFreq = 1;
 
-        [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
-        public RetransmitMode rtMode = RetransmitMode.DISABLED;
-
         //should the radio restransmit?
         public bool retransmit = false;
 
@@ -83,25 +51,23 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         public float volume = 1.0f;
 
         [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
         public FreqMode freqMode = FreqMode.COCKPIT;
 
         [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
         public FreqMode guardFreqMode = FreqMode.COCKPIT;
 
         [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
         public VolumeMode volMode = VolumeMode.COCKPIT;
         [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
         public bool expansion = false;
 
         [JsonNetworkIgnoreSerialization]
         public int channel = -1;
 
-        [JsonNetworkIgnoreSerialization]
-        public bool simul = false;
 
         /**
          * Used to determine if we should send an update to the server or not
@@ -128,14 +94,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             {
                 return false;
             }
-            if (enc != compare.enc)
-            {
-                return false;
-            }
-            if (encKey != compare.encKey)
-            {
-                return false;
-            }
             if (retransmit != compare.retransmit)
             {
                 return false;
@@ -144,19 +102,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             {
                 return false;
             }
-            //if (volume != compare.volume)
-            //{
-            //    return false;
-            //}
-            //if (freqMin != compare.freqMin)
-            //{
-            //    return false;
-            //}
-            //if (freqMax != compare.freqMax)
-            //{
-            //    return false;
-            //}
-
 
             return true;
         }
@@ -167,9 +112,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             return new RadioInformation()
             {
                 channel = this.channel,
-                enc = this.enc,
-                encKey = this.encKey,
-                encMode = this.encMode,
                 expansion = this.expansion,
                 freq = this.freq,
                 freqMax = this.freqMax,
@@ -179,12 +121,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                 modulation = this.modulation,
                 secFreq = this.secFreq,
                 name = this.name,
-                simul = this.simul,
                 volMode = this.volMode,
                 volume = this.volume,
-                retransmit = this.retransmit,
-                rtMode = this.rtMode
-
+                retransmit = this.retransmit
             };
         }
     }

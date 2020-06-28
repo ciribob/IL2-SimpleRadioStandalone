@@ -130,14 +130,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
                         if (radioInfo != null)
                         {
                             RadioReceivingState radioReceivingState = null;
-                            bool decryptable;
                             var receivingRadio = radioInfo.CanHearTransmission(freq,
                                 modulation,
                                 0,
                                 currentUnitId,
                                 new List<int>(),
-                                out radioReceivingState,
-                                out decryptable);
+                                out radioReceivingState);
 
                             //only send if we can hear!
                             if (receivingRadio != null)

@@ -72,14 +72,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                         {
                             RadioHelper.SelectRadio(message.RadioId);
                         }
-                        else if (message?.Command == UDPInterfaceCommand.UDPCommandType.TOGGLE_GUARD)
-                        {
-                            RadioHelper.ToggleGuard(message.RadioId);
-                        }
-                        else if (message?.Command == UDPInterfaceCommand.UDPCommandType.GUARD)
-                        {
-                            RadioHelper.SetGuard(message.RadioId, message.Enabled);
-                        }
                         else if (message?.Command == UDPInterfaceCommand.UDPCommandType.CHANNEL_UP)
                         {
                             RadioHelper.RadioChannelUp(message.RadioId);
@@ -91,26 +83,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                         else if (message?.Command == UDPInterfaceCommand.UDPCommandType.SET_VOLUME)
                         {
                             RadioHelper.SetRadioVolume(message.Volume, message.RadioId);
-                        }
-                        else if (message?.Command == UDPInterfaceCommand.UDPCommandType.TRANSPONDER_POWER)
-                        {
-                            TransponderHelper.SetPower(message.Enabled);
-                        }
-                        else if (message?.Command == UDPInterfaceCommand.UDPCommandType.TRANSPONDER_M1_CODE)
-                        {
-                            TransponderHelper.SetMode1(message.Code);
-                        }
-                        else if (message?.Command == UDPInterfaceCommand.UDPCommandType.TRANSPONDER_M3_CODE)
-                        {
-                            TransponderHelper.SetMode3(message.Code);
-                        }
-                        else if (message?.Command == UDPInterfaceCommand.UDPCommandType.TRANSPONDER_M4)
-                        {
-                            TransponderHelper.SetMode4(message.Enabled);
-                        }
-                        else if (message?.Command == UDPInterfaceCommand.UDPCommandType.TRANSPONDER_IDENT)
-                        {
-                            TransponderHelper.SetIdent(message.Enabled);
                         }
                         else
                         {

@@ -84,12 +84,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
             {
                 var input = new AudioDeviceListItem()
                 {
-                    Text = item.DeviceFriendlyName,
+                    Text = item.FriendlyName,
                     Value = item
                 };
                 inputs.Add(input);
 
-                Logger.Info("Audio Input - " + item.DeviceFriendlyName + " " + item.ID.ToString() + " - Name GUID" +
+                Logger.Info("Audio Input - " + item.FriendlyName + " " + item.ID.ToString() + " - Name GUID" +
                             item.FriendlyName);
 
                 if (item.ID.Trim().Equals(GlobalSettingsStore.Instance.GetClientSetting(GlobalSettingsKeys.AudioInputDeviceId).RawValue.Trim()))

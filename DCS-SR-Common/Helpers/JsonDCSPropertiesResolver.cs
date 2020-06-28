@@ -15,7 +15,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Helpers
             List<MemberInfo> list = base.GetSerializableMembers(objectType);
 
             //filter out things we dont want on the TCP network sync
-            list = list.Where(pi => !Attribute.IsDefined(pi, typeof(JsonDCSIgnoreSerializationAttribute))).ToList();
+            list = list.Where(pi => !Attribute.IsDefined(pi, typeof(JsonIL2IgnoreSerializationAttribute))).ToList();
 
             return list;
         }

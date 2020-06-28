@@ -117,34 +117,16 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client
 
             audio.PcmAudioShort = ConversionHelpers.ByteArrayToShortArray(tmp);
 
-            var decrytable = audio.Decryptable || (audio.Encryption == 0);
+            //adjust for LOS + Distance + Volume
+            AdjustVolume(audio);
 
-            if (decrytable)
+            if (globalSettings.GetClientSettingBool(ProfileSettingsKeys.RadioEffects))
             {
-                //adjust for LOS + Distance + Volume
-                AdjustVolume(audio);
-
-                if (globalSettings.GetClientSettingBool(ProfileSettingsKeys.RadioEffects))
+                if (audio.ReceivedRadio == 0)
                 {
-                    if (audio.ReceivedRadio == 0 
-                        || audio.Modulation == (short)RadioInformation.Modulation.MIDS)
-                    {
-                        AddRadioEffectIntercom(audio);
-                    }
-                    else
-                    {
-                        AddRadioEffect(audio);
-                    }
+                    AddRadioEffectIntercom(audio);
                 }
-
-            }
-            else
-            {
-                AddEncryptionFailureEffect(audio);
-
-                AdjustVolume(audio);
-
-                if (globalSettings.GetClientSettingBool(ProfileSettingsKeys.RadioEffects))
+                else
                 {
                     AddRadioEffect(audio);
                 }
@@ -214,27 +196,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client
             {
                 var speaker1Short = (short) (audio[i] * clientAudio.Volume);
 
-                if (clientAudio.Modulation == (short)RadioInformation.Modulation.MIDS || clientAudio.Modulation == (short)RadioInformation.Modulation.SATCOM)
-                {
-                   //nothing
-                }
-                else
-                {
-                    //add in radio loss
-                    //if less than loss reduce volume
-                    if (clientAudio.RecevingPower > 0.85) // less than 20% or lower left
-                    {
-                        //gives linear signal loss from 15% down to 0%
-                        speaker1Short = (short)(speaker1Short * (1.0f - clientAudio.RecevingPower));
-                    }
-
-                    //0 is no loss so if more than 0 reduce volume
-                    if (clientAudio.LineOfSightLoss > 0)
-                    {
-                        speaker1Short = (short)(speaker1Short * (1.0f - clientAudio.LineOfSightLoss));
-                    }
-                }
-          
                 audio[i] = speaker1Short;
             }
         }

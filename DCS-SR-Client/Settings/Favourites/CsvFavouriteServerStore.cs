@@ -96,7 +96,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Preferences
 
                 if (bool.TryParse(split[2], out isDefault))
                 {
-                    return new ServerAddress(split[0], split[1], split.Length >= 4 && !string.IsNullOrWhiteSpace(split[3]) ? split[3] : null, isDefault);
+                    return new ServerAddress(split[0], split[1], isDefault);
                 }
                 throw new ArgumentException("isDefault parameter cannot be cast to a boolean");
             }

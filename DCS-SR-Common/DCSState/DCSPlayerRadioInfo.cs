@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ciribob.IL2.SimpleRadio.Standalone.Common.DCSState;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Helpers;
 using Newtonsoft.Json;
 
@@ -16,25 +15,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         }
 
         [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
         public string name = "";
 
         [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
-        public DCSLatLngPosition latLng = new DCSLatLngPosition();
-
-        [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
         public bool inAircraft = false;
 
         [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
         public volatile bool ptt = false;
 
-        public RadioInformation[] radios = new RadioInformation[11]; //10 + intercom
+        public RadioInformation[] radios = new RadioInformation[2]; //1 + intercom
 
         [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
         public RadioSwitchControls control = RadioSwitchControls.HOTAS;
 
         [JsonNetworkIgnoreSerialization]
@@ -45,25 +40,16 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         public uint unitId;
 
         [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
         public bool intercomHotMic = false; //if true switch to intercom and transmit
-
-        public Transponder iff = new Transponder();
 
         [JsonIgnore]
         public readonly static uint UnitIdOffset = 100000001
             ; // this is where non aircraft "Unit" Ids start from for satcom intercom
 
         [JsonNetworkIgnoreSerialization]
-        [JsonDCSIgnoreSerialization]
-        public bool simultaneousTransmission = false; // Global toggle enabling simultaneous transmission on multiple radios, activated via the AWACS panel
-
-        [JsonNetworkIgnoreSerialization]
         public SimultaneousTransmissionControl simultaneousTransmissionControl =
             SimultaneousTransmissionControl.EXTERNAL_DCS_CONTROL;
-
-        [JsonNetworkIgnoreSerialization]
-        public DCSAircraftCapabilities capabilities = new DCSAircraftCapabilities();
 
         public enum SimultaneousTransmissionControl
         {
@@ -73,7 +59,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         public DCSPlayerRadioInfo()
         {
-            for (var i = 0; i < 11; i++)
+            for (var i = 0; i < radios.Length; i++)
             {
                 radios[i] = new RadioInformation();
             }
@@ -85,15 +71,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         public void Reset()
         {
             name = "";
-            latLng = new DCSLatLngPosition();
             ptt = false;
             selected = 0;
             unit = "";
-            simultaneousTransmission = false;
             simultaneousTransmissionControl = SimultaneousTransmissionControl.EXTERNAL_DCS_CONTROL;
             LastUpdate = 0;
 
-            for (var i = 0; i < 11; i++)
+            for (var i = 0; i < radios.Length; i++)
             {
                 radios[i] = new RadioInformation();
             }
@@ -137,19 +121,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                 if (inAircraft != compareRadio.inAircraft)
                 {
                     return false;
-                }
-
-                if (((iff == null) || (compareRadio.iff == null)))
-                {
-                    return false;
-                }
-                else
-                {
-                    //check iff
-                    if (!iff.Equals(compareRadio.iff))
-                    {
-                        return false;
-                    }
                 }
 
                 for (var i = 0; i < radios.Length; i++)
@@ -198,8 +169,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             byte encryptionKey,
             uint sendingUnitId,
             List<int> blockedRadios,
-            out RadioReceivingState receivingState,
-            out bool decryptable)
+            out RadioReceivingState receivingState)
         {
         //    if (!IsCurrent())
        //     {
@@ -210,7 +180,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
             RadioInformation bestMatchingRadio = null;
             RadioReceivingState bestMatchingRadioState = null;
-            bool bestMatchingDecryptable = false;
 
             for (var i = 0; i < radios.Length; i++)
             {
@@ -228,13 +197,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                             receivingState = new RadioReceivingState
                             {
                                 IsSecondary = false,
-                                LastReceviedAt = DateTime.Now.Ticks,
+                                LastReceivedAt = DateTime.Now.Ticks,
                                 ReceivedOn = i
                             };
-                            decryptable = true;
                             return receivingRadio;
                         }
-                        decryptable = false;
                         receivingState = null;
                         return null;
                     }
@@ -250,17 +217,14 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                         && (receivingRadio.modulation == modulation)
                         && (receivingRadio.freq > 10000))
                     {
-                        bool isDecryptable = (encryptionKey == 0 || (receivingRadio.enc ? receivingRadio.encKey : (byte)0) == encryptionKey);
-
-                        if (isDecryptable && !blockedRadios.Contains(i))
+                        if ( !blockedRadios.Contains(i))
                         {
                             receivingState = new RadioReceivingState
                             {
                                 IsSecondary = false,
-                                LastReceviedAt = DateTime.Now.Ticks,
+                                LastReceivedAt = DateTime.Now.Ticks,
                                 ReceivedOn = i
                             };
-                            decryptable = true;
                             return receivingRadio;
                         }
 
@@ -268,38 +232,25 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                         bestMatchingRadioState = new RadioReceivingState
                         {
                             IsSecondary = false,
-                            LastReceviedAt = DateTime.Now.Ticks,
+                            LastReceivedAt = DateTime.Now.Ticks,
                             ReceivedOn = i
                         };
-                        bestMatchingDecryptable = isDecryptable;
                     }
                     if ((receivingRadio.secFreq == frequency)
                         && (receivingRadio.secFreq > 10000))
                     {
-                        if (encryptionKey == 0 || (receivingRadio.enc ? receivingRadio.encKey : (byte)0) == encryptionKey)
-                        {
-                            receivingState = new RadioReceivingState
-                            {
-                                IsSecondary = true,
-                                LastReceviedAt = DateTime.Now.Ticks,
-                                ReceivedOn = i
-                            };
-                            decryptable = true;
-                            return receivingRadio;
-                        }
-
-                        bestMatchingRadio = receivingRadio;
-                        bestMatchingRadioState = new RadioReceivingState
+                       
+                        receivingState = new RadioReceivingState
                         {
                             IsSecondary = true,
-                            LastReceviedAt = DateTime.Now.Ticks,
+                            LastReceivedAt = DateTime.Now.Ticks,
                             ReceivedOn = i
                         };
+                        return receivingRadio;
+                        
                     }
                 }
             }
-
-            decryptable = bestMatchingDecryptable;
             receivingState = bestMatchingRadioState;
             return bestMatchingRadio;
         }
@@ -308,7 +259,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         {
             var clone = (DCSPlayerRadioInfo) this.MemberwiseClone();
 
-            clone.iff = this.iff.Copy();
             //ignore position
             clone.radios = new RadioInformation[11];
 

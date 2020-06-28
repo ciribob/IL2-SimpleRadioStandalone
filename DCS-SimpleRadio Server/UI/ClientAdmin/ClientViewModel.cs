@@ -42,6 +42,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.UI.ClientAdmin
                         return new SolidColorBrush(Colors.Red);
                     case 2:
                         return new SolidColorBrush(Colors.Blue);
+                    case 3:
+                        return new SolidColorBrush(Colors.Orange);
                     default:
                         return new SolidColorBrush(Colors.White);
                 }

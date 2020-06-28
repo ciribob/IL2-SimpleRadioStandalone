@@ -76,19 +76,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
 
                     GlobalFrequencies = newList;
                 }
-                else if(kvp.Key.Equals(ServerSettingsKeys.RETRANSMISSION_NODE_LIMIT.ToString()))
-                {
-                    if (!int.TryParse(kvp.Value, out var nodeLimit))
-                    {
-                        nodeLimit = 0;
-                    }
-                    else
-                    {
-                        RetransmitNodeLimit = nodeLimit;
-                    }
-
-
-                }
             }
         }
     }

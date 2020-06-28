@@ -5,9 +5,9 @@
              xmlns:local="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Server.UI"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Width="330"
-             Height="575"
+             Height="400"
              mc:Ignorable="d">
-    <ScrollViewer VerticalScrollBarVisibility="Visible"  Margin="0,0,0,0" >
+    <ScrollViewer VerticalScrollBarVisibility="Auto"  Margin="0,0,0,0" >
         <StackPanel Orientation="Vertical" Margin="5" >
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -131,39 +131,7 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center" />
 
-                <Label Content="Line of Sight" 
-                       Grid.Row="4"
-                       Grid.Column="0" 
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"/>
-
-                <Button x:Name="LOSToggle"
-                        Content="{Binding LOSText}"
-                        Grid.Row="4"
-                        Grid.Column="2"
-                        Width="75"
-                        Height="20"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
-
-                <Label Content="Distance Limit" 
-                       Grid.Row="5"
-                       Grid.Column="0" 
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"/>
-
-                <Button x:Name="DistanceLimitToggle"
-                        Content="{Binding DistanceLimitText}"
-                        Grid.Row="5"
-                        Grid.Column="2"
-                        Width="75"
-                        Height="20"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
-
-                <Label Content="IRL Radio Tx Behaviour" 
+                <Label Content="Realistic TX Behaviour" 
                        Grid.Row="6"
                        Grid.Column="0" 
                        Grid.ColumnSpan="2"
@@ -173,22 +141,6 @@
                 <Button x:Name="RealRadioToggle"
                         Content="{Binding RealRadioText}"
                         Grid.Row="6"
-                        Grid.Column="2"
-                        Width="75"
-                        Height="20"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
-
-                <Label Content="IRL Radio Rx Behaviour" 
-                       Grid.Row="7"
-                       Grid.Column="0" 
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"/>
-
-                <Button x:Name="IRLRadioRxBehaviourToggle"
-                        Content="{Binding IRLRadioRxText}"
-                        Grid.Row="7"
                         Grid.Column="2"
                         Width="75"
                         Height="20"
@@ -211,22 +163,6 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"/>
 
-                <Label Content="Allow Radio Encryption"
-                       Grid.Row="9"
-                       Grid.Column="0" 
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"/>
-
-                <Button x:Name="AllowRadioEncryptionToggle"
-                        Content="{Binding AllowRadioEncryption}"
-                        Grid.Row="9"
-                        Grid.Column="2"
-                        Width="75"
-                        Height="20"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
-
                 <Label Content="Check for beta updates" 
                        Grid.Row="10"
                        Grid.Column="0" 
@@ -242,74 +178,6 @@
                        Height="20"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"/>
-
-
-                <Label Content="External AWACS Mode (EAM)" 
-                       Grid.Row="11"
-                       Grid.Column="0" 
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"/>
-
-                <Button x:Name="ExternalAWACSModeToggle"
-                        Content="{Binding ExternalAWACSMode}" 
-                        Grid.Row="11"
-                        Grid.Column="2"
-                        Width="75"
-                        Height="20"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
-
-                <Label Content="EAM blue coal. password" 
-                       Grid.Row="12"
-                       Grid.Column="0" 
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"/>
-
-                <TextBox x:Name="ExternalAWACSModeBluePassword"
-                         IsEnabled="{Binding IsExternalAWACSModeEnabled}"
-                         Text="{Binding Path=ExternalAWACSModeBluePassword, UpdateSourceTrigger=PropertyChanged}"
-                         Grid.Row="12"
-                         Grid.Column="2"
-                         Width="75"
-                         Height="20"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Center"/>
-
-                <Label Content="EAM red coal. password"
-                       Grid.Row="13"
-                       Grid.Column="0" 
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"/>
-
-                <TextBox x:Name="ExternalAWACSModeRedPassword"
-                         IsEnabled="{Binding IsExternalAWACSModeEnabled}"
-                         Text="{Binding Path=ExternalAWACSModeRedPassword, UpdateSourceTrigger=PropertyChanged}"
-                         Grid.Row="13"
-                         Grid.Column="2"
-                         Width="75"
-                         Height="20"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Center"/>
-
-                <Label Content="Test Frequencies AM (MHz)"
-                       Grid.Row="14"
-                       Grid.Column="0" 
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"/>
-
-                <TextBox x:Name="TestFrequencies"
-                         IsEnabled="True"
-                         Text="247.2,120.3"
-                         Grid.Row="14"
-                         Grid.Column="2"
-                         Width="75"
-                         Height="20"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Center"/>
 
 
                 <Label Content="Show Tuned/Client Count" 
@@ -345,21 +213,7 @@
                          VerticalAlignment="Center"
                          HorizontalAlignment="Center"/>
 
-                <Label Content="LotATC Transponder Export" 
-                       Grid.Row="17"
-                       Grid.Column="0" 
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"/>
-
-                <Button x:Name="LotATCExportToggle"
-                        Content="{Binding LotATCExportText}"
-                        Grid.Row="17"
-                        Grid.Column="2"
-                        Width="75"
-                        Height="20"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
+              
 
                 <Label Content="Show Transmitter Name" 
                        Grid.Row="18"
@@ -377,41 +231,7 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"/>
 
-                <Label Content="Retransmit Hop/Node Count"
-                       Grid.Row="19"
-                       Grid.Column="0" 
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"/>
-                <StackPanel Orientation="Vertical"
-                            Grid.Row="19"
-                            Grid.Column="2">
-                    <Grid  Width="75">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" FontSize="10" Content="0" HorizontalAlignment="Left" />
-                        <Label HorizontalAlignment="Right" Grid.Column="1" FontSize="10" Content="5" />
-                    </Grid>
-                    <Slider 
-                        Value="{Binding  NodeLimit}"
-                            Width="75"
-                            Height="40"
-                            VerticalAlignment="Center"
-                            Interval="1"
-                            Minimum="0"
-                            Maximum="5"
-                            Ticks="0,1,2,3,4,5"
-                            TickPlacement="TopLeft"
-                            IsSnapToTickEnabled="True"
-                            HorizontalAlignment="Center">
-
-                    </Slider>
-
-
-
-                </StackPanel>
+              
                 
             </Grid>
         </StackPanel>

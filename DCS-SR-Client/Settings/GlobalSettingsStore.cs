@@ -40,7 +40,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
 
         ClientIdLong,
         DCSLOSOutgoingUDP, //9086
-        DCSIncomingUDP, //9084
+        IL2IncomingUDP, //9084
         CommandListenerUDP, //=9040,
         OutgoingDCSUDPInfo, //7080
 
@@ -338,7 +338,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
             {GlobalSettingsKeys.ClientIdLong.ToString(), Guid.NewGuid().ToString()},
 
             {GlobalSettingsKeys.DCSLOSOutgoingUDP.ToString(), "9086"},
-            {GlobalSettingsKeys.DCSIncomingUDP.ToString(), "9084"},
+            {GlobalSettingsKeys.IL2IncomingUDP.ToString(), "9084"},
             {GlobalSettingsKeys.CommandListenerUDP.ToString(), "9040"},
             {GlobalSettingsKeys.OutgoingDCSUDPInfo.ToString(), "7080"},
 

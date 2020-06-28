@@ -4,15 +4,13 @@
                       xmlns:clientWindow="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                      xmlns:devices="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Client"
-                      xmlns:input="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Client.Settings"
                       xmlns:local="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Client.UI"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:settings="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Client.Settings"
                       xmlns:converters="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Client.Utils.ValueConverters"
-                      Title="DCS-SRS Client"
+                      Title="IL2-SRS Client"
                       Width="550"
-                      Height="690"
+                      Height="580"
                       d:DataContext="{d:DesignInstance local:MainWindow}"
                       ResizeMode="CanMinimize"
                       mc:Ignorable="d">
@@ -185,6 +183,7 @@
                                 Click="ShowOverlay_OnClick"
                                 Content="Toggle Radio Overlay"
                                 Style="{DynamicResource SquareButtonStyle}" />
+                        
                         <Button x:Name="ShowClientList"
                                 Width="125"
                                 Margin="0,15,0,0"
@@ -207,6 +206,9 @@
                                 HorizontalAlignment="Center"
                                 Orientation="Vertical"/>
                     </StackPanel>
+                        <StackPanel Margin="0"
+                                HorizontalAlignment="Center"
+                                Orientation="Horizontal"/>
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,5">
                         <Label Content="Current Profile:"></Label>
                         <Label Name="CurrentProfile" Content="None"></Label>

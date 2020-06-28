@@ -59,7 +59,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         private int _port = 5002;
 
         private Overlay.RadioOverlayWindow _radioOverlayWindow;
-        private AwacsRadioOverlayWindow.RadioOverlayWindow _awacsRadioOverlay;
 
         private IPAddress _resolvedIp;
         private ServerSettingsWindow _serverSettingsWindow;
@@ -103,9 +102,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             // Initialise sounds
             Sounds.Init();
-
-            // Set up tooltips that are always defined
-            InitToolTips();
 
             DataContext = this;
 
@@ -152,8 +148,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             Speaker_VU.Value = -100;
             Mic_VU.Value = -100;
-
-            ExternalAWACSModeName.Text = _globalSettings.GetClientSetting(GlobalSettingsKeys.LastSeenName).StringValue;
 
             _audioManager = new AudioManager(AudioOutput.WindowsN);
             _audioManager.SpeakerBoost = VolumeConversionHelper.ConvertVolumeSliderToScale((float) SpeakerBoost.Value);
@@ -267,12 +261,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
                 _globalSettings.SetPositionSetting(GlobalSettingsKeys.AwacsX, 300);
                 _globalSettings.SetPositionSetting(GlobalSettingsKeys.AwacsY, 300);
-
-                if (_awacsRadioOverlay != null)
-                {
-                    _awacsRadioOverlay.Left = 300;
-                    _awacsRadioOverlay.Top = 300;
-                }
             }
         }
 
@@ -295,7 +283,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                 FavouriteServersViewModel.Addresses.Count == 0)
             {
                 var oldAddress = new ServerAddress(_globalSettings.GetClientSetting(GlobalSettingsKeys.LastServer).StringValue,
-                    _globalSettings.GetClientSetting(GlobalSettingsKeys.LastServer).StringValue, null, true);
+                    _globalSettings.GetClientSetting(GlobalSettingsKeys.LastServer).StringValue, true);
                 FavouriteServersViewModel.Addresses.Add(oldAddress);
             }
 
@@ -405,13 +393,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             IntercomConfig.Reload();
         }
 
-        private void InitToolTips()
-        {
-            ExternalAWACSModePassword.ToolTip = ToolTips.ExternalAWACSModePassword;
-            ExternalAWACSModeName.ToolTip = ToolTips.ExternalAWACSModeName;
-            ConnectExternalAWACSMode.ToolTip = ToolTips.ExternalAWACSMode;
-        }
-
+       
         public InputDeviceManager InputManager { get; set; }
 
         public FavouriteServersViewModel FavouriteServersViewModel { get; }
@@ -425,7 +407,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                 if (value != null)
                 {
                     ServerIp.Text = value.Address;
-                    ExternalAWACSModePassword.Password = string.IsNullOrWhiteSpace(value.EAMCoalitionPassword) ? "" : value.EAMCoalitionPassword;
                 }
 
                 _connectCommand.RaiseCanExecuteChanged();
@@ -459,13 +440,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                 Mic_VU.Value = -100;
                 Speaker_VU.Value = -100;
             }
-
-            try
-            {
-                var pos = ClientState.PlayerCoaltionLocationMetadata.LngLngPosition;
-                CurrentPosition.Text = $"Lat/Lng: {pos.lat:0.###},{pos.lng:0.###} - Alt: {pos.alt:0}";
-            }
-            catch { }
 
             ConnectedClientsSingleton.Instance.NotifyAll();
 
@@ -514,7 +488,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             AutoSelectChannel.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AutoSelectPresetChannel);
 
             AlwaysAllowHotas.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AlwaysAllowHotasControls);
-            AllowDCSPTT.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AllowDCSPTT);
+            AllowDCSPTT.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AllowIL2PTT);
             AlwaysAllowTransponderOverlay.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AlwaysAllowTransponderOverlay);
         }
 
@@ -660,9 +634,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             ClientState.IsConnected = false;
             ToggleServerSettings.IsEnabled = false;
 
-            ConnectExternalAWACSMode.IsEnabled = false;
-            ConnectExternalAWACSMode.Content = "Connect External AWACS MODE (EAM)";
-
             if (!string.IsNullOrWhiteSpace(ClientState.LastSeenName) &&
                 _globalSettings.GetClientSetting(GlobalSettingsKeys.LastSeenName).StringValue != ClientState.LastSeenName)
             {
@@ -684,7 +655,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             }
 
             ClientState.DcsPlayerRadioInfo.Reset();
-            ClientState.PlayerCoaltionLocationMetadata.Reset();
         }
 
         private void SaveSelectedInputAndOutput()
@@ -822,8 +792,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             _radioOverlayWindow?.Close();
             _radioOverlayWindow = null;
 
-            _awacsRadioOverlay?.Close();
-            _awacsRadioOverlay = null;
 
         }
 
@@ -878,17 +846,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             if (ClientState.IsConnected)
             {
                 ToggleServerSettings.IsEnabled = true;
-
-                bool eamEnabled = _serverSettings.GetSettingAsBool(Common.Setting.ServerSettingsKeys.EXTERNAL_AWACS_MODE);
-
-                ConnectExternalAWACSMode.IsEnabled = eamEnabled;
-                ConnectExternalAWACSMode.Content = ClientState.ExternalAWACSModelSelected ? "Disconnect External AWACS MODE (EAM)" : "Connect External AWACS MODE (EAM)";
             }
             else
             {
                 ToggleServerSettings.IsEnabled = false;
-                ConnectExternalAWACSMode.IsEnabled = false;
-                ConnectExternalAWACSMode.Content = "Connect External AWACS MODE (EAM)";
             }
         }
 
@@ -946,9 +907,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                 if ((_radioOverlayWindow == null) || !_radioOverlayWindow.IsVisible ||
                     (_radioOverlayWindow.WindowState == WindowState.Minimized))
                 {
-                    //hide awacs panel
-                    _awacsRadioOverlay?.Close();
-                    _awacsRadioOverlay = null;
 
                     _radioOverlayWindow?.Close();
 
@@ -967,28 +925,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             }
         }
 
-        private void ShowAwacsOverlay_OnClick(object sender, RoutedEventArgs e)
-        {
-            if ((_awacsRadioOverlay == null) || !_awacsRadioOverlay.IsVisible ||
-                (_awacsRadioOverlay.WindowState == WindowState.Minimized))
-            {
-                //close normal overlay
-                _radioOverlayWindow?.Close();
-                _radioOverlayWindow = null;
-
-                _awacsRadioOverlay?.Close();
-
-                _awacsRadioOverlay = new AwacsRadioOverlayWindow.RadioOverlayWindow();
-                _awacsRadioOverlay.ShowInTaskbar =
-                    !_globalSettings.GetClientSettingBool(GlobalSettingsKeys.RadioOverlayTaskbarHide);
-                _awacsRadioOverlay.Show();
-            }
-            else
-            {
-                _awacsRadioOverlay?.Close();
-                _awacsRadioOverlay = null;
-            }
-        }
 
         private void AutoConnect(string address, int port)
         {
@@ -1195,7 +1131,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             if (_radioOverlayWindow != null)
                 _radioOverlayWindow.ShowInTaskbar = !_globalSettings.GetClientSettingBool(GlobalSettingsKeys.RadioOverlayTaskbarHide);
-            else if (_awacsRadioOverlay != null) _awacsRadioOverlay.ShowInTaskbar = !_globalSettings.GetClientSettingBool(GlobalSettingsKeys.RadioOverlayTaskbarHide);
+         
         }
 
         private void DCSRefocus_OnClick_Click(object sender, RoutedEventArgs e)
@@ -1283,7 +1219,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
         private void AllowDCSPTT_OnClick(object sender, RoutedEventArgs e)
         {
-            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.AllowDCSPTT,(bool)AllowDCSPTT.IsChecked);
+            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.AllowIL2PTT,(bool)AllowDCSPTT.IsChecked);
         }
 
         private void AlwaysAllowHotas_OnClick(object sender, RoutedEventArgs e)
@@ -1301,55 +1237,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             _globalSettings.SetClientSetting(GlobalSettingsKeys.PlayConnectionSounds, (bool)PlayConnectionSounds.IsChecked);
         }
 
-        private void ConnectExternalAWACSMode_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (_client == null ||
-                !ClientState.IsConnected ||
-                !_serverSettings.GetSettingAsBool(Common.Setting.ServerSettingsKeys.EXTERNAL_AWACS_MODE) ||
-                (!ClientState.ExternalAWACSModelSelected &&
-                string.IsNullOrWhiteSpace(ExternalAWACSModePassword.Password)))
-            {
-                return;
-            }
-
-            // Already connected, disconnect
-            if (ClientState.ExternalAWACSModelSelected)
-            {
-                _client.DisconnectExternalAWACSMode();
-            }
-            else if (!ClientState.IsGameExportConnected) //only if we're not in game
-            {
-                ClientState.LastSeenName = ExternalAWACSModeName.Text;
-                _client.ConnectExternalAWACSMode(ExternalAWACSModePassword.Password.Trim(), ExternalAWACSModeConnectionChanged);
-            }
-        }
-
-        private void ExternalAWACSModeConnectionChanged(bool result, int coalition)
-        {
-            if (result)
-            {
-                ClientState.ExternalAWACSModelSelected = true;
-                ClientState.PlayerCoaltionLocationMetadata.side = coalition;
-                ClientState.PlayerCoaltionLocationMetadata.name = ClientState.LastSeenName;
-                ClientState.DcsPlayerRadioInfo.name = ClientState.LastSeenName;
-
-                ConnectExternalAWACSMode.Content = "Disconnect External AWACS MODE (EAM)";
-            }
-            else
-            {
-                ClientState.ExternalAWACSModelSelected = false;
-                ClientState.PlayerCoaltionLocationMetadata.side = 0;
-                ClientState.PlayerCoaltionLocationMetadata.name = "";
-                ClientState.DcsPlayerRadioInfo.name = "";
-                ClientState.DcsPlayerRadioInfo.LastUpdate = 0;
-                ClientState.LastSent = 0;
-
-                ConnectExternalAWACSMode.Content = "Connect External AWACS MODE (EAM)";
-                ExternalAWACSModePassword.IsEnabled = _serverSettings.GetSettingAsBool(Common.Setting.ServerSettingsKeys.EXTERNAL_AWACS_MODE);
-                ExternalAWACSModeName.IsEnabled = _serverSettings.GetSettingAsBool(Common.Setting.ServerSettingsKeys.EXTERNAL_AWACS_MODE);
-            }
-        }
-
+    
         private void RescanInputDevices(object sender, RoutedEventArgs e)
         {
             InputManager.InitDevices();
@@ -1480,17 +1368,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.AlwaysAllowTransponderOverlay, (bool)AlwaysAllowTransponderOverlay.IsChecked);
         }
 
-        private void CurrentPosition_OnClick(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                var pos = ClientState.PlayerCoaltionLocationMetadata.LngLngPosition;
-
-                Process.Start($"https://maps.google.com/maps?q=loc:{pos.lat},{pos.lng}");
-            }
-            catch { }
-           
-        }
 
         private void ShowClientList_OnClick(object sender, RoutedEventArgs e)
         {

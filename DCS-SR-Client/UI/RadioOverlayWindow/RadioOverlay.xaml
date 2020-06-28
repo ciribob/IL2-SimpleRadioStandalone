@@ -4,11 +4,11 @@
         xmlns:local="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Overlay"
         xmlns:radioOverlayWindow="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow"
         Name="RadioOverlayWin"
-        Title="DCS-SimpleRadio"
-        Width="170"
-        Height="355"
-        MinWidth="170"
-        MinHeight="355"
+        Title="IL2-SimpleRadio"
+        Width="130"
+        Height="150"
+        MinWidth="130"
+        MinHeight="150"
         AllowsTransparency="True"
         Background="#444"
         LocationChanged="RadioOverlayWindow_OnLocationChanged"
@@ -31,78 +31,51 @@
                             ScaleY="{Binding ElementName=RadioOverlayWin,
                                              Path=ScaleValue}" />
         </WrapPanel.LayoutTransform>
+        <StackPanel Orientation="Vertical">
 
-        <TextBlock Name="ControlText"
-                   Width="118"
-                   Height="12"
-                   Margin="5,0,0,0"
-                   VerticalAlignment="Top"
-                   FontSize="10"
-                   Foreground="#E7E7E7"
-                   Padding="0"
-                   Text="" />
-        <Button Margin="0,0,0,0"
-                Click="Button_About"
-                Style="{StaticResource DarkStyle-Button}">
-            <Button.Content>
-                <Grid Width="10" Height="10">
-                    <TextBlock HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                              FontWeight="Bold"
-                               FontSize="10"
-                               Padding="0"
-                               Text="?" />
-                </Grid>
-            </Button.Content>
-        </Button>
-        <Button Margin="0,0,0,0"
-                Click="Button_Minimise"
-                Style="{StaticResource DarkStyle-Button}">
-            <Button.Content>
-                <Grid Width="10" Height="10">
-                    <TextBlock HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontFamily="Marlett"
-                               FontSize="14"
-                               Padding="3.5,0,0,3"
-                               Text="0" />
-                </Grid>
-            </Button.Content>
-        </Button>
+        <StackPanel HorizontalAlignment="Right"  Orientation="Horizontal">
+            <Button Margin="0,0,0,0"
+                    Click="Button_Minimise"
+                    Style="{StaticResource DarkStyle-Button}">
+                <Button.Content>
+                    <Grid Width="10" Height="10">
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Marlett"
+                                   FontSize="14"
+                                   Padding="3.5,0,0,3"
+                                   Text="0" />
+                    </Grid>
+                </Button.Content>
+            </Button>
 
-        <Button Margin="2,0,0,0"
-                Click="Button_Close"
-                Style="{StaticResource DarkStyle-Button}">
-            <Button.Content>
-                <Grid Width="10" Height="10">
-                    <TextBlock HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontFamily="Marlett"
-                               FontSize="14"
-                               Padding="0,0,0,1"
-                               Text="r" />
-                </Grid>
-            </Button.Content>
-        </Button>
-
+            <Button Margin="2,0,0,0"
+                    Click="Button_Close"
+                    Style="{StaticResource DarkStyle-Button}">
+                <Button.Content>
+                    <Grid Width="10" Height="10">
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Marlett"
+                                   FontSize="14"
+                                   Padding="0,0,0,1"
+                                   Text="r" />
+                    </Grid>
+                </Button.Content>
+            </Button>
+        </StackPanel>
+        <Separator Width="130" Margin="0 2" />
 
         <radioOverlayWindow:RadioControlGroup x:Name="Radio1" RadioId="1" />
 
-        <radioOverlayWindow:RadioControlGroup x:Name="Radio2" RadioId="2" />
-
-        <radioOverlayWindow:RadioControlGroup x:Name="Radio3" RadioId="3" />
-
-        <radioOverlayWindow:RadioControlGroup x:Name="Radio4" RadioId="4" Visibility="Collapsed" />
+        <Separator Width="130" Margin="0 2" />
 
         <local:IntercomControlGroup x:Name="Intercom" RadioId="0" />
-        <Separator Width="170" Margin="0 2" />
-        <radioOverlayWindow:TransponderPanel x:Name="TransponderPanel"  />
-
-        <Separator Width="170" Margin="0 2" />
+       
+        <Separator Width="130" Margin="0 2" />
 
         <Slider x:Name="WindowOpacitySlider"
-                Width="130"
-                Margin="10,2,0,0"
+                Width="100"
                 VerticalAlignment="Center"
                 Maximum="1.0"
                 Minimum="0.05"
@@ -110,6 +83,6 @@
                 ToolTip="Window Opacity"
                 ValueChanged="windowOpacitySlider_ValueChanged"
                 Value="1.0" />
-
+        </StackPanel>
     </WrapPanel>
 </Window>

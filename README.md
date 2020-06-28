@@ -1,9 +1,7 @@
-# DCS-SimpleRadioStandalone
-An open source Stand alone Radio for DCS integrating with all clickable cockpits and FC3 Aircraft
+# IL2-SimpleRadio Standalone
+An open source Stand alone Radio for IL2
 
-Read More Here: http://forums.eagle.ru/showthread.php?t=169387 
-
-Download: https://github.com/ciribob/DCS-SimpleRadioStandalone/releases/latest
+Please obtain the latest release from the Releases page
 
 Donate if you want to so I can purchase Hardware for testing :) 
 

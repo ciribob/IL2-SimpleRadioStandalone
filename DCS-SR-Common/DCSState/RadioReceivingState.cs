@@ -9,10 +9,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
     public class RadioReceivingState
     {
         [JsonIgnore]
-        public long LastReceviedAt { get; set; }
+        public long LastReceivedAt { get; set; }
 
         public bool IsSecondary { get; set; }
-        public bool IsSimultaneous { get; set; }
         public int ReceivedOn { get; set; }
 
         public bool PlayedEndOfTransmission { get; set; }
@@ -23,7 +22,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         {
             get
             {
-                return (DateTime.Now.Ticks - LastReceviedAt) < 3500000;
+                return (DateTime.Now.Ticks - LastReceivedAt) < 3500000;
             }
         }
     }
