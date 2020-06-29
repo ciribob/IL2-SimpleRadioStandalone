@@ -51,12 +51,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
         private void CheckIfRadioIsStale(object sender, EventArgs e)
         {
-            if (!_clientStateSingleton.PlayerRadioInfo.IsCurrent())
+            if (!_clientStateSingleton.PlayerGameState.IsCurrent())
             {
                 //check if we've had an update
-                if (_clientStateSingleton.PlayerRadioInfo.LastUpdate > 0)
+                if (_clientStateSingleton.PlayerGameState.LastUpdate > 0)
                 {
-                    _clientStateSingleton.PlayerRadioInfo.Reset();
+                    _clientStateSingleton.PlayerGameState.Reset();
 
                     _clientRadioUpdate();
                     _clientSideUpdate();

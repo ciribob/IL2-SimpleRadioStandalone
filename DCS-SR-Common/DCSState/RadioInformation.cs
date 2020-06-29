@@ -41,11 +41,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         [JsonNetworkIgnoreSerialization]
         public string name = "";
-        
-        public double secFreq = 1;
-
-        //should the radio restransmit?
-        public bool retransmit = false;
 
         [JsonNetworkIgnoreSerialization]
         public float volume = 1.0f;
@@ -56,11 +51,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         [JsonNetworkIgnoreSerialization]
         [JsonIL2IgnoreSerialization]
-        public FreqMode guardFreqMode = FreqMode.COCKPIT;
-
-        [JsonNetworkIgnoreSerialization]
-        [JsonIL2IgnoreSerialization]
         public VolumeMode volMode = VolumeMode.COCKPIT;
+
         [JsonNetworkIgnoreSerialization]
         [JsonIL2IgnoreSerialization]
         public bool expansion = false;
@@ -68,7 +60,14 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         [JsonNetworkIgnoreSerialization]
         public int channel = -1;
 
+        [JsonNetworkIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
+        public static readonly double CHANNEL_OFFSET = 1000000; //for channel <> Freq conversion
 
+        [JsonNetworkIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
+        public static readonly int CHANNEL_LIMIT = 5;
+        
         /**
          * Used to determine if we should send an update to the server or not
          * We only need to do that if something that would stop us Receiving happens which
@@ -86,7 +85,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             {
                 return false;
             }
-            if (!PlayerRadioInfo.FreqCloseEnough(freq , compare.freq))
+            if (!PlayerGameState.FreqCloseEnough(freq , compare.freq))
             {
                 return false;
             }
@@ -94,14 +93,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             {
                 return false;
             }
-            if (retransmit != compare.retransmit)
-            {
-                return false;
-            }
-            if (!PlayerRadioInfo.FreqCloseEnough(secFreq, compare.secFreq))
-            {
-                return false;
-            }
+          
 
             return true;
         }
@@ -117,13 +109,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                 freqMax = this.freqMax,
                 freqMin = this.freqMin,
                 freqMode = this.freqMode,
-                guardFreqMode = this.guardFreqMode,
                 modulation = this.modulation,
-                secFreq = this.secFreq,
                 name = this.name,
                 volMode = this.volMode,
                 volume = this.volume,
-                retransmit = this.retransmit
             };
         }
     }

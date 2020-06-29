@@ -30,7 +30,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
         private static readonly int RADIO_UPDATE_PING_INTERVAL = 60; //send update regardless of change every X seconds
 
-
         private UdpClient _il2UdpListener;
         private UdpClient _il2RadioUpdateSender;
 
@@ -44,10 +43,44 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
         private long _identStart = 0;
 
+        private RadioInformation[] initialRadio = new RadioInformation[2];
+
         public IL2RadioSyncHandler(IL2RadioSyncManager.SendRadioUpdate radioUpdate, NewAircraft _newAircraft)
         {
             _radioUpdate = radioUpdate;
             _newAircraftCallback = _newAircraft;
+        }
+
+        private void InitRadio()
+        {
+            //TODO turn on the radio immediately - use the message just to set the coalition?
+            // RadioInformation[] awacsRadios;
+            // try
+            // {
+            //     string radioJson = File.ReadAllText(AWACS_RADIOS_FILE);
+            //     awacsRadios = JsonConvert.DeserializeObject<RadioInformation[]>(radioJson);
+            // }
+            // catch (Exception ex)
+            // {
+            //     Logger.Warn(ex, "Failed to load AWACS radio file");
+            //
+            //     awacsRadios = new RadioInformation[11];
+            //     for (int i = 0; i < 11; i++)
+            //     {
+            //         awacsRadios[i] = new RadioInformation
+            //         {
+            //             freq = 1,
+            //             freqMin = 1,
+            //             freqMax = 1,
+            //             secFreq = 0,
+            //             modulation = RadioInformation.Modulation.DISABLED,
+            //             name = "No Radio",
+            //             freqMode = RadioInformation.FreqMode.COCKPIT,
+            //             encMode = RadioInformation.EncryptionMode.NO_ENCRYPTION,
+            //             volMode = RadioInformation.VolumeMode.COCKPIT
+            //         };
+            //     }
+            // }
         }
 
         public void Start()
@@ -79,25 +112,17 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                         var groupEp = new IPEndPoint(IPAddress.Any,0);
                         var bytes = _il2UdpListener.Receive(ref groupEp);
 
-                        var str = Encoding.UTF8.GetString(
-                            bytes, 0, bytes.Length).Trim();
-
-                        var message =
-                            JsonConvert.DeserializeObject<PlayerRadioInfo>(str);
-
-                        Logger.Debug($"Recevied Message from IL2 {str}");
-
-                        if (!string.IsNullOrWhiteSpace(message.name) && message.name != "Unknown" && message.name != _clientStateSingleton.LastSeenName)
+                        if (bytes.Length > 2)
                         {
-                            _clientStateSingleton.LastSeenName = message.name;
+                            var messages = IL2UDPMessage.Process(bytes);
+                            foreach (var msg in messages)
+                            {
+                                Logger.Debug($"Recevied Message from IL2 {msg.ToString()}");
+                                ProcessUDPMessage(msg);
+                            }
+                           
+                           
                         }
-
-                        _clientStateSingleton.IL2ExportLastReceived = DateTime.Now.Ticks;
-
-                        //sync with others
-                        //Radio info is marked as Stale for FC3 aircraft after every frequency change
-
-                        ProcessRadioInfo(message);
                     }
                     catch (SocketException e)
                     {
@@ -125,12 +150,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             });
         }
 
+        public void ProcessUDPMessage(IL2UDPMessage message)
+        {
+            _clientStateSingleton.IL2ExportLastReceived = DateTime.Now.Ticks;
 
-        public void ProcessRadioInfo(PlayerRadioInfo message)
+            if (message is ClientDataMessage dataMessage)
+            {   //Just set the Client
+                ProcessClientDataMessage(dataMessage);
+            }
+        }
+
+        public void ProcessClientDataMessage(ClientDataMessage message)
         {
           
             // determine if its changed by comparing old to new
-            var update = UpdateRadio(message);
+            var update = UpdateClientData(message);
 
             //send to IL2 UI
             SendRadioUpdateToIL2();
@@ -141,7 +175,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
             if (update 
                 || _clientStateSingleton.LastSent < 1 
-                || diff.TotalSeconds > 60)
+                || diff.TotalSeconds > 30)
             {
                 Logger.Debug("Sending Radio Info To Server - Update");
                 _clientStateSingleton.LastSent = DateTime.Now.Ticks;
@@ -163,13 +197,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                 int[] tunedClients = new int[11];
 
                 if (_clientStateSingleton.IsConnected
-                    && _clientStateSingleton.PlayerRadioInfo !=null
-                    && _clientStateSingleton.PlayerRadioInfo.IsCurrent())
+                    && _clientStateSingleton.PlayerGameState !=null
+                    && _clientStateSingleton.PlayerGameState.IsCurrent())
                 {
 
                     for (int i = 0; i < tunedClients.Length; i++)
                     {
-                        var clientRadio = _clientStateSingleton.PlayerRadioInfo.radios[i];
+                        var clientRadio = _clientStateSingleton.PlayerGameState.radios[i];
                         
                         if (clientRadio.modulation != RadioInformation.Modulation.DISABLED)
                         {
@@ -181,7 +215,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                 //get currently transmitting or receiving
                 var combinedState = new CombinedRadioState()
                 {
-                    RadioInfo = _clientStateSingleton.PlayerRadioInfo,
+                    GameState = _clientStateSingleton.PlayerGameState,
                     RadioSendingState = _clientStateSingleton.RadioSendingState,
                     RadioReceivingState = _clientStateSingleton.RadioReceivingState,
                     ClientCountConnected = _clients.Total,
@@ -209,221 +243,23 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             }
         }
 
-        private bool UpdateRadio(PlayerRadioInfo message)
+        private bool UpdateClientData(ClientDataMessage message)
         {
-            var expansion = _serverSettings.GetSettingAsBool(ServerSettingsKeys.RADIO_EXPANSION);
-
-            var playerRadioInfo = _clientStateSingleton.PlayerRadioInfo;
+            var playerRadioInfo = _clientStateSingleton.PlayerGameState;
 
             //copy and compare to look for changes
             var beforeUpdate = playerRadioInfo.DeepClone();
 
-            //update common parts
-            playerRadioInfo.name = message.name;
-            playerRadioInfo.inAircraft = message.inAircraft;
-            playerRadioInfo.intercomHotMic = message.intercomHotMic;
+            playerRadioInfo.coalition = message.Coalition;
 
-            if (_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AlwaysAllowHotasControls))
+            if (message.ParentVehicleClientID > 0)
             {
-                message.control = PlayerRadioInfo.RadioSwitchControls.HOTAS;
-                playerRadioInfo.control = PlayerRadioInfo.RadioSwitchControls.HOTAS;
+                playerRadioInfo.unitId = message.ParentVehicleClientID;
             }
             else
             {
-                playerRadioInfo.control = message.control;
+                playerRadioInfo.unitId = message.ClientID;
             }
-
-            playerRadioInfo.simultaneousTransmissionControl = message.simultaneousTransmissionControl;
-
-            playerRadioInfo.unit = message.unit;
-
-            var overrideFreqAndVol = false;
-
-            var newAircraft = playerRadioInfo.unitId != message.unitId || !playerRadioInfo.IsCurrent();
-
-            if (message.unitId >= PlayerRadioInfo.UnitIdOffset &&
-                playerRadioInfo.unitId >= PlayerRadioInfo.UnitIdOffset)
-            {
-                //overriden so leave as is
-            }
-            else
-            {
-                overrideFreqAndVol = playerRadioInfo.unitId != message.unitId;
-                playerRadioInfo.unitId = message.unitId;
-            }
-
-            if (newAircraft)
-            {
-                
-                    _newAircraftCallback(message.unit);
-                
-
-            }
-
-            if (overrideFreqAndVol)
-            {
-                playerRadioInfo.selected = message.selected;
-            }
-
-            if (playerRadioInfo.control == PlayerRadioInfo.RadioSwitchControls.IN_COCKPIT)
-            {
-                playerRadioInfo.selected = message.selected;
-            }
-
-            bool simul = false;
-
-
-            //copy over radio names, min + max
-            for (var i = 0; i < playerRadioInfo.radios.Length; i++)
-            {
-                var clientRadio = playerRadioInfo.radios[i];
-
-                //if we have more radios than the message has
-                if (i >= message.radios.Length)
-                {
-                    clientRadio.freq = 1;
-                    clientRadio.freqMin = 1;
-                    clientRadio.freqMax = 1;
-                    clientRadio.secFreq = 0;
-                    clientRadio.retransmit = false;
-                    clientRadio.modulation = RadioInformation.Modulation.DISABLED;
-                    clientRadio.name = "No Radio";
-                    clientRadio.retransmit = false;
-
-                    clientRadio.freqMode = RadioInformation.FreqMode.COCKPIT;
-                    clientRadio.guardFreqMode = RadioInformation.FreqMode.COCKPIT;
-                    clientRadio.volMode = RadioInformation.VolumeMode.COCKPIT;
-
-                    continue;
-                }
-
-                var updateRadio = message.radios[i];
-
-
-                if ((updateRadio.expansion && !expansion) ||
-                    (updateRadio.modulation == RadioInformation.Modulation.DISABLED))
-                {
-                    //expansion radio, not allowed
-                    clientRadio.freq = 1;
-                    clientRadio.freqMin = 1;
-                    clientRadio.freqMax = 1;
-                    clientRadio.secFreq = 0;
-                    clientRadio.retransmit = false;
-                    clientRadio.modulation = RadioInformation.Modulation.DISABLED;
-                    clientRadio.name = "No Radio";
-                    clientRadio.retransmit = false;
-
-                    clientRadio.freqMode = RadioInformation.FreqMode.COCKPIT;
-                    clientRadio.guardFreqMode = RadioInformation.FreqMode.COCKPIT;
-                    clientRadio.volMode = RadioInformation.VolumeMode.COCKPIT;
-                }
-                else
-                {
-                    //update common parts
-                    clientRadio.freqMin = updateRadio.freqMin;
-                    clientRadio.freqMax = updateRadio.freqMax;
-
-                    clientRadio.name = updateRadio.name;
-
-                    clientRadio.modulation = updateRadio.modulation;
-
-                    //update modes
-                    clientRadio.freqMode = updateRadio.freqMode;
-                    clientRadio.guardFreqMode = updateRadio.guardFreqMode;
-
-
-                    clientRadio.volMode = updateRadio.volMode;
-
-                    if ((updateRadio.freqMode == RadioInformation.FreqMode.COCKPIT) || overrideFreqAndVol)
-                    {
-                        clientRadio.freq = updateRadio.freq;
-
-                        if (newAircraft && updateRadio.guardFreqMode == RadioInformation.FreqMode.OVERLAY)
-                        {
-                            //default guard to off
-                            clientRadio.secFreq = 0;
-                        }
-                        else
-                        {
-                            if (clientRadio.secFreq != 0 && updateRadio.guardFreqMode == RadioInformation.FreqMode.OVERLAY)
-                            {
-                                //put back
-                                clientRadio.secFreq = updateRadio.secFreq;
-                            }
-                            else if (clientRadio.secFreq == 0 && updateRadio.guardFreqMode == RadioInformation.FreqMode.OVERLAY)
-                            {
-                                clientRadio.secFreq = 0;
-                            }
-                            else
-                            {
-                                clientRadio.secFreq = updateRadio.secFreq;
-                            }
-
-                        }
-
-                        clientRadio.channel = updateRadio.channel;
-                    }
-                    else
-                    {
-                        if (clientRadio.secFreq != 0)
-                        {
-                            //put back
-                            clientRadio.secFreq = updateRadio.secFreq;
-                        }
-
-                        //check we're not over a limit
-                        if (clientRadio.freq > clientRadio.freqMax)
-                        {
-                            clientRadio.freq = clientRadio.freqMax;
-                        }
-                        else if (clientRadio.freq < clientRadio.freqMin)
-                        {
-                            clientRadio.freq = clientRadio.freqMin;
-                        }
-                    }
-
-
-                    //handle volume
-                    if ((updateRadio.volMode == RadioInformation.VolumeMode.COCKPIT) || overrideFreqAndVol)
-                    {
-                        clientRadio.volume = updateRadio.volume;
-                    }
-
-                    //handle Channels load for radios
-                    if (newAircraft && i > 0)
-                    {
-                        // if (clientRadio.freqMode == RadioInformation.FreqMode.OVERLAY)
-                        // {
-                        //     var channelModel = _clientStateSingleton.FixedChannels[i - 1];
-                        //     channelModel.Reload();
-                        //     clientRadio.channel = -1; //reset channel
-                        //
-                        //     if (_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AutoSelectPresetChannel))
-                        //     {
-                        //         RadioHelper.RadioChannelUp(i);
-                        //     }
-                        // }
-                        // else
-                        // {
-                        //     _clientStateSingleton.FixedChannels[i - 1].Clear();
-                        //     //clear
-                        // }
-                    }
-                }
-            }
-
-            //change PTT last
-            if (!_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AllowIL2PTT))
-            {
-                playerRadioInfo.ptt = false;
-            }
-            else
-            {
-                playerRadioInfo.ptt = message.ptt;
-            }
-
-            //                }
-            //            }
 
             //update
             playerRadioInfo.LastUpdate = DateTime.Now.Ticks;

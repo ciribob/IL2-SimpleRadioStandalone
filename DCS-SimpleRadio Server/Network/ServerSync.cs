@@ -311,30 +311,30 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                 if (client != null)
                 {
                     //shouldnt be the case but just incase...
-                    if (message.Client.RadioInfo == null)
+                    if (message.Client.GameState == null)
                     {
-                        message.Client.RadioInfo = new PlayerRadioInfo();
+                        message.Client.GameState = new PlayerGameState();
                     }
                     //update to local ticks
-                    message.Client.RadioInfo.LastUpdate = DateTime.Now.Ticks;
+                    message.Client.GameState.LastUpdate = DateTime.Now.Ticks;
 
                     var changed = false;
 
-                    if (client.RadioInfo == null)
+                    if (client.GameState == null)
                     {
-                        client.RadioInfo = message.Client.RadioInfo;
+                        client.GameState = message.Client.GameState;
                         changed = true;
                     }
                     else
                     {
-                        changed = !client.RadioInfo.Equals(message.Client.RadioInfo);
+                        changed = !client.GameState.Equals(message.Client.GameState);
                     }
 
                     client.LastUpdate = DateTime.Now.Ticks;
                     client.Name = message.Client.Name;
                     client.Coalition = message.Client.Coalition;
                     client.Seat = message.Client.Seat;
-                    client.RadioInfo = message.Client.RadioInfo;
+                    client.GameState = message.Client.GameState;
                     client.Seat = message.Client.Seat;
 
                     TimeSpan lastSent = new TimeSpan(DateTime.Now.Ticks - client.LastRadioUpdateSent);
@@ -355,7 +355,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                                     ClientGuid = client.ClientGuid,
                                     Coalition = client.Coalition,
                                     Name = client.Name,
-                                    RadioInfo = client.RadioInfo, //send radio info
+                                    GameState = client.GameState, //send radio info
                                     Seat = client.Seat
                                 }
                             };

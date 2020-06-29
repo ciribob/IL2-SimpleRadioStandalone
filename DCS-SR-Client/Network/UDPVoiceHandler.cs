@@ -123,7 +123,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                 {
                     radioState.PlayedEndOfTransmission = true;
 
-                    var radioInfo = _clientStateSingleton.PlayerRadioInfo;
+                    var radioInfo = _clientStateSingleton.PlayerGameState;
                     _audioManager.PlaySoundEffectEndReceive(i, radioInfo.radios[i].volume, radioInfo.radios[i].modulation);
                 }
             }
@@ -148,7 +148,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             var settings = GlobalSettingsStore.Instance;
             _inputManager.StartDetectPtt(pressed =>
             {
-                var radios = _clientStateSingleton.PlayerRadioInfo;
+                var radios = _clientStateSingleton.PlayerGameState;
 
                 var radioSwitchPtt = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioSwitchIsPTT);
                 var radioSwitchPttWhenValid = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioSwitchIsPTTOnlyWhenValid);
@@ -165,12 +165,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                             //gives you radio id if you minus 100
                             var radioId = (int) inputBindState.MainDevice.InputBind - 100;
 
-                            if (radioId < _clientStateSingleton.PlayerRadioInfo.radios.Length)
+                            if (radioId < _clientStateSingleton.PlayerGameState.radios.Length)
                             {
-                                var clientRadio = _clientStateSingleton.PlayerRadioInfo.radios[radioId];
+                                var clientRadio = _clientStateSingleton.PlayerGameState.radios[radioId];
 
                                 if (clientRadio.modulation != RadioInformation.Modulation.DISABLED &&
-                                    radios.control == PlayerRadioInfo.RadioSwitchControls.HOTAS)
+                                    radios.control == PlayerGameState.RadioSwitchControls.HOTAS)
                                 {
                                     radios.selected = (short) radioId;
                                     
@@ -321,7 +321,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
                             var myClient = IsClientMetaDataValid(_guid);
 
-                            if ((myClient != null) && _clientStateSingleton.PlayerRadioInfo.IsCurrent())
+                            if ((myClient != null) && _clientStateSingleton.PlayerGameState.IsCurrent())
                             {
                                 //Decode bytes
                                 var udpVoicePacket = UDPVoicePacket.DecodeVoicePacket(encodedOpusAudio);
@@ -345,16 +345,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                         //Check if Global
                                         bool globalFrequency = globalFrequencies.Contains(udpVoicePacket.Frequencies[i]);
 
-                                        if (globalFrequency)
-                                        {
-                                            //remove encryption for global
-                                            udpVoicePacket.Encryptions[i] = 0;
-                                        }
 
-                                        var radio = _clientStateSingleton.PlayerRadioInfo.CanHearTransmission(
+                                        var radio = _clientStateSingleton.PlayerGameState.CanHearTransmission(
                                             udpVoicePacket.Frequencies[i],
                                             (RadioInformation.Modulation) udpVoicePacket.Modulations[i],
-                                            udpVoicePacket.Encryptions[i],
                                             udpVoicePacket.UnitId,
                                             blockedRadios,
                                             out state);
@@ -408,7 +402,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                                 Volume = destinationRadio.ReceivingRadio.volume,
                                                 ReceivedRadio = destinationRadio.ReceivingState.ReceivedOn,
                                                 UnitId = udpVoicePacket.UnitId,
-                                                // mark if we can decrypt it
+                                            
                                                 RadioReceivingState = destinationRadio.ReceivingState,
                                                 PacketNumber = udpVoicePacket.PacketNumber,
                                                 OriginalClientGuid = udpVoicePacket.OriginalClientGuid
@@ -484,21 +478,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                 return transmitting;
             }
 
-            if (!_ptt && !_clientStateSingleton.PlayerRadioInfo.ptt)
+            if (!_ptt && !_clientStateSingleton.PlayerGameState.ptt)
             {
                 return transmitting;
             }
 
             //Currently transmitting - PTT must be true - figure out if we can hear on those radios
 
-            var currentRadio = _clientStateSingleton.PlayerRadioInfo.radios[_clientStateSingleton.PlayerRadioInfo.selected];
+            var currentRadio = _clientStateSingleton.PlayerGameState.radios[_clientStateSingleton.PlayerGameState.selected];
 
             if (currentRadio.modulation == RadioInformation.Modulation.FM 
                 || currentRadio.modulation == RadioInformation.Modulation.AM)
             {
                 //only AM and FM block - SATCOM etc dont
 
-                transmitting.Add(_clientStateSingleton.PlayerRadioInfo.selected);
+                transmitting.Add(_clientStateSingleton.PlayerGameState.selected);
             }
 
             return transmitting;
@@ -520,12 +514,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                 return -1;
             }
 
-            if (_clientStateSingleton.PlayerRadioInfo.selected == x.ReceivingState.ReceivedOn)
+            if (_clientStateSingleton.PlayerGameState.selected == x.ReceivingState.ReceivedOn)
             {
                 xScore += 8;
             }
 
-            if (_clientStateSingleton.PlayerRadioInfo.selected == y.ReceivingState.ReceivedOn)
+            if (_clientStateSingleton.PlayerGameState.selected == y.ReceivingState.ReceivedOn)
             {
                 yScore += 8;
             }
@@ -548,12 +542,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             sendingOn = -1;
             
 
-            var radioInfo = _clientStateSingleton.PlayerRadioInfo;
+            var radioInfo = _clientStateSingleton.PlayerGameState;
             //If its a hot intercom and thats not the currently selected radio
             //this is special logic currently for the gazelle as it has a hot mic, but no way of knowing if you're transmitting from the module itself
             //so we have to figure out what you're transmitting on in SRS
             if (radioInfo.intercomHotMic 
-                && radioInfo.control == PlayerRadioInfo.RadioSwitchControls.IN_COCKPIT
+                && radioInfo.control == PlayerGameState.RadioSwitchControls.IN_COCKPIT
                 && radioInfo.selected != 0 && !_ptt && !radioInfo.ptt)
             {
                 if (radioInfo.radios[0].modulation == RadioInformation.Modulation.INTERCOM)
@@ -566,15 +560,15 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             }
 
             var transmittingRadios = new List<RadioInformation>();
-            if (_ptt || _clientStateSingleton.PlayerRadioInfo.ptt)
+            if (_ptt || _clientStateSingleton.PlayerGameState.ptt)
             {
                 // Always add currently selected radio (if valid)
-                var currentSelected = _clientStateSingleton.PlayerRadioInfo.selected;
+                var currentSelected = _clientStateSingleton.PlayerGameState.selected;
                 RadioInformation currentlySelectedRadio = null;
                 if (currentSelected >= 0
-                    && currentSelected < _clientStateSingleton.PlayerRadioInfo.radios.Length)
+                    && currentSelected < _clientStateSingleton.PlayerGameState.radios.Length)
                 {
-                    currentlySelectedRadio = _clientStateSingleton.PlayerRadioInfo.radios[currentSelected];
+                    currentlySelectedRadio = _clientStateSingleton.PlayerGameState.radios[currentSelected];
 
                     if (currentlySelectedRadio != null && currentlySelectedRadio.modulation !=
                                                        RadioInformation.Modulation.DISABLED
@@ -600,7 +594,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             var sendingOn = -1;
             if (_ready
                 && _listener != null
-                && _clientStateSingleton.PlayerRadioInfo.IsCurrent()
+                && _clientStateSingleton.PlayerGameState.IsCurrent()
                 && _audioInputSingleton.MicrophoneAvailable
                 && (bytes != null)
                 && (transmittingRadios = PTTPressed(out sendingOn)).Count >0 )
@@ -648,8 +642,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                             AudioPart1Bytes = bytes,
                             AudioPart1Length = (ushort) bytes.Length,
                             Frequencies = frequencies.ToArray(),
-                            UnitId = _clientStateSingleton.PlayerRadioInfo.unitId,
-                            Encryptions = encryptions.ToArray(),
+                            UnitId = _clientStateSingleton.PlayerGameState.unitId,
                             Modulations = modulations.ToArray(),
                             PacketNumber = _packetNumber++,
                             OriginalClientGuidBytes = _guidAsciiBytes
@@ -659,7 +652,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
                         _listener.Send(encodedUdpVoicePacket, encodedUdpVoicePacket.Length, new IPEndPoint(_address, _port));
 
-                        var currentlySelectedRadio = _clientStateSingleton.PlayerRadioInfo.radios[sendingOn];
+                        var currentlySelectedRadio = _clientStateSingleton.PlayerGameState.radios[sendingOn];
 
                         //not sending or really quickly switched sending
                         if (currentlySelectedRadio != null &&
@@ -692,7 +685,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
                     if (_clientStateSingleton.RadioSendingState.SendingOn >= 0)
                     {
-                        var radio = _clientStateSingleton.PlayerRadioInfo.radios[_clientStateSingleton.RadioSendingState.SendingOn];
+                        var radio = _clientStateSingleton.PlayerGameState.radios[_clientStateSingleton.RadioSendingState.SendingOn];
 
                         _audioManager.PlaySoundEffectEndTransmit(_clientStateSingleton.RadioSendingState.SendingOn, radio.volume, radio.modulation);
                     }

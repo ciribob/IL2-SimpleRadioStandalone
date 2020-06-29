@@ -122,7 +122,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
         private void ClientRadioUpdated()
         {
             Logger.Debug("Sending Radio Update to Server");
-            var sideInfo = _clientStateSingleton.PlayerRadioInfo;
+            var sideInfo = _clientStateSingleton.PlayerGameState;
             SendToServer(new NetworkMessage
             {
                 Client = new SRClient
@@ -130,7 +130,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                     Coalition = sideInfo.coalition,
                     Name = sideInfo.name,
                     ClientGuid = _guid,
-                    RadioInfo = _clientStateSingleton.PlayerRadioInfo
+                    GameState = _clientStateSingleton.PlayerGameState
                 },
                 MsgType = NetworkMessage.MessageType.RADIO_UPDATE
             });
@@ -138,7 +138,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
         private void ClientCoalitionUpdate()
         {
-            var sideInfo = _clientStateSingleton.PlayerRadioInfo;
+            var sideInfo = _clientStateSingleton.PlayerGameState;
             SendToServer(new NetworkMessage
             {
                 Client = new SRClient
@@ -198,7 +198,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             {
                 try
                 {
-                    var sideInfo = _clientStateSingleton.PlayerRadioInfo;
+                    var sideInfo = _clientStateSingleton.PlayerGameState;
                     //start the loop off by sending a SYNC Request
                     SendToServer(new NetworkMessage
                     {
@@ -244,19 +244,19 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                                 srClient.Name = updatedSrClient.Name;
                                                 srClient.Coalition = updatedSrClient.Coalition;
 
-                                                if (updatedSrClient.RadioInfo != null)
+                                                if (updatedSrClient.GameState != null)
                                                 {
-                                                    srClient.RadioInfo = updatedSrClient.RadioInfo;
-                                                    srClient.RadioInfo.LastUpdate = DateTime.Now.Ticks;
+                                                    srClient.GameState = updatedSrClient.GameState;
+                                                    srClient.GameState.LastUpdate = DateTime.Now.Ticks;
                                                 }
                                                 else
                                                 {
                                                     //radio update but null RadioInfo means no change
                                                     if (serverMessage.MsgType ==
                                                         NetworkMessage.MessageType.RADIO_UPDATE &&
-                                                        srClient.RadioInfo != null)
+                                                        srClient.GameState != null)
                                                     {
-                                                        srClient.RadioInfo.LastUpdate = DateTime.Now.Ticks;
+                                                        srClient.GameState.LastUpdate = DateTime.Now.Ticks;
                                                     }
                                                 }
 
@@ -386,7 +386,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             }
 
             //disconnected - reset IL2 Info
-            ClientStateSingleton.Instance.PlayerRadioInfo.LastUpdate = 0;
+            ClientStateSingleton.Instance.PlayerGameState.LastUpdate = 0;
 
             //clear the clients list
             _clients.Clear();

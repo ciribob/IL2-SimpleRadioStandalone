@@ -381,15 +381,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         private void ReloadRadioAudioChannelSettings()
         {
             Radio1Config.Reload();
-            Radio2Config.Reload();
-            Radio3Config.Reload();
-            Radio4Config.Reload();
-            Radio5Config.Reload();
-            Radio6Config.Reload();
-            Radio7Config.Reload();
-            Radio8Config.Reload();
-            Radio9Config.Reload();
-            Radio10Config.Reload();
             IntercomConfig.Reload();
         }
 
@@ -470,7 +461,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
         private void ReloadProfileSettings()
         {
-            RadioEncryptionEffectsToggle.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioEncryptionEffects);
             RadioSwitchIsPTT.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioSwitchIsPTT);
 
             RadioTxStartToggle.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioTxEffects_Start);
@@ -479,17 +469,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             RadioRxStartToggle.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioRxEffects_Start);
             RadioRxEndToggle.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioRxEffects_End);
 
-            RadioMIDSToggle.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.MIDSRadioEffect);
-
             RadioSoundEffects.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioEffects);
             RadioSoundEffectsClipping.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioEffectsClipping);
-            NATORadioToneToggle.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.NATOTone);
-
-            AutoSelectChannel.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AutoSelectPresetChannel);
-
             AlwaysAllowHotas.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AlwaysAllowHotasControls);
             AllowIL2PTT.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AllowIL2PTT);
-            AlwaysAllowTransponderOverlay.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AlwaysAllowTransponderOverlay);
+   
         }
 
         private void Connect()
@@ -654,7 +638,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                 _client = null;
             }
 
-            ClientState.PlayerRadioInfo.Reset();
+            ClientState.PlayerGameState.Reset();
         }
 
         private void SaveSelectedInputAndOutput()
@@ -874,18 +858,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             {
                 SpeakerBoostLabel.Content = VolumeConversionHelper.ConvertLinearDiffToDB(convertedValue);
             }
-        }
-
-        private void RadioEncryptionEffects_Click(object sender, RoutedEventArgs e)
-        {
-            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.RadioEncryptionEffects,
-                (string) RadioEncryptionEffectsToggle.Content);
-        }
-
-        private void NATORadioTone_Click(object sender, RoutedEventArgs e)
-        {
-            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.NATOTone,
-                (string)NATORadioToneToggle.Content);
         }
 
         private void RadioSwitchPTT_Click(object sender, RoutedEventArgs e)
@@ -1190,16 +1162,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.RadioRxEffects_End, (bool) RadioRxEndToggle.IsChecked);
         }
 
-        private void RadioMIDS_Click(object sender, RoutedEventArgs e)
-        {
-            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.MIDSRadioEffect, (bool)RadioMIDSToggle.IsChecked);
-        }
-
-        private void AudioSelectChannel_OnClick(object sender, RoutedEventArgs e)
-        {
-            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.AutoSelectPresetChannel, (bool) AutoSelectChannel.IsChecked);
-        }
-
         private void RadioSoundEffectsClipping_OnClick(object sender, RoutedEventArgs e)
         {
             _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.RadioEffectsClipping,
@@ -1361,13 +1323,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             inputProfileWindow.Owner = this;
             inputProfileWindow.ShowDialog();
         }
-
-        private void AlwaysAllowTransponderOverlay_OnClick(object sender, RoutedEventArgs e)
-        {
-
-            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.AlwaysAllowTransponderOverlay, (bool)AlwaysAllowTransponderOverlay.IsChecked);
-        }
-
 
         private void ShowClientList_OnClick(object sender, RoutedEventArgs e)
         {

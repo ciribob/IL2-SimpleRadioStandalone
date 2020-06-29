@@ -5,7 +5,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2.Models
 {
     public struct CombinedRadioState
     {
-        public PlayerRadioInfo RadioInfo;
+        public PlayerGameState GameState;
 
         public RadioSendingState RadioSendingState;
 

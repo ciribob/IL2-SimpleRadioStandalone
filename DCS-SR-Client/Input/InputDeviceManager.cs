@@ -573,7 +573,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                             {
                                 _lastActiveBinding = bindState.MainDevice.InputBind;
 
-                                var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerRadioInfo;
+                                var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerGameState;
 
                                 if (IL2PlayerRadioInfo != null && IL2PlayerRadioInfo.IsCurrent())
                                 {

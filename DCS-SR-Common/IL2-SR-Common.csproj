@@ -121,7 +121,7 @@
     <Compile Include="Network\NetworkMessage.cs" />
     <Compile Include="Network\UDPInterfaceCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DCSState\PlayerRadioInfo.cs" />
+    <Compile Include="DCSState\PlayerGameState.cs" />
     <Compile Include="Helpers\RadioCalculator.cs" />
     <Compile Include="DCSState\RadioInformation.cs" />
     <Compile Include="DCSState\RadioTransmit.cs" />

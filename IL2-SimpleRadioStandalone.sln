@@ -25,7 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Inst
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{68C7B1F8-DF0E-4504-8C7D-6FEF4225466B}"
 	ProjectSection(SolutionItems) = preProject
-		install-build\awacs-radios.json = install-build\awacs-radios.json
 		Scripts\DCS-SRS\Scripts\DCS-SimpleRadioStandalone.lua = Scripts\DCS-SRS\Scripts\DCS-SimpleRadioStandalone.lua
 		Scripts\DCS-SRS-AutoConnectGameGUI.lua = Scripts\DCS-SRS-AutoConnectGameGUI.lua
 		Scripts\Hooks\DCS-SRS-hook.lua = Scripts\Hooks\DCS-SRS-hook.lua
@@ -33,6 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Scripts\DCS-SRS\Scripts\DCS-SRS-OverlayGameGUI.lua = Scripts\DCS-SRS\Scripts\DCS-SRS-OverlayGameGUI.lua
 		Scripts\DCS-SRS\Scripts\DCS-SRSGameGUI.lua = Scripts\DCS-SRS\Scripts\DCS-SRSGameGUI.lua
 		Scripts\DCS-SRS\entry.lua = Scripts\DCS-SRS\entry.lua
+		DCS-SR-Client\il2-radios.json = DCS-SR-Client\il2-radios.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IL2-SR-CommonTests", "DCS-SR-CommonTests\IL2-SR-CommonTests.csproj", "{A0245CB5-7C06-4FC7-9477-ECB0D1A88239}"

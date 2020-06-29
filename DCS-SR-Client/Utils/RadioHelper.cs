@@ -12,52 +12,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
 {
     public static class RadioHelper
     {
-        public static void ToggleGuard(int radioId)
-        {
-            var radio = GetRadio(radioId);
-
-            if (radio != null)
-            {
-                if (radio.freqMode == RadioInformation.FreqMode.OVERLAY || radio.guardFreqMode == RadioInformation.FreqMode.OVERLAY)
-                {
-                    if (radio.secFreq > 0)
-                    {
-                        radio.secFreq = 0; // 0 indicates we want it overridden + disabled
-                    }
-                    else
-                    {
-                        radio.secFreq = 1; //indicates we want it back
-                    }
-
-                    //make radio data stale to force resysnc
-                    ClientStateSingleton.Instance.LastSent = 0;
-                }
-            }
-        }
-
-        public static void SetGuard(int radioId, bool enabled)
-        {
-            var radio = GetRadio(radioId);
-
-            if (radio != null)
-            {
-                if (radio.freqMode == RadioInformation.FreqMode.OVERLAY || radio.guardFreqMode == RadioInformation.FreqMode.OVERLAY)
-                {
-                    if (!enabled)
-                    {
-                        radio.secFreq = 0; // 0 indicates we want it overridden + disabled
-                    }
-                    else
-                    {
-                        radio.secFreq = 1; //indicates we want it back
-                    }
-
-                    //make radio data stale to force resysnc
-                    ClientStateSingleton.Instance.LastSent = 0;
-                }
-            }
-        }
-
+     
+       
         public static bool UpdateRadioFrequency(double frequency, int radioId, bool delta = true, bool inMHz = true)
         {
             bool inLimit = true;
@@ -114,10 +70,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             if (radio != null)
             {
                 if (radio.modulation != RadioInformation.Modulation.DISABLED
-                    && ClientStateSingleton.Instance.PlayerRadioInfo.control ==
-                    PlayerRadioInfo.RadioSwitchControls.HOTAS)
+                    && ClientStateSingleton.Instance.PlayerGameState.control ==
+                    PlayerGameState.RadioSwitchControls.HOTAS)
                 {
-                    ClientStateSingleton.Instance.PlayerRadioInfo.selected = (short) radioId;
+                    ClientStateSingleton.Instance.PlayerGameState.selected = (short) radioId;
                     return true;
                 }
             }
@@ -127,7 +83,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
 
         public static RadioInformation GetRadio(int radio)
         {
-            var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerRadioInfo;
+            var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerGameState;
 
             if ((IL2PlayerRadioInfo != null) && IL2PlayerRadioInfo.IsCurrent() &&
                 radio < IL2PlayerRadioInfo.radios.Length && (radio >= 0))
@@ -141,10 +97,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
     
         public static void SelectNextRadio()
         {
-            var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerRadioInfo;
+            var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerGameState;
 
             if ((IL2PlayerRadioInfo != null) && IL2PlayerRadioInfo.IsCurrent() &&
-                IL2PlayerRadioInfo.control == PlayerRadioInfo.RadioSwitchControls.HOTAS)
+                IL2PlayerRadioInfo.control == PlayerGameState.RadioSwitchControls.HOTAS)
             {
                 if (IL2PlayerRadioInfo.selected < 0
                     || IL2PlayerRadioInfo.selected > IL2PlayerRadioInfo.radios.Length
@@ -181,10 +137,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
 
         public static void SelectPreviousRadio()
         {
-            var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerRadioInfo;
+            var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerGameState;
 
             if ((IL2PlayerRadioInfo != null) && IL2PlayerRadioInfo.IsCurrent() &&
-                IL2PlayerRadioInfo.control == PlayerRadioInfo.RadioSwitchControls.HOTAS)
+                IL2PlayerRadioInfo.control == PlayerGameState.RadioSwitchControls.HOTAS)
             {
                 if (IL2PlayerRadioInfo.selected < 0
                     || IL2PlayerRadioInfo.selected > IL2PlayerRadioInfo.radios.Length)
@@ -235,8 +191,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             if (currentRadio != null)
             {
                 if (currentRadio.modulation != RadioInformation.Modulation.DISABLED
-                    && ClientStateSingleton.Instance.PlayerRadioInfo.control ==
-                    PlayerRadioInfo.RadioSwitchControls.HOTAS)
+                    && ClientStateSingleton.Instance.PlayerGameState.control ==
+                    PlayerGameState.RadioSwitchControls.HOTAS)
                 {
                     //TODO
                 }
@@ -250,8 +206,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             if (currentRadio != null)
             {
                 if (currentRadio.modulation != RadioInformation.Modulation.DISABLED
-                    && ClientStateSingleton.Instance.PlayerRadioInfo.control ==
-                    PlayerRadioInfo.RadioSwitchControls.HOTAS)
+                    && ClientStateSingleton.Instance.PlayerGameState.control ==
+                    PlayerGameState.RadioSwitchControls.HOTAS)
                 {
                     //TODO
                 }

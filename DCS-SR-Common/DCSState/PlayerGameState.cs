@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 {
-    public class PlayerRadioInfo
+    public class PlayerGameState
     {
         //HOTAS or IN COCKPIT controls
         public enum RadioSwitchControls
@@ -16,11 +16,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         [JsonNetworkIgnoreSerialization]
         [JsonIL2IgnoreSerialization]
-        public string name = "";
+        public string name = "IL2-Player";
 
-        [JsonNetworkIgnoreSerialization]
-        [JsonIL2IgnoreSerialization]
-        public bool inAircraft = false;
 
         [JsonNetworkIgnoreSerialization]
         [JsonIL2IgnoreSerialization]
@@ -35,19 +32,16 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         [JsonNetworkIgnoreSerialization]
         public short selected = 0;
 
-        public string unit = "";
+        //public string unit = "";
 
         public short coalition = 0;
         
-        public uint unitId;
+        public long unitId = 0;
 
         [JsonNetworkIgnoreSerialization]
         [JsonIL2IgnoreSerialization]
         public bool intercomHotMic = false; //if true switch to intercom and transmit
 
-        [JsonIgnore]
-        public readonly static uint UnitIdOffset = 100000001
-            ; // this is where non aircraft "Unit" Ids start from for satcom intercom
 
         [JsonNetworkIgnoreSerialization]
         public SimultaneousTransmissionControl simultaneousTransmissionControl =
@@ -59,12 +53,36 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             EXTERNAL_IL2_CONTROL = 0,
         }
 
-        public PlayerRadioInfo()
+        public PlayerGameState()
         {
-            for (var i = 0; i < radios.Length; i++)
+            radios[0] = new RadioInformation()
+                {
+                    channel = -1,
+                    expansion = false,
+                    freq = 10000,
+                    freqMode = RadioInformation.FreqMode.OVERLAY,
+                    freqMax = 10000,
+                    freqMin = 10000,
+                    modulation = RadioInformation.Modulation.INTERCOM,
+                    volMode = RadioInformation.VolumeMode.OVERLAY,
+                    volume = 1.0f,
+                    name = "INTERCOM",
+                };
+
+            radios[1] = new RadioInformation()
             {
-                radios[i] = new RadioInformation();
-            }
+                channel = 1,
+                expansion = false,
+                freq = 2.5e+8,
+                freqMode = RadioInformation.FreqMode.OVERLAY,
+                freqMax = 3e+8,
+                freqMin = 2e+8,
+                modulation = RadioInformation.Modulation.AM,
+                volMode = RadioInformation.VolumeMode.OVERLAY,
+                volume = 1.0f,
+                name = "RADIO",
+            };
+
         }
 
         [JsonIgnore]
@@ -72,13 +90,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         public void Reset()
         {
-            name = "";
+            name = "IL2-Player";
             ptt = false;
             selected = 0;
-            unit = "";
             simultaneousTransmissionControl = SimultaneousTransmissionControl.ENABLED_INTERNAL_SRS_CONTROLS;
             LastUpdate = 0;
             coalition = 0;
+            unitId = 0;
 
             for (var i = 0; i < radios.Length; i++)
             {
@@ -97,7 +115,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                     return false;
                 }
 
-                var compareRadio = compare as PlayerRadioInfo;
+                var compareRadio = compare as PlayerGameState;
 
                 if (control != compareRadio.control)
                 {
@@ -111,17 +129,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                 {
                     return false;
                 }
-                if (!unit.Equals(compareRadio.unit))
-                {
-                    return false;
-                }
 
                 if (unitId != compareRadio.unitId)
-                {
-                    return false;
-                }
-
-                if (inAircraft != compareRadio.inAircraft)
                 {
                     return false;
                 }
@@ -151,7 +160,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
 
         /*
-         * Was Radio updated in the last 10 Seconds
+         * Was State updated in the last 10 Seconds
          */
 
         public bool IsCurrent()
@@ -169,17 +178,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         public RadioInformation CanHearTransmission(double frequency,
             RadioInformation.Modulation modulation,
-            byte encryptionKey,
-            uint sendingUnitId,
+            long sendingUnitId,
             List<int> blockedRadios,
             out RadioReceivingState receivingState)
         {
-        //    if (!IsCurrent())
-       //     {
-       //         receivingState = null;
-        //        decryptable = false;
-         //       return null;
-         //   }
 
             RadioInformation bestMatchingRadio = null;
             RadioReceivingState bestMatchingRadioState = null;
@@ -239,33 +241,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                             ReceivedOn = i
                         };
                     }
-                    if ((receivingRadio.secFreq == frequency)
-                        && (receivingRadio.secFreq > 10000))
-                    {
-                       
-                        receivingState = new RadioReceivingState
-                        {
-                            IsSecondary = true,
-                            LastReceivedAt = DateTime.Now.Ticks,
-                            ReceivedOn = i
-                        };
-                        return receivingRadio;
-                        
-                    }
+                   
                 }
             }
             receivingState = bestMatchingRadioState;
             return bestMatchingRadio;
         }
 
-        public PlayerRadioInfo DeepClone()
+        public PlayerGameState DeepClone()
         {
-            var clone = (PlayerRadioInfo) this.MemberwiseClone();
+            var clone = (PlayerGameState) this.MemberwiseClone();
 
             //ignore position
-            clone.radios = new RadioInformation[11];
+            clone.radios = new RadioInformation[this.radios.Length];
 
-            for (var i = 0; i < 11; i++)
+            for (var i = 0; i < clone.radios.Length; i++)
             {
                 clone.radios[i] = this.radios[i].Copy();
             }

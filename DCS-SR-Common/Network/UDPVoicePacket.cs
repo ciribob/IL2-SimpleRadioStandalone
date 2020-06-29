@@ -39,11 +39,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
 
         public static readonly int FrequencySegmentLength =
             sizeof(double) // double Frequency - 8 bytes
-            + sizeof(byte) // byte Modulation - 1 byte
-            + sizeof(byte); // byte Encryption - 1 byte
+            + sizeof(byte); // byte Modulation - 1 byte
 
         public static readonly int FixedPacketLength =
-            sizeof(uint) // UInt UnitId - 4 bytes
+            sizeof(long) // Int64 UnitId - 8 bytes
             + sizeof(ulong) // UInt64 PacketId - 8 bytes
             + sizeof(byte) // Byte indicating number of hops for this message // default is 0
             + GuidLength  // Bytes / ASCII String Transmission GUID - 22 bytes
@@ -68,11 +67,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
         SATCOM = 5,
         MIDS = 6,*/
         public byte[] Modulations { get; set; }
-    
-        public byte[] Encryptions { get; set; }
+        
 
         // FIXED SEGMENT
-        public uint UnitId { get; set; }
+        public long UnitId { get; set; }
         public byte[] GuidBytes { get; set; }
         public string Guid { get; set; }
 
@@ -149,10 +147,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
                 var mod = Modulations.Length > i ? Modulations[i] : (byte)4;
                 combinedBytes[frequencyOffset + 8] = mod;
 
-                // Radio encryption (1 byte), defaults to disabled if not defined for all frequencies
-                var enc = Encryptions.Length > i ? Encryptions[i] : (byte)0;
-                combinedBytes[frequencyOffset + 9] = enc;
-
                 frequencyOffset += FrequencySegmentLength;
             }
 
@@ -163,12 +157,16 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
             // Offset for fixed segment
             var fixedSegmentOffset = PacketHeaderLength + dynamicSegmentLength;
 
-            // Unit ID (uint, 4 bytes)
+            // Unit ID (long, 8 bytes)
             var unitId = BitConverter.GetBytes(UnitId);
             combinedBytes[fixedSegmentOffset] = unitId[0];
             combinedBytes[fixedSegmentOffset + 1] = unitId[1];
             combinedBytes[fixedSegmentOffset + 2] = unitId[2];
             combinedBytes[fixedSegmentOffset + 3] = unitId[3];
+            combinedBytes[fixedSegmentOffset + 4] = unitId[4];
+            combinedBytes[fixedSegmentOffset + 5] = unitId[5];
+            combinedBytes[fixedSegmentOffset + 6] = unitId[6];
+            combinedBytes[fixedSegmentOffset + 7] = unitId[7];
 
             // Packet ID (ulong, 8 bytes)
             var packetNumber = BitConverter.GetBytes(PacketNumber); //8 bytes
@@ -231,22 +229,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
 
                 var frequencies = new double[freqCount];
                 var modulations = new byte[freqCount];
-                var encryptions = new byte[freqCount];
 
                 var frequencyOffset = PacketHeaderLength + ecnAudio1;
                 for (var i = 0; i < freqCount; i++)
                 {
                     frequencies[i] = BitConverter.ToDouble(encodedOpusAudio, frequencyOffset);
                     modulations[i] = encodedOpusAudio[frequencyOffset + 8];
-                    encryptions[i] = encodedOpusAudio[frequencyOffset + 9];
 
                     frequencyOffset += FrequencySegmentLength;
                 }
 
-                var unitId = BitConverter.ToUInt32(encodedOpusAudio, PacketHeaderLength + ecnAudio1 + freqLength);
+                var unitId = BitConverter.ToInt64(encodedOpusAudio, PacketHeaderLength + ecnAudio1 + freqLength);
 
                 var packetNumber =
-                    BitConverter.ToUInt64(encodedOpusAudio, PacketHeaderLength + ecnAudio1 + freqLength + 4);
+                    BitConverter.ToUInt64(encodedOpusAudio, PacketHeaderLength + ecnAudio1 + freqLength + 8);
 
                 return new UDPVoicePacket
                 {
@@ -255,7 +251,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
                     AudioPart1Length = ecnAudio1,
                     Frequencies = frequencies,
                     UnitId = unitId,
-                    Encryptions = encryptions,
                     Modulations = modulations,
                     PacketNumber = packetNumber,
                     PacketLength = packetLength,

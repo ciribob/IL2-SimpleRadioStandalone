@@ -129,7 +129,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.UI.MainWindow
         {
             IDictionary<string, object> settings = new Dictionary<string, object>
             {
-                {"Icon", new BitmapImage(new Uri("pack://application:,,,/SR-Server;component/server-10.ico"))},
+                {"Icon", new BitmapImage(new Uri("pack://application:,,,/IL2-SR-Server;component/server-10.ico"))},
                 {"ResizeMode", ResizeMode.CanMinimize}
             };
             _windowManager.ShowWindow(_clientAdminViewModel, null, settings);

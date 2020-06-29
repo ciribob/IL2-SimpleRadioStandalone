@@ -241,8 +241,12 @@ namespace IL2_SR_Client
 
             var wrapper = new AsyncTargetWrapper(fileTarget, 5000, AsyncTargetWrapperOverflowAction.Discard);
             config.AddTarget("asyncFileTarget", wrapper);
-            config.LoggingRules.Add( new LoggingRule("*", LogLevel.Info, wrapper));
 
+#if DEBUG
+            config.LoggingRules.Add( new LoggingRule("*", LogLevel.Debug, wrapper));
+#else
+            config.LoggingRules.Add( new LoggingRule("*", LogLevel.Info, wrapper));
+#endif
             LogManager.Configuration = config;
             loggingReady = true;
 

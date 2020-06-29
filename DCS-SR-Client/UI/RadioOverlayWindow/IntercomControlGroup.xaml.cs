@@ -24,14 +24,14 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
         private void RadioSelectSwitch(object sender, RoutedEventArgs e)
         {
-            var currentRadio = _clientStateSingleton.PlayerRadioInfo.radios[RadioId];
+            var currentRadio = _clientStateSingleton.PlayerGameState.radios[RadioId];
 
             if (currentRadio.modulation != RadioInformation.Modulation.DISABLED)
             {
-                if (_clientStateSingleton.PlayerRadioInfo.control ==
-                    PlayerRadioInfo.RadioSwitchControls.HOTAS)
+                if (_clientStateSingleton.PlayerGameState.control ==
+                    PlayerGameState.RadioSwitchControls.HOTAS)
                 {
-                    _clientStateSingleton.PlayerRadioInfo.selected = (short) RadioId;
+                    _clientStateSingleton.PlayerGameState.selected = (short) RadioId;
                 }
             }
         }
@@ -44,13 +44,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
         private void RadioVolume_DragCompleted(object sender, RoutedEventArgs e)
         {
-            var currentRadio = _clientStateSingleton.PlayerRadioInfo.radios[RadioId];
+            var currentRadio = _clientStateSingleton.PlayerGameState.radios[RadioId];
 
             if (currentRadio.modulation != RadioInformation.Modulation.DISABLED)
             {
                 if (currentRadio.volMode == RadioInformation.VolumeMode.OVERLAY)
                 {
-                    var clientRadio = _clientStateSingleton.PlayerRadioInfo.radios[RadioId];
+                    var clientRadio = _clientStateSingleton.PlayerGameState.radios[RadioId];
 
                     clientRadio.volume = (float) RadioVolume.Value / 100.0f;
                 }
@@ -61,7 +61,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
         internal void RepaintRadioStatus()
         {
-            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerRadioInfo;
+            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerGameState;
 
             if ((IL2PlayerRadioInfo == null) || !IL2PlayerRadioInfo.IsCurrent())
             {

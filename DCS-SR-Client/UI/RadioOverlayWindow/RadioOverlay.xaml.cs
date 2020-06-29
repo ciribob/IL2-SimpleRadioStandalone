@@ -77,7 +77,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
         private void RadioRefresh(object sender, EventArgs eventArgs)
         {
-            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerRadioInfo;
+            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerGameState;
 
            
             Radio1.RepaintRadioStatus();

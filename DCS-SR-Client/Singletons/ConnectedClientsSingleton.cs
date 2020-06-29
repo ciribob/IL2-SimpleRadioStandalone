@@ -110,8 +110,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
             {
                 return 0;
             }
-            var currentClientPos = ClientStateSingleton.Instance.PlayerRadioInfo;
-            var currentUnitId = ClientStateSingleton.Instance.PlayerRadioInfo.unitId;
+            var currentClientPos = ClientStateSingleton.Instance.PlayerGameState;
+            var currentUnitId = ClientStateSingleton.Instance.PlayerGameState.unitId;
             var coalitionSecurity = SyncedServerSettings.Instance.GetSettingAsBool(ServerSettingsKeys.COALITION_AUDIO_SECURITY);
             var globalFrequencies = _serverSettings.GlobalFrequencies;
             var global = globalFrequencies.Contains(freq);
@@ -125,14 +125,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
                     if (global|| (!coalitionSecurity || (client.Value.Coalition == currentClientPos.coalition)))
                     {
 
-                        var radioInfo = client.Value.RadioInfo;
+                        var radioInfo = client.Value.GameState;
 
                         if (radioInfo != null)
                         {
                             RadioReceivingState radioReceivingState = null;
                             var receivingRadio = radioInfo.CanHearTransmission(freq,
                                 modulation,
-                                0,
                                 currentUnitId,
                                 new List<int>(),
                                 out radioReceivingState);

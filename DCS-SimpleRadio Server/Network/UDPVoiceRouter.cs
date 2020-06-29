@@ -307,7 +307,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                         {
                             foreach (var testFrequency in _globalFrequencies)
                             {
-                                if (PlayerRadioInfo.FreqCloseEnough(testFrequency, udpVoice.Frequencies[i]))
+                                if (PlayerGameState.FreqCloseEnough(testFrequency, udpVoice.Frequencies[i]))
                                 {
                                     //ignore everything as its global frequency
                                     global = true;
@@ -324,7 +324,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                         else if ((!coalitionSecurity || (client.Value.Coalition == fromClient.Coalition)))
                         {
 
-                            var radioInfo = client.Value.RadioInfo;
+                            var radioInfo = client.Value.GameState;
 
                             if (radioInfo != null)
                             {
@@ -333,7 +333,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                                     RadioReceivingState radioReceivingState = null;
                                     var receivingRadio = radioInfo.CanHearTransmission(udpVoice.Frequencies[i],
                                         (RadioInformation.Modulation)udpVoice.Modulations[i],
-                                        udpVoice.Encryptions[i],
                                         udpVoice.UnitId,
                                         _emptyBlockedRadios,
                                         out radioReceivingState);
@@ -358,7 +357,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                         {
                             foreach (var testFrequency in _testFrequencies)
                             {
-                                if (PlayerRadioInfo.FreqCloseEnough(testFrequency, frequency))
+                                if (PlayerGameState.FreqCloseEnough(testFrequency, frequency))
                                 {
                                     //send back to sending client as its a test frequency
                                     outgoingList.Add(ip);

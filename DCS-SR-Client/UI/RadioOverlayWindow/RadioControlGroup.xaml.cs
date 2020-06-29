@@ -60,11 +60,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
 
         private void RadioVolume_DragCompleted(object sender, RoutedEventArgs e)
         {
-            var currentRadio = _clientStateSingleton.PlayerRadioInfo.radios[RadioId];
+            var currentRadio = _clientStateSingleton.PlayerGameState.radios[RadioId];
 
             if (currentRadio.volMode == RadioInformation.VolumeMode.OVERLAY)
             {
-                var clientRadio = _clientStateSingleton.PlayerRadioInfo.radios[RadioId];
+                var clientRadio = _clientStateSingleton.PlayerGameState.radios[RadioId];
 
                 clientRadio.volume = (float) RadioVolume.Value / 100.0f;
             }
@@ -109,7 +109,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
         internal void RepaintRadioStatus()
         {
 
-            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerRadioInfo;
+            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerGameState;
 
             if ((IL2PlayerRadioInfo == null) || !IL2PlayerRadioInfo.IsCurrent())
             {
@@ -193,11 +193,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                         RadioFrequency.Text += "";
                     }
 
-                    if (currentRadio.secFreq > 100)
-                    {
-                        RadioFrequency.Text += " G";
-                    }
-
                     if (currentRadio.channel >= 0)
                     {
                         RadioFrequency.Text += " C" + currentRadio.channel;
@@ -247,7 +242,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
 
         internal void RepaintRadioReceive()
         {
-            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerRadioInfo;
+            var IL2PlayerRadioInfo = _clientStateSingleton.PlayerGameState;
             if (IL2PlayerRadioInfo == null)
             {
                 RadioFrequency.Foreground = new SolidColorBrush((Color) ColorConverter.ConvertFromString("#00FF00"));
