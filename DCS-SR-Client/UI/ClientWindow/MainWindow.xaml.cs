@@ -20,6 +20,9 @@ using System.Windows.Threading;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Audio;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Network;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2.Models;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Network.Models;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Preferences;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Settings;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
@@ -30,6 +33,7 @@ using Ciribob.IL2.SimpleRadio.Standalone.Common;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Helpers;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Network;
 using Ciribob.IL2.SimpleRadio.Standalone.Overlay;
+using Easy.MessageHub;
 using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using NAudio.CoreAudioApi;
@@ -46,7 +50,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        public delegate void ReceivedAutoConnect(string address, int port);
 
         public delegate void ToggleOverlayCallback(bool uiButton);
 
@@ -56,7 +59,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private AudioPreview _audioPreview;
         private SRSClientSyncHandler _client;
-        private int _port = 5002;
+        private int _port = 6002;
 
         private Overlay.RadioOverlayWindow _radioOverlayWindow;
 
@@ -87,6 +90,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         public AudioOutputSingleton AudioOutput { get; } = AudioOutputSingleton.Instance;
 
         private readonly SyncedServerSettings _serverSettings = SyncedServerSettings.Instance;
+        private readonly IL2RadioSyncManager _il2RadioSyncManager;
 
         public MainWindow()
         {
@@ -110,8 +114,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             WindowStartupLocation = WindowStartupLocation.Manual;
             Left = _globalSettings.GetPositionSetting(GlobalSettingsKeys.ClientX).DoubleValue;
             Top = _globalSettings.GetPositionSetting(GlobalSettingsKeys.ClientY).DoubleValue;
-
-
 
             Title = Title + " - " + UpdaterChecker.VERSION;
 
@@ -165,6 +167,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             _updateTimer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(100)};
             _updateTimer.Tick += UpdatePlayerLocationAndVUMeters;
             _updateTimer.Start();
+
+            _il2RadioSyncManager = new IL2RadioSyncManager();
+
+            MessageHub.Instance.Subscribe<SRSAddressMessage>(AutoConnect);
 
         }
 
@@ -343,20 +349,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             RadioOverlay.ControlInputBinding = InputBinding.OverlayToggle;
             RadioOverlay.InputDeviceManager = InputManager;
 
-            NextRadio.InputName = "Select Next Radio";
-            NextRadio.ControlInputBinding = InputBinding.NextRadio;
-            NextRadio.InputDeviceManager = InputManager;
-
-            PreviousRadio.InputName = "Select Previous Radio";
-            PreviousRadio.ControlInputBinding = InputBinding.PreviousRadio;
-            PreviousRadio.InputDeviceManager = InputManager;
-
             RadioChannelUp.InputName = "Radio Channel Up";
             RadioChannelUp.ControlInputBinding = InputBinding.RadioChannelUp;
             RadioChannelUp.InputDeviceManager = InputManager;
 
             RadioChannelDown.InputName = "Radio Channel Down";
-            RadioChannelDown.ControlInputBinding = InputBinding.Down0001;
+            RadioChannelDown.ControlInputBinding = InputBinding.RadioChannelDown;
             RadioChannelDown.InputDeviceManager = InputManager;
         }
 
@@ -372,8 +370,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             PTT.LoadInputSettings();
             Intercom.LoadInputSettings();
             RadioOverlay.LoadInputSettings();
-            NextRadio.LoadInputSettings();
-            PreviousRadio.LoadInputSettings();
             RadioChannelUp.LoadInputSettings();
             RadioChannelDown.LoadInputSettings();
         }
@@ -471,8 +467,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             RadioSoundEffects.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioEffects);
             RadioSoundEffectsClipping.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioEffectsClipping);
-            AlwaysAllowHotas.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AlwaysAllowHotasControls);
-            AllowIL2PTT.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.AllowIL2PTT);
+            
    
         }
 
@@ -497,36 +492,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                         _resolvedIp = ip;
                         _port = GetPortFromTextBox();
 
-                        _client = new SRSClientSyncHandler(_guid, UpdateUICallback, delegate(string name)
-                        {
-                            try
-                            {
-                                //on MAIN thread
-                                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
-                                    new ThreadStart(() =>
-                                    {
-                                        //Handle Aircraft Name - find matching profile and select if you can
-                                        name = Regex.Replace(name.Trim().ToLower(), "[^a-zA-Z0-9]", "");
-
-                                        foreach (var profileName in _globalSettings.ProfileSettingsStore.ProfileNames)
-                                        {
-                                            if (name.StartsWith(Regex.Replace(profileName.Trim().ToLower(), "[^a-zA-Z0-9]",
-                                                "")))
-                                            {
-                                                ControlsProfile.SelectedItem = profileName;
-                                                return;
-                                            }
-                                        }
-
-                                        ControlsProfile.SelectedIndex = 0;
-
-                                    }));
-                            }
-                            catch (Exception ex)
-                            {
-                            }
-
-                        });
+                        _client = new SRSClientSyncHandler(_guid, UpdateUICallback);
                         _client.TryConnect(new IPEndPoint(_resolvedIp, _port), ConnectCallback);
 
                         StartStop.Content = "Connecting...";
@@ -590,7 +556,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                 throw new ArgumentException("specified port is not valid");
             }
 
-            return 5002;
+            return 6002;
         }
 
         private void Stop(bool connectionError = false)
@@ -637,8 +603,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                 _client.Disconnect();
                 _client = null;
             }
-
-            ClientState.PlayerGameState.Reset();
         }
 
         private void SaveSelectedInputAndOutput()
@@ -686,7 +650,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             string currentConnection = ServerIp.Text.Trim();
             if (!currentConnection.Contains(":"))
             {
-                currentConnection += ":5002";
+                currentConnection += ":6002";
             }
 
             if (result)
@@ -753,6 +717,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            MessageHub.Instance.ClearSubscriptions();
+            _il2RadioSyncManager.Stop();
+
             _globalSettings.SetPositionSetting(GlobalSettingsKeys.ClientX, Left);
             _globalSettings.SetPositionSetting(GlobalSettingsKeys.ClientY, Top);
 
@@ -775,6 +742,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             _radioOverlayWindow?.Close();
             _radioOverlayWindow = null;
+
 
 
         }
@@ -897,98 +865,25 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             }
         }
 
-
-        private void AutoConnect(string address, int port)
+     
+        private void AutoConnect(SRSAddressMessage message)
         {
-            string connection = $"{address}:{port}";
+            string connection = message.SRSAddress;
 
             Logger.Info($"Received AutoConnect IL2-SRS @ {connection}");
 
             if (ClientState.IsConnected)
             {
-                // Always show prompt about active/advertised SRS connection mismatch if client is already connected
-                string[] currentConnectionParts = ServerIp.Text.Trim().Split(':');
-                string currentAddress = currentConnectionParts[0];
-                int currentPort = 5002;
-                if (currentConnectionParts.Length >= 2)
-                {
-                    if (!int.TryParse(currentConnectionParts[1], out currentPort))
-                    {
-                        Logger.Warn($"Failed to parse port {currentConnectionParts[1]} of current connection, falling back to 5002 for autoconnect comparison");
-                        currentPort = 5002;
-                    }
-                }
-                string currentConnection = $"{currentAddress}:{currentPort}";
+                string currentConnection = ServerIp.Text.Trim();
 
-                if (string.Equals(address, currentAddress, StringComparison.OrdinalIgnoreCase) && port == currentPort)
+                if (string.Equals(connection, currentConnection, StringComparison.OrdinalIgnoreCase))
                 {
                     // Current connection matches SRS server advertised by IL2, all good
                     Logger.Info($"Current SRS connection {currentConnection} matches advertised server {connection}, ignoring autoconnect");
-                    return;
                 }
-                else if (port != currentPort)
+                else 
                 {
                     // Port mismatch, will always be a different server, no need to perform hostname lookups
-                    HandleAutoConnectMismatch(currentConnection, connection);
-                    return;
-                }
-
-                // Perform DNS lookup of advertised and current hostnames to find hostname/resolved IP matches
-                List<string> currentIPs = new List<string>();
-
-                if (IPAddress.TryParse(currentAddress, out IPAddress currentIP))
-                {
-                    currentIPs.Add(currentIP.ToString());
-                }
-                else
-                {
-                    try
-                    {
-                        foreach (IPAddress ip in Dns.GetHostAddresses(currentConnectionParts[0]))
-                        {
-                            // SRS currently only supports IPv4 (due to address/port parsing)
-                            if (ip.AddressFamily == AddressFamily.InterNetwork)
-                            {
-                                currentIPs.Add(ip.ToString());
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Warn(e, $"Failed to resolve current SRS host {currentConnectionParts[0]} to IP addresses, ignoring autoconnect advertisement");
-                        return;
-                    }
-                }
-
-                List<string> advertisedIPs = new List<string>();
-
-                if (IPAddress.TryParse(address, out IPAddress advertisedIP))
-                {
-                    advertisedIPs.Add(advertisedIP.ToString());
-                }
-                else
-                {
-                    try
-                    {
-                        foreach (IPAddress ip in Dns.GetHostAddresses(connection))
-                        {
-                            // SRS currently only supports IPv4 (due to address/port parsing)
-                            if (ip.AddressFamily == AddressFamily.InterNetwork)
-                            {
-                                advertisedIPs.Add(ip.ToString());
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Warn(e, $"Failed to resolve advertised SRS host {address} to IP addresses, ignoring autoconnect advertisement");
-                        return;
-                    }
-                }
-
-                if (!currentIPs.Intersect(advertisedIPs).Any())
-                {
-                    // No resolved IPs match, display mismatch warning
                     HandleAutoConnectMismatch(currentConnection, connection);
                 }
             }
@@ -1003,7 +898,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
                     WindowHelper.BringProcessToFront(Process.GetCurrentProcess());
 
                     var result = MessageBox.Show(this,
-                        $"Would you like to try to auto-connect to IL2-SRS @ {address}:{port}? ", "Auto Connect",
+                        $"Would you like to try to auto-connect to IL2-SRS @ {connection}? ", "Auto Connect",
                         MessageBoxButton.YesNo,
                         MessageBoxImage.Question);
 
@@ -1177,16 +1072,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         private void StartMinimised_OnClick(object sender, RoutedEventArgs e)
         {
             _globalSettings.SetClientSetting(GlobalSettingsKeys.StartMinimised,(bool)StartMinimised.IsChecked);
-        }
-
-        private void AllowIL2PTT_OnClick(object sender, RoutedEventArgs e)
-        {
-            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.AllowIL2PTT,(bool)AllowIL2PTT.IsChecked);
-        }
-
-        private void AlwaysAllowHotas_OnClick(object sender, RoutedEventArgs e)
-        {
-            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.AlwaysAllowHotasControls,(bool)AlwaysAllowHotas.IsChecked);
         }
 
         private void CheckForBetaUpdates_OnClick(object sender, RoutedEventArgs e)

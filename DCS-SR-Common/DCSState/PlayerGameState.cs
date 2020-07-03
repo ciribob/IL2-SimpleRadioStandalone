@@ -36,7 +36,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         public short coalition = 0;
         
-        public long unitId = 0;
+        public int unitId = 0;
 
         [JsonNetworkIgnoreSerialization]
         [JsonIL2IgnoreSerialization]
@@ -46,6 +46,19 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         [JsonNetworkIgnoreSerialization]
         public SimultaneousTransmissionControl simultaneousTransmissionControl =
             SimultaneousTransmissionControl.EXTERNAL_IL2_CONTROL;
+
+
+        [JsonNetworkIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
+        public static readonly double CHANNEL_OFFSET = 1000000; //for channel <> Freq conversion
+
+        [JsonNetworkIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
+        public static readonly int CHANNEL_LIMIT = 5;
+
+        [JsonNetworkIgnoreSerialization]
+        [JsonIL2IgnoreSerialization]
+        public static readonly double START_FREQ = 250*1000000; //for channel <> Freq conversion
 
         public enum SimultaneousTransmissionControl
         {
@@ -73,7 +86,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             {
                 channel = 1,
                 expansion = false,
-                freq = 2.5e+8,
+                freq = START_FREQ,
                 freqMode = RadioInformation.FreqMode.OVERLAY,
                 freqMax = 3e+8,
                 freqMin = 2e+8,
@@ -121,10 +134,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                 {
                     return false;
                 }
-                //if (side != compareRadio.side)
-                //{
-                //    return false;
-                //}
+                if (coalition != compareRadio.coalition)
+                {
+                    return false;
+                }
                 if (!name.Equals(compareRadio.name))
                 {
                     return false;
@@ -196,8 +209,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                     if ((receivingRadio.modulation == RadioInformation.Modulation.INTERCOM) &&
                         (modulation == RadioInformation.Modulation.INTERCOM))
                     {
-                        if ((unitId > 0) && (sendingUnitId > 0)
-                            && (unitId == sendingUnitId) )
+                        if (
+                            // (unitId > 0) && (sendingUnitId > 0)
+                            // && 
+                            (unitId == sendingUnitId) )
                         {
                             receivingState = new RadioReceivingState
                             {

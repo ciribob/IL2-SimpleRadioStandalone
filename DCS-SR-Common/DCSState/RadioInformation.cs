@@ -58,16 +58,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         public bool expansion = false;
 
         [JsonNetworkIgnoreSerialization]
-        public int channel = -1;
+        public int channel = 1;
 
-        [JsonNetworkIgnoreSerialization]
-        [JsonIL2IgnoreSerialization]
-        public static readonly double CHANNEL_OFFSET = 1000000; //for channel <> Freq conversion
-
-        [JsonNetworkIgnoreSerialization]
-        [JsonIL2IgnoreSerialization]
-        public static readonly int CHANNEL_LIMIT = 5;
-        
         /**
          * Used to determine if we should send an update to the server or not
          * We only need to do that if something that would stop us Receiving happens which

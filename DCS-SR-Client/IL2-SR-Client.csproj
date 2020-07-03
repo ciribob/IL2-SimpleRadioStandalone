@@ -198,6 +198,8 @@
     <Compile Include="Network\IL2\Models\ServerAddressMessage.cs" />
     <Compile Include="Network\IL2\Models\ServerTitleMessage.cs" />
     <Compile Include="Network\IL2\Models\SRSAddressMessage.cs" />
+    <Compile Include="Network\Models\AutoConnectMessage.cs" />
+    <Compile Include="Network\Models\PlayerStateUpdate.cs" />
     <Compile Include="Settings\ProfileSettingsStore.cs" />
     <Compile Include="Input\InputBindState.cs" />
     <Compile Include="Network\IL2\IL2RadioSyncHandler.cs" />
@@ -340,12 +342,6 @@
     <None Include="il2-radios.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="AudioEffects\nato-mids-tone-out.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="AudioEffects\nato-mids-tone.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -404,12 +400,6 @@
     <Resource Include="status-connected.png" />
     <Resource Include="status-disconnected-error.png" />
     <Resource Include="status-disconnected.png" />
-    <None Include="AudioEffects\KY-58-RX-1600.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="AudioEffects\KY-58-TX-1600.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="AudioEffects\Radio-RX-1600.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -422,7 +412,6 @@
     <Content Include="AudioEffects\beep-connected.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="AudioEffects\nato-tone-16k.wav" />
     <Content Include="speexdsp.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

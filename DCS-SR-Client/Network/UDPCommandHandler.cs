@@ -60,15 +60,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                             JsonConvert.DeserializeObject<UDPInterfaceCommand>(Encoding.UTF8.GetString(
                                 bytes, 0, bytes.Length));
 
-                        if (message?.Command == UDPInterfaceCommand.UDPCommandType.FREQUENCY_DELTA)
-                        {
-                            RadioHelper.UpdateRadioFrequency(message.Frequency, message.RadioId);
-                        }
-                        else if (message?.Command == UDPInterfaceCommand.UDPCommandType.FREQUENCY_SET)
-                        {
-                            RadioHelper.UpdateRadioFrequency(message.Frequency, message.RadioId,false,true);
-                        }
-                        else if (message?.Command == UDPInterfaceCommand.UDPCommandType.ACTIVE_RADIO)
+                        if (message?.Command == UDPInterfaceCommand.UDPCommandType.ACTIVE_RADIO)
                         {
                             RadioHelper.SelectRadio(message.RadioId);
                         }

@@ -7,20 +7,24 @@
              Name="RadioControlContainer"
              Width="130"
              Height="40">
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center"   Width="130">
+
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="3">
 
             <TextBlock x:Name="RadioLabel"
+                       Width="94"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Top"
-                       FontSize="10"
+                       FontSize="12"
                        Foreground="#E7E7E7"
+                       FontFamily="Courier New"
                        Padding="0,0,0,0"
                        Style="{x:Null}"
                        Text="INTERCOM"
                        TextAlignment="Center" />
 
-            <Ellipse x:Name="RadioActive"
+
+            <Ellipse Margin="0,0,0,0" x:Name="RadioActive"
                      Width="12"
                      Height="12"
                      HorizontalAlignment="Right"
@@ -34,11 +38,10 @@
         </StackPanel>
        
         <Slider x:Name="RadioVolume"
-                Width="100"
-                Height="20"
-                IsEnabled="False"
+                Width="80"
+                Height="30"
+                IsEnabled="True"
                 Maximum="100"
-                Style="{x:Null}"
                 Thumb.DragCompleted="RadioVolume_DragCompleted"
                 Thumb.DragStarted="RadioVolume_DragStarted" />
 

@@ -327,7 +327,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                     }
                     else
                     {
-                        changed = !client.GameState.Equals(message.Client.GameState);
+                        changed = !client.GameState.Equals(message.Client.GameState) || client.Coalition != message.Client.Coalition;
                     }
 
                     client.LastUpdate = DateTime.Now.Ticks;
@@ -387,6 +387,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                 Client = new SRClient
                 {
                     ClientGuid = message.Client.ClientGuid,
+                    Coalition = message.Client.Coalition,
+                    GameState = message.Client.GameState,
+                    Name = message.Client.Name
                 }
             };
 

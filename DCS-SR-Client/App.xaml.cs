@@ -133,7 +133,7 @@ namespace IL2_SR_Client
                     {
                         UseShellExecute = true,
                         WorkingDirectory = "\"" + location + "\"",
-                        FileName = "SR-ClientRadio.exe",
+                        FileName = "IL2-SR-ClientRadio.exe",
                         Verb = "runas",
                         Arguments = GetArgsString() + " -allowMultiple"
                     };
@@ -184,7 +184,7 @@ namespace IL2_SR_Client
                     builder.Append(str);
                     builder.Append("\"");
                 }
-                else if (s.Contains("SR-ClientRadio.exe"))
+                else if (s.Contains("IL2-SR-ClientRadio.exe"))
                 {
                     ///ignore
                 }

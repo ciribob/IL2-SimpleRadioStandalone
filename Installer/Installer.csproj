@@ -244,19 +244,15 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(SolutionDir)install-build\Scripts" mkdir "$(SolutionDir)install-build\Scripts"
+    <PostBuildEvent>
 if not exist "$(SolutionDir)install-build\AudioEffects" mkdir "$(SolutionDir)install-build\AudioEffects"
-copy /Y "$(SolutionDir)DCS-SimpleRadio Server\bin\x64\Release\SR-Server.exe" "$(SolutionDir)install-build\SR-Server.exe"
-copy /Y "$(SolutionDir)DCS-SR-Client\bin\x64\Release\SR-ClientRadio.exe" "$(SolutionDir)install-build\SR-ClientRadio.exe"
+copy /Y "$(SolutionDir)DCS-SimpleRadio Server\bin\x64\Release\IL2-SR-Server.exe" "$(SolutionDir)install-build\IL2-SR-Server.exe"
+copy /Y "$(SolutionDir)DCS-SR-Client\bin\x64\Release\IL2-SR-ClientRadio.exe" "$(SolutionDir)install-build\IL2-SR-ClientRadio.exe"
 copy /Y "$(SolutionDir)DCS-SR-Client\bin\x64\Release\opus.dll" "$(SolutionDir)install-build\opus.dll"
 copy /Y "$(SolutionDir)DCS-SR-Client\bin\x64\Release\speexdsp.dll" "$(SolutionDir)install-build\speexdsp.dll"
-copy /Y "$(SolutionDir)DCS-SR-Client\bin\x64\Release\awacs-radios.json" "$(SolutionDir)install-build\awacs-radios.json"
 xcopy /Y /e "$(SolutionDir)DCS-SR-Client\AudioEffects" "$(SolutionDir)install-build\AudioEffects"
 copy /Y "$(SolutionDir)Installer\bin\x64\Release\Installer.exe" "$(SolutionDir)install-build\Installer.exe"
 copy /Y "$(SolutionDir)AutoUpdater\bin\Release\SRS-AutoUpdater.exe" "$(SolutionDir)install-build\SRS-AutoUpdater.exe" 
-xcopy /Y /e "$(SolutionDir)Scripts" "$(SolutionDir)install-build\Scripts"
-if not exist "$(SolutionDir)install-build\Scripts\DCS-SRS\bin\" mkdir "$(SolutionDir)install-build\Scripts\DCS-SRS\bin\"
-copy /Y "$(SolutionDir)x64\Release\srs.dll" "$(SolutionDir)install-build\Scripts\DCS-SRS\bin\srs.dll"
 </PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

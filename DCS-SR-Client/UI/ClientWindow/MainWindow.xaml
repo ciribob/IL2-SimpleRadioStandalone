@@ -130,7 +130,7 @@
                                  Height="23"
                                  Margin="0,0,5,0"
                                  MaxLines="1"
-                                 Text="127.0.0.1:5002"
+                                 Text="127.0.0.1:6002"
                                  TextWrapping="Wrap" />
 
                         <ComboBox x:Name="ServerAddressPicker"
@@ -323,28 +323,14 @@
                                                    ControlInputBinding="{x:Static settings:InputBinding.OverlayToggle}"
                                                    InputName="Overlay Toggle" />
 
-
-                            <local:InputBindingControl x:Name="NextRadio"
-                                                   Grid.Row="5"
-                                                   Grid.ColumnSpan="5"
-                                                   ControlInputBinding="{x:Static settings:InputBinding.NextRadio}"
-                                                   InputName="Next Radio" />
-
-
-                            <local:InputBindingControl x:Name="PreviousRadio"
-                                                   Grid.Row="6"
-                                                   Grid.ColumnSpan="5"
-                                                   ControlInputBinding="{x:Static settings:InputBinding.PreviousRadio}"
-                                                   InputName="Previous Radio" />
-
                             <local:InputBindingControl x:Name="RadioChannelUp"
-                                                   Grid.Row="7"
+                                                   Grid.Row="5"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.RadioChannelUp}"
                                                    InputName="Radio Channel Up" />
 
                             <local:InputBindingControl x:Name="RadioChannelDown"
-                                                   Grid.Row="8"
+                                                   Grid.Row="6"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.RadioChannelDown}"
                                                    InputName="Radio Channel Down" />
@@ -1025,61 +1011,6 @@
                                 </ToggleButton.Style>
                             </ToggleButton>
 
-
-
-                            <Label Grid.Row="9"
-                               Grid.Column="0"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="ALWAYS allow SRS Hotkeys" />
-
-                            <ToggleButton Name="AlwaysAllowHotas"
-                                      Grid.Row="9"
-                                      Grid.Column="1"
-                                      HorizontalContentAlignment="Center"
-                                      VerticalContentAlignment="Center"
-                                      Click="AlwaysAllowHotas_OnClick">
-                                <ToggleButton.Style>
-                                    <Style TargetType="{x:Type ToggleButton}">
-                                        <Setter Property="Content" Value="ON" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter Property="Content" Value="ON" />
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="False">
-                                                <Setter Property="Content" Value="OFF" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ToggleButton.Style>
-                            </ToggleButton>
-
-                            <Label Grid.Row="11"
-                                   Grid.Column="0"
-                                   HorizontalContentAlignment="Center"
-                                   VerticalContentAlignment="Center"
-                                   Content="Allow IL2 Controlled PTT" />
-
-                            <ToggleButton Name="AllowIL2PTT"
-                                      Grid.Row="11"
-                                      Grid.Column="1"
-                                      HorizontalContentAlignment="Center"
-                                      VerticalContentAlignment="Center"
-                                      Click="AllowIL2PTT_OnClick">
-                                <ToggleButton.Style>
-                                    <Style TargetType="{x:Type ToggleButton}">
-                                        <Setter Property="Content" Value="ON" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter Property="Content" Value="ON" />
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="False">
-                                                <Setter Property="Content" Value="OFF" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ToggleButton.Style>
-                            </ToggleButton>
 
                             <Label Grid.Row="22"
                                    Grid.Column="0"

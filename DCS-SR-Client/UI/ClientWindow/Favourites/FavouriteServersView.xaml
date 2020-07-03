@@ -85,7 +85,6 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" />
                 <DataGridTextColumn Binding="{Binding Path=Address}" Header="ServerAddress/port" />
-                <DataGridTextColumn Binding="{Binding Path=EAMCoalitionPassword}" Header="EAM coal. pass" />
                 <DataGridTemplateColumn Header="Is Default">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="ui:ServerAddress">

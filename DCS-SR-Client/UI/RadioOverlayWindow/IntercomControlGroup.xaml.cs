@@ -19,7 +19,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
         {
             InitializeComponent();
         }
-
         public int RadioId { private get; set; }
 
         private void RadioSelectSwitch(object sender, RoutedEventArgs e)
@@ -63,11 +62,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
         {
             var IL2PlayerRadioInfo = _clientStateSingleton.PlayerGameState;
 
-            if ((IL2PlayerRadioInfo == null) || !IL2PlayerRadioInfo.IsCurrent())
+            if ((IL2PlayerRadioInfo == null) || !_clientStateSingleton.IsConnected)
             {
                 RadioActive.Fill = new SolidColorBrush(Colors.Red);
-
-                RadioVolume.IsEnabled = false;
 
                 //reset dragging just incase
                 _dragging = false;
@@ -78,7 +75,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
                 var transmitting = _clientStateSingleton.RadioSendingState;
                 if (RadioId == IL2PlayerRadioInfo.selected || transmitting.IsSending && (transmitting.SendingOn == RadioId))
                 {
-
                     if (transmitting.IsSending && (transmitting.SendingOn == RadioId))
                     {
                         RadioActive.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#96FF6D"));
@@ -91,21 +87,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
                 else
                 {
                     RadioActive.Fill = new SolidColorBrush(Colors.Orange);
-                    
-
-                }
-
-                if (currentRadio.modulation == RadioInformation.Modulation.INTERCOM) //intercom
-                {
-                    RadioLabel.Text = "INTERCOM";
-
-                    RadioVolume.IsEnabled = currentRadio.volMode == RadioInformation.VolumeMode.OVERLAY;
-                }
-                else
-                {
-                    RadioLabel.Text = "NO INTERCOM";
-                    RadioActive.Fill = new SolidColorBrush(Colors.Red);
-                    RadioVolume.IsEnabled = false;
                 }
 
                 if (_dragging == false)

@@ -72,55 +72,16 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
             _dragging = false;
         }
 
-        private void ToggleButtons(bool enable)
-        {
-            if (enable)
-            {
-                Channel1.Visibility = Visibility.Visible;
-                Channel2.Visibility = Visibility.Visible;
-                Channel3.Visibility = Visibility.Visible;
-                Channel4.Visibility = Visibility.Visible;
-                Channel5.Visibility = Visibility.Visible;
-
-                Channel1.IsEnabled = true;
-                Channel2.IsEnabled = true;
-                Channel3.IsEnabled = true;
-                Channel4.IsEnabled = true;
-                Channel5.IsEnabled = true;
-
-            }
-            else
-            {
-                Channel1.Visibility = Visibility.Hidden;
-                Channel2.Visibility = Visibility.Hidden;
-                Channel3.Visibility = Visibility.Hidden;
-                Channel4.Visibility = Visibility.Hidden;
-                Channel5.Visibility = Visibility.Hidden;
-
-                Channel1.IsEnabled = true;
-                Channel2.IsEnabled = true;
-                Channel3.IsEnabled = true;
-                Channel4.IsEnabled = true;
-                Channel5.IsEnabled = true;
-
-            }
-        }
 
         internal void RepaintRadioStatus()
         {
-
             var IL2PlayerRadioInfo = _clientStateSingleton.PlayerGameState;
 
-            if ((IL2PlayerRadioInfo == null) || !IL2PlayerRadioInfo.IsCurrent())
+            if (IL2PlayerRadioInfo == null || !_clientStateSingleton.IsConnected)
             {
                 RadioActive.Fill = new SolidColorBrush(Colors.Red);
-                RadioFrequency.Text = "Unknown";
+                RadioFrequency.Text = "Not Connected";
 
-                RadioVolume.IsEnabled = false;
-
-                TunedClients.Visibility = Visibility.Hidden;
-
-                ToggleButtons(false);
 
                 //reset dragging just incase
                 _dragging = false;
@@ -149,95 +110,24 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                 }
                 else
                 {
-                   
                     RadioActive.Fill = new SolidColorBrush(Colors.Orange);
-                    
-                    
                 }
 
-                if (currentRadio.modulation == RadioInformation.Modulation.DISABLED) // disabled
-                {
-                    RadioActive.Fill = new SolidColorBrush(Colors.Red);
-                    RadioFrequency.Text = "Unknown";
-
-                    RadioVolume.IsEnabled = false;
-
-                    TunedClients.Visibility = Visibility.Hidden;
-
-                    ToggleButtons(false);
-                    return;
-                }
-
-               
-
-                if (currentRadio.modulation == RadioInformation.Modulation.INTERCOM) //intercom
-                {
-                    RadioFrequency.Text = "INTERCOM";
-                }
-                else
-                {
-                    RadioFrequency.Text =
-                        (currentRadio.freq / MHz).ToString("0.000",
-                            CultureInfo.InvariantCulture); //make nuber UK / US style with decimals not commas!
-                        
-                    if(currentRadio.modulation == RadioInformation.Modulation.AM)
-                    {
-                        RadioFrequency.Text += "AM";
-                    }
-                    else if(currentRadio.modulation == RadioInformation.Modulation.FM)
-                    {
-                        RadioFrequency.Text += "FM";
-                    }
-                    else
-                    {
-                        RadioFrequency.Text += "";
-                    }
-
-                    if (currentRadio.channel >= 0)
-                    {
-                        RadioFrequency.Text += " C" + currentRadio.channel;
-                    }
-
-                }
-
+                RadioFrequency.Text = "CHN " + currentRadio.channel;
 
                 int count = _connectClientsSingleton.ClientsOnFreq(currentRadio.freq, currentRadio.modulation);
 
                 if (count > 0)
                 {
-                    TunedClients.Text = "👤" + count;
-                    TunedClients.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    TunedClients.Visibility = Visibility.Hidden;
+                    RadioFrequency.Text += " - " + count;
                 }
 
-
-                if (currentRadio.volMode == RadioInformation.VolumeMode.OVERLAY)
-                {
-                    RadioVolume.IsEnabled = true;
-
-                    //reset dragging just incase
-                    //    _dragging = false;
-                }
-                else
-                {
-                    RadioVolume.IsEnabled = false;
-
-                    //reset dragging just incase
-                    //  _dragging = false;
-                }
-
-                ToggleButtons(currentRadio.freqMode == RadioInformation.FreqMode.OVERLAY);
 
                 if (_dragging == false)
                 {
                     RadioVolume.Value = currentRadio.volume * 100.0;
                 }
-               
             }
-
         }
 
         internal void RepaintRadioReceive()
@@ -263,15 +153,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                     {
                         RadioFrequency.Text = receiveState.SentBy;
                     }
-
-                    if (receiveState.IsSecondary)
-                    {
-                        RadioFrequency.Foreground = new SolidColorBrush(Colors.Red);
-                    }
-                    else
-                    {
-                        RadioFrequency.Foreground = new SolidColorBrush(Colors.White);
-                    }
                 }
                 else
                 {
@@ -281,33 +162,32 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
             }
         }
 
-
         private void ChannelOne_Click(object sender, RoutedEventArgs e)
         {
-            
+            RadioHelper.SelectRadioChannel(1, RadioId);
         }
 
         private void ChannelTwo_Click(object sender, RoutedEventArgs e)
         {
-            
+            RadioHelper.SelectRadioChannel(2, RadioId);
 
         }
 
         private void ChannelThree_Click(object sender, RoutedEventArgs e)
         {
-            
 
+            RadioHelper.SelectRadioChannel(3, RadioId);
         }
 
         private void ChannelFour_Click(object sender, RoutedEventArgs e)
         {
-            
+            RadioHelper.SelectRadioChannel(4, RadioId);
 
         }
 
         private void ChannelFive_Click(object sender, RoutedEventArgs e)
         {
-            
+            RadioHelper.SelectRadioChannel(5, RadioId);
         }
     }
 }

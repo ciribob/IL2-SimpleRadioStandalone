@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Network.Models;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Settings;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
@@ -34,7 +35,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
         private ConnectCallback _callback;
         private ExternalAWACSModeConnectCallback _externalAWACSModeCallback;
         private UpdateUICallback _updateUICallback;
-        private readonly IL2RadioSyncHandler.NewAircraft _newAircraft;
         private IPEndPoint _serverEndpoint;
         private TcpClient _tcpClient;
 
@@ -42,16 +42,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
         private readonly SyncedServerSettings _serverSettings = SyncedServerSettings.Instance;
         private readonly ConnectedClientsSingleton _clients = ConnectedClientsSingleton.Instance;
 
-
-        private IL2RadioSyncManager radioIl2Sync = null;
-
         private static readonly int MAX_DECODE_ERRORS = 5;
 
-        public SRSClientSyncHandler(string guid, UpdateUICallback uiCallback, IL2RadioSyncHandler.NewAircraft _newAircraft)
+        public SRSClientSyncHandler(string guid, UpdateUICallback uiCallback)
         {
             _guid = guid;
             _updateUICallback = uiCallback;
-            this._newAircraft = _newAircraft;
         }
 
 
@@ -68,16 +64,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
       
         private void Connect()
         {
-            if (radioIl2Sync != null)
-            {
-                radioIl2Sync.Stop();
-                radioIl2Sync = null;
-            }
-        
+
+            var sub = MessageHub.Instance.Subscribe<PlayerStateUpdate>(PlayerGameStateUpdate);
 
             bool connectionError = false;
-
-            radioIl2Sync = new IL2RadioSyncManager(ClientRadioUpdated, ClientCoalitionUpdate, _guid,_newAircraft);
 
             using (_tcpClient = new TcpClient())
             {
@@ -91,9 +81,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
                     if (_tcpClient.Connected)
                     {
-                        radioIl2Sync.Start();
-                      
-
                         _tcpClient.NoDelay = true;
 
                         CallOnMain(true);
@@ -114,41 +101,46 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                 }
             }
 
-            radioIl2Sync.Stop();
+            MessageHub.Instance.UnSubscribe(sub);
+
             //disconnect callback
             CallOnMain(false, connectionError);
         }
 
-        private void ClientRadioUpdated()
+        private void PlayerGameStateUpdate(PlayerStateUpdate state)
         {
             Logger.Debug("Sending Radio Update to Server");
             var sideInfo = _clientStateSingleton.PlayerGameState;
-            SendToServer(new NetworkMessage
-            {
-                Client = new SRClient
-                {
-                    Coalition = sideInfo.coalition,
-                    Name = sideInfo.name,
-                    ClientGuid = _guid,
-                    GameState = _clientStateSingleton.PlayerGameState
-                },
-                MsgType = NetworkMessage.MessageType.RADIO_UPDATE
-            });
-        }
 
-        private void ClientCoalitionUpdate()
-        {
-            var sideInfo = _clientStateSingleton.PlayerGameState;
-            SendToServer(new NetworkMessage
+            if (state.CoalitionOnly)
             {
-                Client = new SRClient
+                SendToServer(new NetworkMessage
                 {
-                    Coalition = sideInfo.coalition,
-                    Name = sideInfo.name,
-                    ClientGuid = _guid
-                },
-                MsgType = NetworkMessage.MessageType.UPDATE
-            });
+                    Client = new SRClient
+                    {
+                        Coalition = sideInfo.coalition,
+                        Name = sideInfo.name,
+                        ClientGuid = _guid
+                    },
+                    MsgType = NetworkMessage.MessageType.UPDATE
+                });
+            }
+            else
+            {
+                SendToServer(new NetworkMessage
+                {
+                    Client = new SRClient
+                    {
+                        Coalition = sideInfo.coalition,
+                        Name = sideInfo.name,
+                        ClientGuid = _guid,
+                        GameState = _clientStateSingleton.PlayerGameState
+                    },
+                    MsgType = NetworkMessage.MessageType.RADIO_UPDATE
+                });
+            }
+
+            
         }
 
         private void CallOnMain(bool result, bool connectionError = false)
@@ -206,10 +198,14 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                         {
                             Coalition = sideInfo.coalition,
                             Name = sideInfo.name.Length > 0 ? sideInfo.name : _clientStateSingleton.LastSeenName,
-                            ClientGuid = _guid
+                            ClientGuid = _guid,
+                            GameState = _clientStateSingleton.PlayerGameState
                         },
                         MsgType = NetworkMessage.MessageType.SYNC,
+
                     });
+
+                    PlayerGameStateUpdate(new PlayerStateUpdate());
 
                     string line;
                     while ((line = reader.ReadLine()) != null)
@@ -319,7 +315,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                         //add server settings
                                         _serverSettings.Decode(serverMessage.ServerSettings);
 
-                                       
 
                                         CallUpdateUIOnMain();
 

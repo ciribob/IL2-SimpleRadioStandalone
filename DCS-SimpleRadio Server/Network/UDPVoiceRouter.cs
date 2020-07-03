@@ -349,23 +349,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                 }
                 else
                 {
-                    var ip = client.Value.VoipPort;
-
-                    if (ip != null)
-                    {
-                        foreach (var frequency in udpVoice.Frequencies)
-                        {
-                            foreach (var testFrequency in _testFrequencies)
-                            {
-                                if (PlayerGameState.FreqCloseEnough(testFrequency, frequency))
-                                {
-                                    //send back to sending client as its a test frequency
-                                    outgoingList.Add(ip);
-                                    break;
-                                }
-                            }
-                        }
-                    }
+#if DEBUG
+                    //TODO - test
+                    outgoingList.Add(client.Value.VoipPort);
+#endif
                 }
             }
 

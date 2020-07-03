@@ -75,6 +75,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
         private Preprocessor _speex;
         private readonly bool windowsN;
 
+        private List<Guid> _subs = new List<Guid>();
         public AudioManager(bool windowsN)
         {
             this.windowsN = windowsN;
@@ -262,7 +263,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
 
                     _wasapiCapture.StartRecording();
 
-                    MessageHub.Instance.Subscribe<SRClient>(RemoveClientBuffer);
+                    _subs.Add(MessageHub.Instance.Subscribe<SRClient>(RemoveClientBuffer));
                 }
                 catch (Exception ex)
                 {
@@ -278,7 +279,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
                 //no mic....
                 _udpVoiceHandler =
                     new UdpVoiceHandler(guid, ipAddress, port, this, inputManager);
-                MessageHub.Instance.Subscribe<SRClient>(RemoveClientBuffer);
+                _subs.Add(MessageHub.Instance.Subscribe<SRClient>(RemoveClientBuffer));
                 var voiceSenderThread = new Thread(_udpVoiceHandler.Listen);
                 voiceSenderThread.Start();
             }
@@ -473,20 +474,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
 
             var _effectsBuffer = _effectsOutputBuffer[transmitOnRadio];
 
-            if (encrypted && (_globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioEncryptionEffects)))
-            {
-                _effectsBuffer.VolumeSampleProvider.Volume = volume;
-                _effectsBuffer.AddAudioSamples(
-                    _cachedAudioEffects[(int) CachedAudioEffect.AudioEffectTypes.KY_58_RX].AudioEffectBytes,
-                    transmitOnRadio);
-            }
-            else
-            {
-                _effectsBuffer.VolumeSampleProvider.Volume = volume;
-                _effectsBuffer.AddAudioSamples(
-                    _cachedAudioEffects[(int) CachedAudioEffect.AudioEffectTypes.RADIO_TX].AudioEffectBytes,
-                    transmitOnRadio);
-            }
+         
+    
+        _effectsBuffer.VolumeSampleProvider.Volume = volume;
+        _effectsBuffer.AddAudioSamples(
+            _cachedAudioEffects[(int) CachedAudioEffect.AudioEffectTypes.RADIO_TX].AudioEffectBytes,
+            transmitOnRadio);
+            
         }
 
         public void PlaySoundEffectStartTransmit(int transmitOnRadio, float volume, RadioInformation.Modulation modulation)
@@ -583,7 +577,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
 
                 _effectsOutputBuffer = null;
 
-                MessageHub.Instance.ClearSubscriptions();
+                foreach (var guid in _subs)
+                {
+                    MessageHub.Instance.UnSubscribe(guid);
+                }
+                _subs.Clear();
+              
             }
         }
 

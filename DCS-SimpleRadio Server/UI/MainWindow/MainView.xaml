@@ -5,7 +5,7 @@
              xmlns:local="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Server.UI"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Width="330"
-             Height="400"
+             Height="300"
              mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto"  Margin="0,0,0,0" >
         <StackPanel Orientation="Vertical" Margin="5" >
@@ -68,7 +68,7 @@
                                Width="44"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
-                               Content="5002" />
+                               Content="6002" />
                     </StackPanel>
 
 
@@ -147,21 +147,6 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"/>
 
-                <Label Content="Radio Expansion"
-                       Grid.Row="8"
-                       Grid.Column="0" 
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"/>
-
-                <Button x:Name="RadioExpansionToggle"
-                        Content="{Binding RadioExpansion}"    
-                        Grid.Row="8"
-                        Grid.Column="2"
-                        Width="75"
-                        Height="20"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
 
                 <Label Content="Check for beta updates" 
                        Grid.Row="10"

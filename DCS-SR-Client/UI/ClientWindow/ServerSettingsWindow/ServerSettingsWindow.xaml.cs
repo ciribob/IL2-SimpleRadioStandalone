@@ -47,16 +47,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
                 RealRadio.Content = settings.GetSettingAsBool(ServerSettingsKeys.IRL_RADIO_TX) ? "ON" : "OFF";
 
-                RadioExpansion.Content = settings.GetSettingAsBool(ServerSettingsKeys.RADIO_EXPANSION) ? "ON" : "OFF";
-
-
                 TunedClientCount.Content = settings.GetSettingAsBool(ServerSettingsKeys.SHOW_TUNED_COUNT) ? "ON" : "OFF";
 
                 ShowTransmitterName.Content = settings.GetSettingAsBool(ServerSettingsKeys.SHOW_TRANSMITTER_NAME) ? "ON" : "OFF";
 
                 ServerVersion.Content = SRSClientSyncHandler.ServerVersion;
 
-                NodeLimit.Content = settings.RetransmitNodeLimit;
             }
             catch (IndexOutOfRangeException ex)
             {

@@ -4,31 +4,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NLog;
 using System.Threading;
+using System.Windows;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2.Models;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Network.Models;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Settings;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Utils;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Helpers;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Setting;
+using Easy.MessageHub;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 {
     public class IL2RadioSyncHandler
     {
-        private readonly IL2RadioSyncManager.SendRadioUpdate _radioUpdate;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly ClientStateSingleton _clientStateSingleton = ClientStateSingleton.Instance;
         private readonly SyncedServerSettings _serverSettings = SyncedServerSettings.Instance;
         private readonly ConnectedClientsSingleton _clients = ConnectedClientsSingleton.Instance;
 
-        private static readonly int RADIO_UPDATE_PING_INTERVAL = 60; //send update regardless of change every X seconds
+        private static readonly int RADIO_UPDATE_PING_INTERVAL = 30; //send update regardless of change every X seconds
 
         private UdpClient _il2UdpListener;
         private UdpClient _il2RadioUpdateSender;
@@ -36,51 +39,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
         private readonly GlobalSettingsStore _globalSettings = GlobalSettingsStore.Instance;
 
         private volatile bool _stop;
-
-        public delegate void NewAircraft(string name);
-
-        private readonly NewAircraft _newAircraftCallback;
-
-        private long _identStart = 0;
-
-        private RadioInformation[] initialRadio = new RadioInformation[2];
-
-        public IL2RadioSyncHandler(IL2RadioSyncManager.SendRadioUpdate radioUpdate, NewAircraft _newAircraft)
+        public IL2RadioSyncHandler()
         {
-            _radioUpdate = radioUpdate;
-            _newAircraftCallback = _newAircraft;
-        }
-
-        private void InitRadio()
-        {
-            //TODO turn on the radio immediately - use the message just to set the coalition?
-            // RadioInformation[] awacsRadios;
-            // try
-            // {
-            //     string radioJson = File.ReadAllText(AWACS_RADIOS_FILE);
-            //     awacsRadios = JsonConvert.DeserializeObject<RadioInformation[]>(radioJson);
-            // }
-            // catch (Exception ex)
-            // {
-            //     Logger.Warn(ex, "Failed to load AWACS radio file");
-            //
-            //     awacsRadios = new RadioInformation[11];
-            //     for (int i = 0; i < 11; i++)
-            //     {
-            //         awacsRadios[i] = new RadioInformation
-            //         {
-            //             freq = 1,
-            //             freqMin = 1,
-            //             freqMax = 1,
-            //             secFreq = 0,
-            //             modulation = RadioInformation.Modulation.DISABLED,
-            //             name = "No Radio",
-            //             freqMode = RadioInformation.FreqMode.COCKPIT,
-            //             encMode = RadioInformation.EncryptionMode.NO_ENCRYPTION,
-            //             volMode = RadioInformation.VolumeMode.COCKPIT
-            //         };
-            //     }
-            // }
+            Start();
         }
 
         public void Start()
@@ -157,6 +118,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             if (message is ClientDataMessage dataMessage)
             {   //Just set the Client
                 ProcessClientDataMessage(dataMessage);
+            }else if (message is SRSAddressMessage srs)
+            {
+                //call on main
+                Application.Current.Dispatcher.Invoke(() => { MessageHub.Instance.Publish(srs); });
             }
         }
 
@@ -167,19 +132,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             var update = UpdateClientData(message);
 
             //send to IL2 UI
-            SendRadioUpdateToIL2();
+            //SendRadioUpdateToIL2();
 
-            Logger.Debug("Update sent to IL2");
+            //Logger.Debug("Update sent to IL2");
 
             var diff = new TimeSpan( DateTime.Now.Ticks - _clientStateSingleton.LastSent);
 
             if (update 
                 || _clientStateSingleton.LastSent < 1 
-                || diff.TotalSeconds > 30)
+                || diff.TotalSeconds > RADIO_UPDATE_PING_INTERVAL)
             {
                 Logger.Debug("Sending Radio Info To Server - Update");
                 _clientStateSingleton.LastSent = DateTime.Now.Ticks;
-                _radioUpdate();
+
+                MessageHub.Instance.Publish(new PlayerStateUpdate());
             }
         }
 
@@ -198,7 +164,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
                 if (_clientStateSingleton.IsConnected
                     && _clientStateSingleton.PlayerGameState !=null
-                    && _clientStateSingleton.PlayerGameState.IsCurrent())
+                    )
                 {
 
                     for (int i = 0; i < tunedClients.Length; i++)
@@ -252,13 +218,15 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
             playerRadioInfo.coalition = message.Coalition;
 
-            if (message.ParentVehicleClientID > 0)
+            playerRadioInfo.name = message.ClientID.ToString();
+
+            if (message.ParentVehicleClientID >= 0)
             {
                 playerRadioInfo.unitId = message.ParentVehicleClientID;
             }
             else
             {
-                playerRadioInfo.unitId = message.ClientID;
+                playerRadioInfo.unitId = message.ServerClientID;
             }
 
             //update
@@ -286,6 +254,5 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             {
             }
         }
-
     }
 }

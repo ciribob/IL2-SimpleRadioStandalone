@@ -4,65 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Network;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Network.Models;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.PresetChannels;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
+using Easy.MessageHub;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
 {
     public static class RadioHelper
     {
      
-       
-        public static bool UpdateRadioFrequency(double frequency, int radioId, bool delta = true, bool inMHz = true)
-        {
-            bool inLimit = true;
-            const double MHz = 1000000;
-
-            if (inMHz)
-            {
-                frequency = frequency * MHz;
-            }
-
-            var radio = GetRadio(radioId);
-
-            if (radio != null)
-            {
-                if (radio.modulation != RadioInformation.Modulation.DISABLED
-                    && radio.modulation != RadioInformation.Modulation.INTERCOM
-                    && radio.freqMode == RadioInformation.FreqMode.OVERLAY)
-                {
-                    if (delta)
-                    {
-                        radio.freq = (int)Math.Round(radio.freq + frequency);
-                    }
-                    else
-                    {
-                        radio.freq = (int)Math.Round(frequency);
-                    }
-
-                    //make sure we're not over or under a limit
-                    if (radio.freq > radio.freqMax)
-                    {
-                        inLimit = false;
-                        radio.freq = radio.freqMax;
-                    }
-                    else if (radio.freq < radio.freqMin)
-                    {
-                        inLimit = false;
-                        radio.freq = radio.freqMin;
-                    }
-
-                    //set to no channel
-                    radio.channel = -1;
-
-                    //make radio data stale to force resysnc
-                    ClientStateSingleton.Instance.LastSent = 0;
-                }
-            }
-            return inLimit;
-        }
-
         public static bool SelectRadio(int radioId)
         {
             var radio = GetRadio(radioId);
@@ -85,7 +37,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
         {
             var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerGameState;
 
-            if ((IL2PlayerRadioInfo != null) && IL2PlayerRadioInfo.IsCurrent() &&
+            if ((IL2PlayerRadioInfo != null)  &&
                 radio < IL2PlayerRadioInfo.radios.Length && (radio >= 0))
             {
                 return IL2PlayerRadioInfo.radios[radio];
@@ -94,94 +46,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             return null;
         }
 
-    
-        public static void SelectNextRadio()
+        public static void SelectRadioChannel(int channel, int radioId)
         {
-            var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerGameState;
+            var currentRadio = GetRadio(radioId);
 
-            if ((IL2PlayerRadioInfo != null) && IL2PlayerRadioInfo.IsCurrent() &&
-                IL2PlayerRadioInfo.control == PlayerGameState.RadioSwitchControls.HOTAS)
+            if (currentRadio == null)
             {
-                if (IL2PlayerRadioInfo.selected < 0
-                    || IL2PlayerRadioInfo.selected > IL2PlayerRadioInfo.radios.Length
-                    || IL2PlayerRadioInfo.selected + 1 > IL2PlayerRadioInfo.radios.Length)
-                {
-                    SelectRadio(1);
-
-                    return;
-                }
-                else
-                {
-                    int currentRadio = IL2PlayerRadioInfo.selected;
-
-                    //find next radio
-                    for (int i = currentRadio + 1; i < IL2PlayerRadioInfo.radios.Length; i++)
-                    {
-                        if (SelectRadio(i))
-                        {
-                            return;
-                        }
-                    }
-
-                    //search up to current radio
-                    for (int i = 1; i < currentRadio; i++)
-                    {
-                        if (SelectRadio(i))
-                        {
-                            return;
-                        }
-                    }
-                }
+                return;
             }
-        }
+            var freq = PlayerGameState.START_FREQ +( PlayerGameState.CHANNEL_OFFSET * channel);
 
-        public static void SelectPreviousRadio()
-        {
-            var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerGameState;
+            currentRadio.freq = freq;
 
-            if ((IL2PlayerRadioInfo != null) && IL2PlayerRadioInfo.IsCurrent() &&
-                IL2PlayerRadioInfo.control == PlayerGameState.RadioSwitchControls.HOTAS)
-            {
-                if (IL2PlayerRadioInfo.selected < 0
-                    || IL2PlayerRadioInfo.selected > IL2PlayerRadioInfo.radios.Length)
-                {
-                    IL2PlayerRadioInfo.selected = 1;
-                    return;
-                }
-                else
-                {
-                    int currentRadio = IL2PlayerRadioInfo.selected;
+            currentRadio.channel = channel;
 
-                    //find previous radio
-                    for (int i = currentRadio - 1; i > 0; i--)
-                    {
-                        if (SelectRadio(i))
-                        {
-                            return;
-                        }
-                    }
-
-                    //search down to current radio
-                    for (int i = IL2PlayerRadioInfo.radios.Length; i < currentRadio; i--)
-                    {
-                        if (SelectRadio(i))
-                        {
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-
-       
-        public static void SelectRadioChannel(PresetChannel selectedPresetChannel, int radioId)
-        {
-            if (UpdateRadioFrequency((double) selectedPresetChannel.Value, radioId, false, false))
-            {
-                var radio = GetRadio(radioId);
-
-                if (radio != null) radio.channel = selectedPresetChannel.Channel;
-            }
+            MessageHub.Instance.Publish(new PlayerStateUpdate());
         }
 
         public static void RadioChannelUp(int radioId)
@@ -194,7 +73,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                     && ClientStateSingleton.Instance.PlayerGameState.control ==
                     PlayerGameState.RadioSwitchControls.HOTAS)
                 {
-                    //TODO
+                    var chan = currentRadio.channel+1;
+
+                    if (chan > PlayerGameState.CHANNEL_LIMIT)
+                    {
+                        chan = 1;
+                    }
+
+                    var freq = PlayerGameState.START_FREQ + (PlayerGameState.CHANNEL_OFFSET * chan);
+
+                    currentRadio.freq = freq;
+
+                    currentRadio.channel = chan;
+
+                    MessageHub.Instance.Publish(new PlayerStateUpdate());
                 }
             }
         }
@@ -209,7 +101,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                     && ClientStateSingleton.Instance.PlayerGameState.control ==
                     PlayerGameState.RadioSwitchControls.HOTAS)
                 {
-                    //TODO
+                    var chan = currentRadio.channel - 1;
+
+                    if (chan < 1)
+                    {
+                        chan = PlayerGameState.CHANNEL_LIMIT;
+                    }
+
+                    var freq = PlayerGameState.START_FREQ + (PlayerGameState.CHANNEL_OFFSET * chan);
+
+                    currentRadio.freq = freq;
+
+                    currentRadio.channel = chan;
+
+                    MessageHub.Instance.Publish(new PlayerStateUpdate());
+                    
                 }
             }
         }

@@ -575,28 +575,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
 
                                 var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerGameState;
 
-                                if (IL2PlayerRadioInfo != null && IL2PlayerRadioInfo.IsCurrent())
+                                if (IL2PlayerRadioInfo != null )
                                 {
                                     switch (bindState.MainDevice.InputBind)
                                     {
-                                        case InputBinding.NextRadio:
-                                            RadioHelper.SelectNextRadio();
-                                            break;
-                                        case InputBinding.PreviousRadio:
-                                            RadioHelper.SelectPreviousRadio();
-                                            break;
+                                        
                                         case InputBinding.RadioChannelUp:
-                                            RadioHelper.RadioChannelUp(IL2PlayerRadioInfo.selected);
+                                            RadioHelper.RadioChannelUp(1);
                                             break;
                                         case InputBinding.RadioChannelDown:
-                                            RadioHelper.RadioChannelDown(IL2PlayerRadioInfo.selected);
+                                            RadioHelper.RadioChannelDown(1);
                                             break;
-
                                         default:
                                             break;
                                     }
                                 }
-
 
                                 break;
                             }

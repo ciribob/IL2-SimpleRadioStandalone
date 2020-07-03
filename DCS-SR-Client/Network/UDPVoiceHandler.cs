@@ -321,7 +321,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
                             var myClient = IsClientMetaDataValid(_guid);
 
-                            if ((myClient != null) && _clientStateSingleton.PlayerGameState.IsCurrent())
+                            if ((myClient != null))
                             {
                                 //Decode bytes
                                 var udpVoicePacket = UDPVoicePacket.DecodeVoicePacket(encodedOpusAudio);
@@ -594,7 +594,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             var sendingOn = -1;
             if (_ready
                 && _listener != null
-                && _clientStateSingleton.PlayerGameState.IsCurrent()
                 && _audioInputSingleton.MicrophoneAvailable
                 && (bytes != null)
                 && (transmittingRadios = PTTPressed(out sendingOn)).Count >0 )

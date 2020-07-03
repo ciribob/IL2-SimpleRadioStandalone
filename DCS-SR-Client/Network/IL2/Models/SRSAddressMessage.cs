@@ -8,7 +8,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2.Models
 {
     public class SRSAddressMessage : IL2UDPMessage
     {
-        private string SRSAddress { get; set; }
+        public string SRSAddress { get; set; }
 
         public SRSAddressMessage(byte[] message, int offset,int length)
         {

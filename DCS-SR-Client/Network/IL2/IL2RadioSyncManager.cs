@@ -5,9 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Network.Models;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Network;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
+using Easy.MessageHub;
 using Newtonsoft.Json;
 using NLog;
 
@@ -20,33 +22,28 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 {
     public class IL2RadioSyncManager
     {
-        private readonly SendRadioUpdate _clientRadioUpdate;
-        private readonly ClientSideUpdate _clientSideUpdate;
+    
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly ClientStateSingleton _clientStateSingleton = ClientStateSingleton.Instance;
         private readonly UDPCommandHandler _udpCommandHandler; 
         private readonly IL2RadioSyncHandler il2RadioSyncHandler;
 
-        public delegate void ClientSideUpdate();
-        public delegate void SendRadioUpdate();
-
         private readonly ConnectedClientsSingleton _clients = ConnectedClientsSingleton.Instance;
         private DispatcherTimer _clearRadio;
 
         public bool IsListening { get; private set; }
 
-        public IL2RadioSyncManager(SendRadioUpdate clientRadioUpdate, ClientSideUpdate clientSideUpdate,
-           string guid, IL2RadioSyncHandler.NewAircraft _newAircraftCallback)
+        public IL2RadioSyncManager()
         {
-            _clientRadioUpdate = clientRadioUpdate;
-            _clientSideUpdate = clientSideUpdate;
             IsListening = false;
             _udpCommandHandler = new UDPCommandHandler();
-            il2RadioSyncHandler = new IL2RadioSyncHandler(clientRadioUpdate, _newAircraftCallback);
+            il2RadioSyncHandler = new IL2RadioSyncHandler();
 
             _clearRadio = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) { Interval = TimeSpan.FromSeconds(1) };
             _clearRadio.Tick += CheckIfRadioIsStale;
+
+            Start();
         }
 
         private void CheckIfRadioIsStale(object sender, EventArgs e)
@@ -56,11 +53,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                 //check if we've had an update
                 if (_clientStateSingleton.PlayerGameState.LastUpdate > 0)
                 {
-                    _clientStateSingleton.PlayerGameState.Reset();
-
-                    _clientRadioUpdate();
-                    _clientSideUpdate();
+                    _clientStateSingleton.PlayerGameState.LastUpdate = -1;
                     Logger.Info("Reset Radio state - no longer connected");
+                    _clientStateSingleton.PlayerGameState.coalition = 0;
+                    _clientStateSingleton.PlayerGameState.unitId = 0;
+                    
+                    MessageHub.Instance.Publish(new PlayerStateUpdate());
                 }
             }
         }

@@ -42,7 +42,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
             + sizeof(byte); // byte Modulation - 1 byte
 
         public static readonly int FixedPacketLength =
-            sizeof(long) // Int64 UnitId - 8 bytes
+            sizeof(int) // Int32 UnitId - 4 bytes
             + sizeof(ulong) // UInt64 PacketId - 8 bytes
             + sizeof(byte) // Byte indicating number of hops for this message // default is 0
             + GuidLength  // Bytes / ASCII String Transmission GUID - 22 bytes
@@ -70,7 +70,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
         
 
         // FIXED SEGMENT
-        public long UnitId { get; set; }
+        public int UnitId { get; set; }
         public byte[] GuidBytes { get; set; }
         public string Guid { get; set; }
 
@@ -157,16 +157,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
             // Offset for fixed segment
             var fixedSegmentOffset = PacketHeaderLength + dynamicSegmentLength;
 
-            // Unit ID (long, 8 bytes)
+            // Unit ID (Int, 4 bytes)
             var unitId = BitConverter.GetBytes(UnitId);
             combinedBytes[fixedSegmentOffset] = unitId[0];
             combinedBytes[fixedSegmentOffset + 1] = unitId[1];
             combinedBytes[fixedSegmentOffset + 2] = unitId[2];
             combinedBytes[fixedSegmentOffset + 3] = unitId[3];
-            combinedBytes[fixedSegmentOffset + 4] = unitId[4];
-            combinedBytes[fixedSegmentOffset + 5] = unitId[5];
-            combinedBytes[fixedSegmentOffset + 6] = unitId[6];
-            combinedBytes[fixedSegmentOffset + 7] = unitId[7];
 
             // Packet ID (ulong, 8 bytes)
             var packetNumber = BitConverter.GetBytes(PacketNumber); //8 bytes
@@ -239,10 +235,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
                     frequencyOffset += FrequencySegmentLength;
                 }
 
-                var unitId = BitConverter.ToInt64(encodedOpusAudio, PacketHeaderLength + ecnAudio1 + freqLength);
+                var unitId = BitConverter.ToInt32(encodedOpusAudio, PacketHeaderLength + ecnAudio1 + freqLength);
 
                 var packetNumber =
-                    BitConverter.ToUInt64(encodedOpusAudio, PacketHeaderLength + ecnAudio1 + freqLength + 8);
+                    BitConverter.ToUInt64(encodedOpusAudio, PacketHeaderLength + ecnAudio1 + freqLength + 4);
 
                 return new UDPVoicePacket
                 {
