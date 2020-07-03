@@ -205,7 +205,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
                     });
 
-                    PlayerGameStateUpdate(new PlayerStateUpdate());
+                    //PlayerGameStateUpdate(new PlayerStateUpdate());
 
                     string line;
                     while ((line = reader.ReadLine()) != null)
@@ -216,6 +216,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                             decodeErrors = 0; //reset counter
                             if (serverMessage != null)
                             {
+
+                                //check server version and type
+                                if (serverMessage.ServerType == null || serverMessage.ServerType != "IL2-SRS")
+                                {
+                                    Logger.Error("Disconnecting from non IL2-SRS Server");
+
+                                    MessageBox.Show($"The server you tried connecting to is not an IL2-SRS server.",
+                                        "IL2-SRS Server",
+                                        MessageBoxButton.OK,
+                                        MessageBoxImage.Error);
+                                    Disconnect();
+                                    break;
+                                }
+
                                 //Logger.Debug("Received "+serverMessage.MsgType);
                                 switch (serverMessage.MsgType)
                                 {
@@ -282,7 +296,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                         // Logger.Info("Recevied: " + NetworkMessage.MessageType.SYNC);
 
                                         //check server version
-                                        if (serverMessage.Version == null)
+                                        if (serverMessage.Version == null || serverMessage.ServerType == null || serverMessage.ServerType != "IL2-SRS")
                                         {
                                             Logger.Error("Disconnecting Unversioned Server");
                                             Disconnect();

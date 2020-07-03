@@ -12,6 +12,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
             ContractResolver = new JsonNetworkPropertiesResolver(),// strip out things not required for the TCP sync
             NullValueHandling = NullValueHandling.Ignore // same some network bandwidth
         };
+
+        public string ServerType { get; set; } = "";
+
         public enum MessageType
         {
             UPDATE, //META Data update - No Radio Information
@@ -36,6 +39,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
         public string Encode()
         {
             Version = UpdaterChecker.VERSION;
+            ServerType = "IL2-SRS";
             return JsonConvert.SerializeObject(this, JsonSerializerSettings) + "\n";
 
         }

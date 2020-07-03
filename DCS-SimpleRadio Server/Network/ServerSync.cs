@@ -190,6 +190,16 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                     return false;
                 }
 
+                //check server version and type
+                if (message.ServerType == null || message.ServerType != "IL2-SRS")
+                {
+                    Logger.Warn("Disconnecting non IL2-SRS Client -  " + clientIp.Address + " " +
+                                clientIp.Port);
+                    state.Disconnect();
+                    return false;
+
+                }
+
                 var clientVersion = Version.Parse(message.Version);
                 var protocolVersion = Version.Parse(UpdaterChecker.MINIMUM_PROTOCOL_VERSION);
 
