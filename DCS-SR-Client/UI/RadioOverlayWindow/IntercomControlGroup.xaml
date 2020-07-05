@@ -9,10 +9,16 @@
              Height="40">
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center"   Width="130">
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="3">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="3">
+            
+            <Label Name="TunedCount" 
+                   FontFamily="Courier New"
+                   Content="👤10" Width="30" Margin="0" Padding="0" 
+                   Foreground="#E7E7E7" FontSize="12" ></Label>
 
-            <TextBlock x:Name="RadioLabel"
-                       Width="94"
+
+<Label x:Name="RadioLabel"
+                       Margin="5,0,12,0"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Top"
                        FontSize="12"
@@ -20,8 +26,8 @@
                        FontFamily="Courier New"
                        Padding="0,0,0,0"
                        Style="{x:Null}"
-                       Text="INTERCOM"
-                       TextAlignment="Center" />
+                       
+                      Content="INTERCOM" />
 
 
             <Ellipse Margin="0,0,0,0" x:Name="RadioActive"
@@ -37,13 +43,17 @@
 
         </StackPanel>
        
-        <Slider x:Name="RadioVolume"
-                Width="80"
-                Height="30"
-                IsEnabled="True"
-                Maximum="100"
-                Thumb.DragCompleted="RadioVolume_DragCompleted"
-                Thumb.DragStarted="RadioVolume_DragStarted" />
+        
+            <Slider x:Name="RadioVolume"
+                    Width="80"
+                    Height="30"
+                    IsEnabled="True"
+                    Maximum="100"
+                    Thumb.DragCompleted="RadioVolume_DragCompleted"
+                    Thumb.DragStarted="RadioVolume_DragStarted" />
+        
+
+      
 
     </StackPanel>
 </UserControl>

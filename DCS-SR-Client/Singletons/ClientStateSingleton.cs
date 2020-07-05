@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Threading;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Network;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Settings;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Network;
 
@@ -75,12 +76,19 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
         // Indicates an active game connection has been detected (1 tick = 100ns, 100000000 ticks = 10s stale timer),
         public bool IsGameConnected { get { return  IsGameExportConnected; } }
 
-        public string LastSeenName { get; set; }
+        public string LastSeenName
+        {
+            get => GlobalSettingsStore.Instance.GetClientSetting(Settings.GlobalSettingsKeys.LastSeenName).RawValue;
+            set
+            {
+                GlobalSettingsStore.Instance.SetClientSetting(GlobalSettingsKeys.LastSeenName, value);
+            }
+        }
 
         private ClientStateSingleton()
         {
             RadioSendingState = new RadioSendingState();
-            RadioReceivingState = new RadioReceivingState[11];
+            RadioReceivingState = new RadioReceivingState[2];
 
             ShortGUID = ShortGuid.NewGuid();
             PlayerGameState = new PlayerGameState();
@@ -101,7 +109,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
 
             IsConnected = false;
 
-            LastSeenName = Settings.GlobalSettingsStore.Instance.GetClientSetting(Settings.GlobalSettingsKeys.LastSeenName).StringValue;
+            if (LastSeenName == null || LastSeenName == "")
+            {
+                LastSeenName = "IL2-SRS-Player";
+            }
+
         }
 
         public static ClientStateSingleton Instance
@@ -120,6 +132,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
                 return _instance;
             }
         }
+
+        public int LastClientId { get; set; }
 
         private void NotifyPropertyChanged(string propertyName = "")
         {

@@ -42,7 +42,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
             _clearRadio = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) { Interval = TimeSpan.FromSeconds(1) };
             _clearRadio.Tick += CheckIfRadioIsStale;
-
             Start();
         }
 
@@ -57,6 +56,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                     Logger.Info("Reset Radio state - no longer connected");
                     _clientStateSingleton.PlayerGameState.coalition = 0;
                     _clientStateSingleton.PlayerGameState.unitId = 0;
+                    _clientStateSingleton.PlayerGameState.vehicleId = -1;
                     
                     MessageHub.Instance.Publish(new PlayerStateUpdate());
                 }

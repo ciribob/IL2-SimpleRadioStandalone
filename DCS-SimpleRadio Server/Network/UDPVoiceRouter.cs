@@ -334,6 +334,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                                     var receivingRadio = radioInfo.CanHearTransmission(udpVoice.Frequencies[i],
                                         (RadioInformation.Modulation)udpVoice.Modulations[i],
                                         udpVoice.UnitId,
+                                        radioInfo.vehicleId,
                                         _emptyBlockedRadios,
                                         out radioReceivingState);
 

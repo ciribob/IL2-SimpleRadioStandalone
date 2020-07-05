@@ -133,6 +133,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
                             var receivingRadio = radioInfo.CanHearTransmission(freq,
                                 modulation,
                                 currentUnitId,
+                                client.Value.GameState.vehicleId,
                                 new List<int>(),
                                 out radioReceivingState);
 

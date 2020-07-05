@@ -328,6 +328,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
                                 if (udpVoicePacket != null)
                                 {
+                                    var vehicleId = -1;
+                                    if (_clients.TryGetValue(udpVoicePacket.Guid, out var transmittingClient))
+                                    {
+                                        vehicleId = transmittingClient.GameState.vehicleId;
+                                    }
+
                                     var globalFrequencies = _serverSettings.GlobalFrequencies;
 
                                     var frequencyCount = udpVoicePacket.Frequencies.Length;
@@ -350,6 +356,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                             udpVoicePacket.Frequencies[i],
                                             (RadioInformation.Modulation) udpVoicePacket.Modulations[i],
                                             udpVoicePacket.UnitId,
+                                            vehicleId,
                                             blockedRadios,
                                             out state);
 
@@ -426,7 +433,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                             var transmitterName = "";
                                             if (_serverSettings.GetSettingAsBool(ServerSettingsKeys.SHOW_TRANSMITTER_NAME)
                                                 && _globalSettings.GetClientSettingBool(GlobalSettingsKeys.ShowTransmitterName)
-                                                && _clients.TryGetValue(udpVoicePacket.Guid, out var transmittingClient))
+                                                && transmittingClient!=null)
 
                                             {
                                                 transmitterName = transmittingClient.Name;

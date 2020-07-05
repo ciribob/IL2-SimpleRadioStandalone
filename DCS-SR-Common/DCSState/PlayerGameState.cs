@@ -16,11 +16,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         [JsonNetworkIgnoreSerialization]
         [JsonIL2IgnoreSerialization]
-        public string name = "IL2-Player";
-
-
-        [JsonNetworkIgnoreSerialization]
-        [JsonIL2IgnoreSerialization]
         public volatile bool ptt = false;
 
         public RadioInformation[] radios = new RadioInformation[2]; //1 + intercom
@@ -31,8 +26,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         [JsonNetworkIgnoreSerialization]
         public short selected = 0;
-
-        //public string unit = "";
 
         public short coalition = 0;
         
@@ -59,6 +52,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         [JsonNetworkIgnoreSerialization]
         [JsonIL2IgnoreSerialization]
         public static readonly double START_FREQ = 250*1000000; //for channel <> Freq conversion
+
+        public int vehicleId = -1;
 
         public enum SimultaneousTransmissionControl
         {
@@ -101,22 +96,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         [JsonIgnore]
         public long LastUpdate { get; set; }
 
-        public void Reset()
-        {
-            name = "IL2-Player";
-            ptt = false;
-            selected = 0;
-            simultaneousTransmissionControl = SimultaneousTransmissionControl.ENABLED_INTERNAL_SRS_CONTROLS;
-            LastUpdate = 0;
-            coalition = 0;
-            unitId = 0;
-
-            for (var i = 0; i < radios.Length; i++)
-            {
-                radios[i] = new RadioInformation();
-            }
-
-        }
 
         // override object.Equals
         public override bool Equals(object compare)
@@ -138,12 +117,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                 {
                     return false;
                 }
-                if (!name.Equals(compareRadio.name))
+
+                if (unitId != compareRadio.unitId)
                 {
                     return false;
                 }
 
-                if (unitId != compareRadio.unitId)
+                if (vehicleId != compareRadio.vehicleId)
                 {
                     return false;
                 }
@@ -192,6 +172,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         public RadioInformation CanHearTransmission(double frequency,
             RadioInformation.Modulation modulation,
             long sendingUnitId,
+            long sendingVehicleId,
             List<int> blockedRadios,
             out RadioReceivingState receivingState)
         {
@@ -212,7 +193,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                         if (
                             // (unitId > 0) && (sendingUnitId > 0)
                             // && 
-                            (unitId == sendingUnitId) )
+                            (unitId == sendingUnitId || (vehicleId == sendingVehicleId && vehicleId > -1)) )
                         {
                             receivingState = new RadioReceivingState
                             {

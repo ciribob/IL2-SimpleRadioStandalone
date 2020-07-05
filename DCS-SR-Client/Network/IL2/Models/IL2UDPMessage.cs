@@ -5,17 +5,21 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2.Models
 {
+   
     public abstract class IL2UDPMessage
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public enum MessageType
         {
             SRV_ADDR = 10,
             SRV_TITLE = 11,
             SRS_ADDRESS = 12,
             CLIENT_DATA = 13,
+            CTRL_DATA = 14,
         }
 
         public static List<IL2UDPMessage> Process(byte[] message)
@@ -74,14 +78,17 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2.Models
                         case MessageType.CLIENT_DATA:
                             list.Add(new ClientDataMessage(message, (int)stream.Position));
                             break;
+                        case MessageType.CTRL_DATA:
+                            list.Add(new ControlDataMessage(message,(int)stream.Position));
+                            break;
                         default:
                             break;
 
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    Logger.Error(ex,"Error processing IL2 Data");
                 }
 
                 stream.Seek(eventSize, SeekOrigin.Current);

@@ -14,6 +14,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
     {
         private bool _dragging;
         private readonly ClientStateSingleton _clientStateSingleton = ClientStateSingleton.Instance;
+        private readonly ConnectedClientsSingleton _connectClientsSingleton = ConnectedClientsSingleton.Instance;
 
         public IntercomControlGroup()
         {
@@ -83,6 +84,31 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
                     {
                         RadioActive.Fill = new SolidColorBrush(Colors.Green);
                     }
+
+                    var receiving = _clientStateSingleton.RadioReceivingState[0];
+
+                    if (receiving!=null && receiving.IsReceiving)
+                    {
+                        RadioLabel.Foreground = new SolidColorBrush(Colors.White);
+                        TunedCount.Foreground = RadioLabel.Foreground;
+                    }
+                    else
+                    {
+                        RadioLabel.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E7E7E7"));
+                        TunedCount.Foreground = RadioLabel.Foreground;
+                    }
+
+                    int count = _connectClientsSingleton.ClientsOnFreq(currentRadio.freq, currentRadio.modulation);
+
+                    if (count > 0)
+                    {
+                        TunedCount.Content = "👤"+count;
+                    }
+                    else
+                    {
+                        TunedCount.Content = "";
+                    }
+
                 }
                 else
                 {

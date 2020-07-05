@@ -122,7 +122,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                     RadioFrequency.Text += " - " + count;
                 }
 
-
                 if (_dragging == false)
                 {
                     RadioVolume.Value = currentRadio.volume * 100.0;
@@ -149,6 +148,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
                 }
                 else if ((receiveState != null) && receiveState.IsReceiving)
                 {
+                    RadioFrequency.Foreground =
+                        new SolidColorBrush((Color)Colors.White);
+
                     if (receiveState.SentBy.Length > 0)
                     {
                         RadioFrequency.Text = receiveState.SentBy;
@@ -172,7 +174,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
             RadioHelper.SelectRadioChannel(2, RadioId);
 
         }
-
         private void ChannelThree_Click(object sender, RoutedEventArgs e)
         {
 
@@ -184,7 +185,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
             RadioHelper.SelectRadioChannel(4, RadioId);
 
         }
-
         private void ChannelFive_Click(object sender, RoutedEventArgs e)
         {
             RadioHelper.SelectRadioChannel(5, RadioId);

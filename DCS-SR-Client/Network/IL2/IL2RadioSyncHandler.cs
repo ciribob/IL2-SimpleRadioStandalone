@@ -38,10 +38,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
         private readonly GlobalSettingsStore _globalSettings = GlobalSettingsStore.Instance;
 
-        private volatile bool _stop;
+        private volatile bool _stop = false;
         public IL2RadioSyncHandler()
         {
-            Start();
         }
 
         public void Start()
@@ -115,31 +114,43 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
         {
             _clientStateSingleton.IL2ExportLastReceived = DateTime.Now.Ticks;
 
+            bool update = false;
+
+            var playerRadioInfo = _clientStateSingleton.PlayerGameState;
+
+            //copy and compare to look for changes
+
             if (message is ClientDataMessage dataMessage)
             {   //Just set the Client
-                ProcessClientDataMessage(dataMessage);
-            }else if (message is SRSAddressMessage srs)
-            {
-                //call on main
-                Application.Current.Dispatcher.Invoke(() => { MessageHub.Instance.Publish(srs); });
+
+                update = playerRadioInfo.unitId != dataMessage.ServerClientID ||
+                         !dataMessage.PlayerName.Equals(_clientStateSingleton.LastSeenName);
+
+                playerRadioInfo.unitId = dataMessage.ServerClientID;
+
+                _clientStateSingleton.LastSeenName = dataMessage.PlayerName;
             }
-        }
+            else if (message is ControlDataMessage controlDataMessage)
+            {
+                update =playerRadioInfo.vehicleId!=controlDataMessage.ParentVehicleClientID || playerRadioInfo.coalition != controlDataMessage.Coalition;
 
-        public void ProcessClientDataMessage(ClientDataMessage message)
-        {
-          
-            // determine if its changed by comparing old to new
-            var update = UpdateClientData(message);
+                playerRadioInfo.vehicleId = controlDataMessage.ParentVehicleClientID;
+                playerRadioInfo.coalition = controlDataMessage.Coalition;
+            }
+            else if (message is SRSAddressMessage srs)
+            {
+                if (srs.SRSAddress.Length > 0)
+                {
+                    //call on main
+                    Application.Current.Dispatcher.Invoke(() => { MessageHub.Instance.Publish(srs); });
+                }
+                
+            }
 
-            //send to IL2 UI
-            //SendRadioUpdateToIL2();
+            var diff = new TimeSpan(DateTime.Now.Ticks - _clientStateSingleton.LastSent);
 
-            //Logger.Debug("Update sent to IL2");
-
-            var diff = new TimeSpan( DateTime.Now.Ticks - _clientStateSingleton.LastSent);
-
-            if (update 
-                || _clientStateSingleton.LastSent < 1 
+            if (update
+                || _clientStateSingleton.LastSent < 1
                 || diff.TotalSeconds > RADIO_UPDATE_PING_INTERVAL)
             {
                 Logger.Debug("Sending Radio Info To Server - Update");
@@ -148,6 +159,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                 MessageHub.Instance.Publish(new PlayerStateUpdate());
             }
         }
+
 
         //send updated radio info back to IL2 for ingame GUI
         private void SendRadioUpdateToIL2()
@@ -209,31 +221,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             }
         }
 
-        private bool UpdateClientData(ClientDataMessage message)
-        {
-            var playerRadioInfo = _clientStateSingleton.PlayerGameState;
-
-            //copy and compare to look for changes
-            var beforeUpdate = playerRadioInfo.DeepClone();
-
-            playerRadioInfo.coalition = message.Coalition;
-
-            playerRadioInfo.name = message.ClientID.ToString();
-
-            if (message.ParentVehicleClientID >= 0)
-            {
-                playerRadioInfo.unitId = message.ParentVehicleClientID;
-            }
-            else
-            {
-                playerRadioInfo.unitId = message.ServerClientID;
-            }
-
-            //update
-            playerRadioInfo.LastUpdate = DateTime.Now.Ticks;
-
-            return !beforeUpdate.Equals(playerRadioInfo);
-        }
 
         public void Stop()
         {

@@ -119,7 +119,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                     Client = new SRClient
                     {
                         Coalition = sideInfo.coalition,
-                        Name = sideInfo.name,
+                        Name = _clientStateSingleton.LastSeenName,
                         ClientGuid = _guid
                     },
                     MsgType = NetworkMessage.MessageType.UPDATE
@@ -132,7 +132,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                     Client = new SRClient
                     {
                         Coalition = sideInfo.coalition,
-                        Name = sideInfo.name,
+                        Name = _clientStateSingleton.LastSeenName,
                         ClientGuid = _guid,
                         GameState = _clientStateSingleton.PlayerGameState
                     },
@@ -197,7 +197,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                         Client = new SRClient
                         {
                             Coalition = sideInfo.coalition,
-                            Name = sideInfo.name.Length > 0 ? sideInfo.name : _clientStateSingleton.LastSeenName,
+                            Name = _clientStateSingleton.LastSeenName,
                             ClientGuid = _guid,
                             GameState = _clientStateSingleton.PlayerGameState
                         },

@@ -584,12 +584,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             ClientState.IsConnected = false;
             ToggleServerSettings.IsEnabled = false;
 
-            if (!string.IsNullOrWhiteSpace(ClientState.LastSeenName) &&
-                _globalSettings.GetClientSetting(GlobalSettingsKeys.LastSeenName).StringValue != ClientState.LastSeenName)
-            {
-                _globalSettings.SetClientSetting(GlobalSettingsKeys.LastSeenName, ClientState.LastSeenName);
-            }
-
             try
             {
                 _audioManager.StopEncoding();
@@ -722,12 +716,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             _globalSettings.SetPositionSetting(GlobalSettingsKeys.ClientX, Left);
             _globalSettings.SetPositionSetting(GlobalSettingsKeys.ClientY, Top);
-
-            if (!string.IsNullOrWhiteSpace(ClientState.LastSeenName) &&
-                _globalSettings.GetClientSetting(GlobalSettingsKeys.LastSeenName).StringValue != ClientState.LastSeenName)
-            {
-                _globalSettings.SetClientSetting(GlobalSettingsKeys.LastSeenName, ClientState.LastSeenName);
-            }
 
             //save window position
             base.OnClosing(e);

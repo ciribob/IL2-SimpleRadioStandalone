@@ -101,7 +101,7 @@ namespace AutoUpdater
         private async Task<Uri> GetPathToLatestVersion()
         {
             Status.Content = "Finding Latest SRS Version";
-            var githubClient = new GitHubClient(new ProductHeaderValue(GITHUB_USER_AGENT, "1.0.0.0"));
+            var githubClient = new GitHubClient(new ProductHeaderValue(GITHUB_USER_AGENT, "1.0.0.2"));
 
             var releases = await githubClient.Repository.Release.GetAll(GITHUB_USERNAME, GITHUB_REPOSITORY);
 
@@ -116,7 +116,7 @@ namespace AutoUpdater
 
                     foreach (var asset in release.Assets)
                     {
-                        if (asset.Name.ToLower().StartsWith("IL2-simpleradiostandalone") &&
+                        if (asset.Name.ToLower().StartsWith("il2-simpleradiostandalone") &&
                             asset.Name.ToLower().Contains(".zip"))
                         {
                             changelogURL = release.HtmlUrl;

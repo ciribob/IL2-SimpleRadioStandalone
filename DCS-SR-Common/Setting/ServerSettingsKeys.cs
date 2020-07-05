@@ -35,7 +35,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Setting
             { ServerSettingsKeys.SHOW_TUNED_COUNT.ToString(), "true" },
             { ServerSettingsKeys.GLOBAL_LOBBY_FREQUENCIES.ToString(), "248.22" },
             { ServerSettingsKeys.UPNP_ENABLED.ToString(), "false" },
-            { ServerSettingsKeys.SHOW_TRANSMITTER_NAME.ToString(), "false" },
+            { ServerSettingsKeys.SHOW_TRANSMITTER_NAME.ToString(), "true" },
         };
     }
 }
