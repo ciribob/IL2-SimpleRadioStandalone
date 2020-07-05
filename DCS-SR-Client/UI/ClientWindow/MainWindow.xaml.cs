@@ -1220,5 +1220,17 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         { 
             _globalSettings.SetClientSetting(GlobalSettingsKeys.ShowTransmitterName, ((bool)ShowTransmitterName.IsChecked).ToString());
         }
+
+        private void Donate_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(
+                    "https://www.paypal.me/ciaranfisher/3");
+            }
+            catch (Exception ex)
+            {
+            }
+        }
     }
 }
