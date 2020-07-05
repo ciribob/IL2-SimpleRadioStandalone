@@ -10,7 +10,7 @@
                       xmlns:converters="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Client.Utils.ValueConverters"
                       Title="IL2-SRS Client"
                       Width="550"
-                      Height="580"
+                      Height="610"
                       d:DataContext="{d:DesignInstance local:MainWindow}"
                       ResizeMode="CanMinimize"
                       mc:Ignorable="d">
@@ -256,6 +256,11 @@
                                HorizontalAlignment="Center" 
                                Margin="5,0,5,0" />
                     </StackPanel>
+                    <Button Content="Donate to Support SRS" 
+                            Width="150" 
+                            Click="Donate_OnClick" Margin="5"
+
+                            ></Button>
                 </StackPanel>
             </GroupBox>
         </TabItem>
