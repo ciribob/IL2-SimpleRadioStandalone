@@ -120,13 +120,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
             //copy and compare to look for changes
 
+            /**
+             * So ParentID - is an ID of another Client, who owns the vehicle which crew you're participating in now. For instance:
+Alan is riding his tank on the server. His ClientID is 12345. His ParentID=-1.
+Now Peter is joining Alan's crew as a gunner. He has his own ClientID=54321. But also he has ParentID=12345. 
+Donald now joined Alan's crew too as radist. Hi has his own ClientID=34251. But also he has ParentID=12345.
+So if someone on Server has ParentID!=-1 but ParentID=12345 - this means that intercom channel started. And the commander of this intercom is another client with  ClientID=12345.
+             */
+
             if (message is ClientDataMessage dataMessage)
             {   //Just set the Client
 
-                update = playerRadioInfo.unitId != dataMessage.ServerClientID ||
+                update = playerRadioInfo.unitId != dataMessage.ClientID ||
                          !dataMessage.PlayerName.Equals(_clientStateSingleton.LastSeenName);
 
-                playerRadioInfo.unitId = dataMessage.ServerClientID;
+                playerRadioInfo.unitId = dataMessage.ClientID;
 
                 _clientStateSingleton.LastSeenName = dataMessage.PlayerName;
             }

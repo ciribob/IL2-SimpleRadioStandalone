@@ -190,10 +190,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
                     if ((receivingRadio.modulation == RadioInformation.Modulation.INTERCOM) &&
                         (modulation == RadioInformation.Modulation.INTERCOM))
                     {
-                        if (
-                            // (unitId > 0) && (sendingUnitId > 0)
-                            // && 
-                            (unitId == sendingUnitId || (vehicleId == sendingVehicleId && vehicleId > -1)) )
+                        if (((unitId == vehicleId && unitId > -1) 
+                             || (vehicleId == sendingVehicleId && vehicleId > -1)))
                         {
                             receivingState = new RadioReceivingState
                             {

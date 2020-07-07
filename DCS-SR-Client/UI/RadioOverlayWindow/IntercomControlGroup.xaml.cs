@@ -67,6 +67,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
             {
                 RadioActive.Fill = new SolidColorBrush(Colors.Red);
 
+                TunedCount.Content = "";
+
                 //reset dragging just incase
                 _dragging = false;
             }

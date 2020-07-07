@@ -72,9 +72,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
             }
         }
 
-        public bool IsGameExportConnected { get { return IL2ExportLastReceived >= DateTime.Now.Ticks - 100000000; } }
         // Indicates an active game connection has been detected (1 tick = 100ns, 100000000 ticks = 10s stale timer),
-        public bool IsGameConnected { get { return  IsGameExportConnected; } }
+        public bool IsGameConnected { get { return IL2ExportLastReceived >= 100; } }
 
         public string LastSeenName
         {

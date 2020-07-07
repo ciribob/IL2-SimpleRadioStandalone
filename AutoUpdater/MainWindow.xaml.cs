@@ -101,7 +101,7 @@ namespace AutoUpdater
         private async Task<Uri> GetPathToLatestVersion()
         {
             Status.Content = "Finding Latest SRS Version";
-            var githubClient = new GitHubClient(new ProductHeaderValue(GITHUB_USER_AGENT, "1.0.0.2"));
+            var githubClient = new GitHubClient(new ProductHeaderValue(GITHUB_USER_AGENT, "1.0.0.3"));
 
             var releases = await githubClient.Repository.Release.GetAll(GITHUB_USERNAME, GITHUB_REPOSITORY);
 
