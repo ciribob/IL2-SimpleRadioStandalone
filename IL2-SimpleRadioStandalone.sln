@@ -5,14 +5,14 @@ VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpusWrapper", "OpusWrapper\OpusWrapper.csproj", "{838BDB0B-5EB1-4C1E-9026-0A8842AC00C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IL2-SR-Client", "DCS-SR-Client\IL2-SR-Client.csproj", "{CFF33E05-1D37-4807-B1F7-5A1488D8EC4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IL2-SR-Client", "IL2-SR-Client\IL2-SR-Client.csproj", "{CFF33E05-1D37-4807-B1F7-5A1488D8EC4F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E} = {DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IL2-SimpleRadio Server", "DCS-SimpleRadio Server\IL2-SimpleRadio Server.csproj", "{8579C7DA-206F-4705-B073-D3CC946DC8EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IL2-SimpleRadio Server", "IL2-SimpleRadio Server\IL2-SimpleRadio Server.csproj", "{8579C7DA-206F-4705-B073-D3CC946DC8EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IL2-SR-Common", "DCS-SR-Common\IL2-SR-Common.csproj", "{CF8DA5C1-0105-4486-9E28-CB2321D8F122}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IL2-SR-Common", "IL2-SR-Common\IL2-SR-Common.csproj", "{CF8DA5C1-0105-4486-9E28-CB2321D8F122}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{57B6F9D9-C410-4EB7-8003-60F894F358A4}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -24,18 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Inst
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{68C7B1F8-DF0E-4504-8C7D-6FEF4225466B}"
-	ProjectSection(SolutionItems) = preProject
-		Scripts\DCS-SRS\Scripts\DCS-SimpleRadioStandalone.lua = Scripts\DCS-SRS\Scripts\DCS-SimpleRadioStandalone.lua
-		Scripts\DCS-SRS-AutoConnectGameGUI.lua = Scripts\DCS-SRS-AutoConnectGameGUI.lua
-		Scripts\Hooks\DCS-SRS-hook.lua = Scripts\Hooks\DCS-SRS-hook.lua
-		Scripts\DCS-SRS\UI\DCS-SRS-Overlay.dlg = Scripts\DCS-SRS\UI\DCS-SRS-Overlay.dlg
-		Scripts\DCS-SRS\Scripts\DCS-SRS-OverlayGameGUI.lua = Scripts\DCS-SRS\Scripts\DCS-SRS-OverlayGameGUI.lua
-		Scripts\DCS-SRS\Scripts\DCS-SRSGameGUI.lua = Scripts\DCS-SRS\Scripts\DCS-SRSGameGUI.lua
-		Scripts\DCS-SRS\entry.lua = Scripts\DCS-SRS\entry.lua
-		DCS-SR-Client\il2-radios.json = DCS-SR-Client\il2-radios.json
-	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IL2-SR-CommonTests", "DCS-SR-CommonTests\IL2-SR-CommonTests.csproj", "{A0245CB5-7C06-4FC7-9477-ECB0D1A88239}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IL2-SR-CommonTests", "IL2-SR-CommonTests\IL2-SR-CommonTests.csproj", "{A0245CB5-7C06-4FC7-9477-ECB0D1A88239}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAudio", "NAudio\NAudio.csproj", "{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}"
 EndProject

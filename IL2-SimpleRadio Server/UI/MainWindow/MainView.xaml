@@ -1,0 +1,224 @@
+﻿<UserControl x:Class="Ciribob.IL2.SimpleRadio.Standalone.Server.UI.MainWindow.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Server.UI"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Width="330"
+             Height="300"
+             mc:Ignorable="d">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"  Margin="0,0,0,0" >
+        <StackPanel Orientation="Vertical" Margin="5" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Button Grid.Row="0"
+                        Grid.Column="0" x:Name="ServerStartStop"
+                        Width="75"
+                        Height="20"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Content="{Binding ServerButtonText}" />
+
+                <StackPanel Orientation="Vertical" Grid.Row="0"
+                            Grid.Column="1">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="55"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               Content="Clients:" />
+                        <Label x:Name="ClientsCount"
+                               Width="44"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               Content="0" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="55"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               Content="Port:" />
+                        <Label x:Name="ListeningPort"
+                               Width="44"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               Content="6002" />
+                    </StackPanel>
+
+
+                </StackPanel>
+
+
+                <Button x:Name="ShowClientList"
+                        Width="75"
+                        Height="20"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Content="Client Admin" Grid.Row="0"
+                        Grid.Column="2" />
+
+                <Label
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="Secure Coalition Radios"
+                    Grid.Row="1"
+                    Grid.Column="0" Grid.ColumnSpan="2"/>
+
+                <Button x:Name="RadioSecurityToggle"
+                        Content="{Binding RadioSecurityText}"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Width="75"
+                        Height="20"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"/>
+
+                <Label Content="Spectator Audio" 
+                       Grid.Row="2"
+                       Grid.Column="0" 
+                       Grid.ColumnSpan="2"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"/>
+
+                <Button x:Name="SpectatorAudioToggle"
+                        Content="{Binding SpectatorAudioText}"
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Width="75"
+                        Height="20"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"/>
+
+                <Label Content="Auto Export List" 
+                       Grid.Row="3"
+                       Grid.Column="0" 
+                       Grid.ColumnSpan="2"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"/>
+
+                <Button x:Name="ExportListToggle"
+                        Content="{Binding ExportListText}"
+                        Grid.Row="3"
+                        Grid.Column="2"
+                        Width="75"
+                        Height="20"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center" />
+
+                <Label Content="Realistic TX Behaviour" 
+                       Grid.Row="6"
+                       Grid.Column="0" 
+                       Grid.ColumnSpan="2"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"/>
+
+                <Button x:Name="RealRadioToggle"
+                        Content="{Binding RealRadioText}"
+                        Grid.Row="6"
+                        Grid.Column="2"
+                        Width="75"
+                        Height="20"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"/>
+
+
+                <Label Content="Check for beta updates" 
+                       Grid.Row="10"
+                       Grid.Column="0" 
+                       Grid.ColumnSpan="2"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"/>
+
+                <Button x:Name="CheckForBetaUpdatesToggle"
+                       Content="{Binding CheckForBetaUpdates}" 
+                       Grid.Row="10"
+                       Grid.Column="2"
+                       Width="75"
+                       Height="20"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+
+
+                <Label Content="Show Tuned/Client Count" 
+                       Grid.Row="15"
+                       Grid.Column="0" 
+                       Grid.ColumnSpan="2"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"/>
+
+                <Button x:Name="TunedCountToggle"
+                       Content="{Binding TunedCountText}"
+                       Grid.Row="15"
+                       Grid.Column="2"
+                       Width="75"
+                       Height="20"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+
+                <Label Content="Global Lobby Freq. AM (MHz)"
+                       Grid.Row="16"
+                       Grid.Column="0" 
+                       Grid.ColumnSpan="2"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"/>
+
+                <TextBox x:Name="GlobalLobbyFrequencies"
+                         IsEnabled="True"
+                         Text="241.2,122.3"  
+                         Grid.Row="16"
+                         Grid.Column="2"
+                         Width="75"
+                         Height="20"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"/>
+
+              
+
+                <Label Content="Show Transmitter Name" 
+                       Grid.Row="18"
+                       Grid.Column="0" 
+                       Grid.ColumnSpan="2"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"/>
+
+                <Button x:Name="ShowTransmitterNameToggle"
+                        Content="{Binding ShowTransmitterNameText}" 
+                        Grid.Row="18"
+                        Grid.Column="2"
+                        Width="75"
+                        Height="20"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"/>
+
+              
+                
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
