@@ -256,11 +256,15 @@
                                HorizontalAlignment="Center" 
                                Margin="5,0,5,0" />
                     </StackPanel>
-                    <Button Content="Donate to Support SRS" 
-                            Width="150" 
-                            Click="Donate_OnClick" Margin="5"
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="Patreon - Support SRS" 
+                                Width="150" 
+                                Click="Donate_OnClick" Margin="5"
 
-                            ></Button>
+                        ></Button>
+                        
+                    </StackPanel>
+                    
                 </StackPanel>
             </GroupBox>
         </TabItem>
@@ -291,6 +295,9 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                    <RowDefinition />
                             </Grid.RowDefinitions>
 
                             <Label x:Name="DeviceLabel"
@@ -339,8 +346,32 @@
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.RadioChannelDown}"
                                                    InputName="Radio Channel Down" />
+                            <local:InputBindingControl x:Name="RadioChannel1"
+                                                       Grid.Row="7"
+                                                       Grid.ColumnSpan="5"
+                                                       ControlInputBinding="{x:Static settings:InputBinding.RadioChannel1}"
+                                                       InputName="Radio Channel 1" />
+                            <local:InputBindingControl x:Name="RadioChannel2"
+                                                       Grid.Row="8"
+                                                       Grid.ColumnSpan="5"
+                                                       ControlInputBinding="{x:Static settings:InputBinding.RadioChannel2}"
+                                                       InputName="Radio Channel 2" />
+                            <local:InputBindingControl x:Name="RadioChannel3"
+                                                       Grid.Row="9"
+                                                       Grid.ColumnSpan="5"
+                                                       ControlInputBinding="{x:Static settings:InputBinding.RadioChannel3}"
+                                                       InputName="Radio Channel 3" />
+                            <local:InputBindingControl x:Name="RadioChannel4"
+                                                       Grid.Row="10"
+                                                       Grid.ColumnSpan="5"
+                                                       ControlInputBinding="{x:Static settings:InputBinding.RadioChannel4}"
+                                                       InputName="Radio Channel 4" />
 
-
+                            <local:InputBindingControl x:Name="RadioChannel5"
+                                                       Grid.Row="11"
+                                                       Grid.ColumnSpan="5"
+                                                       ControlInputBinding="{x:Static settings:InputBinding.RadioChannel5}"
+                                                       InputName="Radio Channel 5" />
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>

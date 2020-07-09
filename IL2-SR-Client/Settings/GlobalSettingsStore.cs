@@ -111,20 +111,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
         OverlayToggle = 112,
         ModifierOverlayToggle = 212,
 
-        Up100 = 113,
-        ModifierUp100 = 213,
+        RadioChannel1 = 113,
+        ModifierRadioChannel1 = 213,
 
-        Up10 = 114,
-        ModifierUp10 = 214,
+        RadioChannel2 = 114,
+        ModifierRadioChannel2 = 214,
 
-        Up1 = 115,
-        ModifierUp1 = 215,
+        RadioChannel3 = 115,
+        ModifierRadioChannel3 = 215,
 
-        Up01 = 116,
-        ModifierUp01 = 216,
+        RadioChannel4 = 116,
+        ModifierRadioChannel4 = 216,
 
-        Up001 = 117,
-        ModifierUp001 = 217,
+        RadioChannel5 = 117,
+        ModifierRadioChannel5 = 217,
 
         Up0001 = 118,
         ModifierUp0001 = 218,

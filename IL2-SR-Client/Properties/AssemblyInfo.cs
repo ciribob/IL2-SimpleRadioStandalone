@@ -11,7 +11,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ciribob - GitHub.com/Ciribob")]
 [assembly: AssemblyProduct("IL2-SimpleRadio Standalone")]
-[assembly: AssemblyCopyright("Copyright ©  2016 - Ciribob")]
+[assembly: AssemblyCopyright("Copyright ©  2020 - Ciribob")]
 [assembly: AssemblyTrademark("Ciribob - GitHub.com/Ciribob")]
 [assembly: AssemblyCulture("")]
 
@@ -52,5 +52,5 @@ using System.Windows;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.0.1")]
+[assembly: AssemblyFileVersion("1.0.0.1")]

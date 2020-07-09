@@ -17,6 +17,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
+using Sentry;
 using LogManager = NLog.LogManager;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Server
@@ -28,6 +29,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server
 
         public Bootstrapper()
         {
+            SentrySdk.Init("https://2e8edbdf3d394e0d895860fb51076be2@o414743.ingest.sentry.io/5315041");
             Initialize();
             SetupLogging();
 
