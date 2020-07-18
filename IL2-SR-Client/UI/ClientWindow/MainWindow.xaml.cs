@@ -333,7 +333,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             ControlsProfile.SelectionChanged += OnProfileDropDownChanged;
 
-            Radio1.InputName = "Radio 1";
+            Radio1.InputName = "Select Radio";
             Radio1.ControlInputBinding = InputBinding.Switch1;
             Radio1.InputDeviceManager = InputManager;
 
@@ -341,7 +341,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             PTT.ControlInputBinding = InputBinding.Ptt;
             PTT.InputDeviceManager = InputManager;
 
-            Intercom.InputName = "Intercom Select";
+            Intercom.InputName = "Select Intercom";
             Intercom.ControlInputBinding = InputBinding.Intercom;
             Intercom.InputDeviceManager = InputManager;
 
@@ -493,8 +493,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             RadioSoundEffects.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioEffects);
             RadioSoundEffectsClipping.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioEffectsClipping);
-            
-   
+
+            EnableTextToSpeech.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.EnableTextToSpeech);
+            WrapNextRadio.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.WrapNextRadio);
         }
 
         private void Connect()
@@ -1257,6 +1258,16 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             catch (Exception ex)
             {
             }
+        }
+
+        private void EnableTextToSpeech_OnClick(object sender, RoutedEventArgs e)
+        {
+            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.EnableTextToSpeech, (bool)EnableTextToSpeech.IsChecked);
+        }
+
+        private void EnableRadioWrap_OnClick(object sender, RoutedEventArgs e)
+        {
+            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.WrapNextRadio, (bool)WrapNextRadio.IsChecked);
         }
     }
 }

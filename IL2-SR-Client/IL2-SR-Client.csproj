@@ -148,6 +148,7 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
@@ -195,6 +196,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Audio\Managers\EventDrivenResampler.cs" />
+    <Compile Include="Audio\Managers\TextToSpeechManger.cs" />
+    <Compile Include="Audio\Models\TextToSpeechMessage.cs" />
     <Compile Include="Audio\Providers\AudioProvider.cs" />
     <Compile Include="Audio\Models\CachedAudioEffect.cs" />
     <Compile Include="Audio\Managers\AudioManager.cs" />

@@ -317,7 +317,7 @@
                                                    Grid.Row="1"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.Switch1}"
-                                                   InputName="Radio 1" />
+                                                   InputName="Select Radio" />
                             <local:InputBindingControl x:Name="PTT"
                                                    Grid.Row="2"
                                                    Grid.ColumnSpan="5"
@@ -327,7 +327,7 @@
                                                    Grid.Row="3"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.Intercom}"
-                                                   InputName="Intercom Select" />
+                                                   InputName="Select Radio" />
 
                             <local:InputBindingControl x:Name="RadioOverlay"
                                                    Grid.Row="4"
@@ -851,7 +851,9 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
-                   
+                                <RowDefinition />
+                                <RowDefinition />
+
                             </Grid.RowDefinitions>
 
                             <Label Grid.Row="0"
@@ -1047,24 +1049,76 @@
                                 </ToggleButton.Style>
                             </ToggleButton>
 
+                            <Label Grid.Row="7"
+                                   Grid.Column="0"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalContentAlignment="Center"
+                                   Content="Enable Text to Speech (beta)" />
 
-                            <Label Grid.Row="22"
+                            <ToggleButton Name="EnableTextToSpeech"
+                                          Grid.Row="7"
+                                          Grid.Column="1"
+                                          HorizontalContentAlignment="Center"
+                                          VerticalContentAlignment="Center"
+                                          Click="EnableTextToSpeech_OnClick">
+                                <ToggleButton.Style>
+                                    <Style TargetType="{x:Type ToggleButton}">
+                                        <Setter Property="Content" Value="ON" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="Content" Value="ON" />
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="False">
+                                                <Setter Property="Content" Value="OFF" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+
+                            <Label Grid.Row="8"
+                                   Grid.Column="0"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalContentAlignment="Center"
+                                   Content="Wrap Next Radio" />
+                            <ToggleButton Name="WrapNextRadio"
+                                          Grid.Row="8"
+                                          Grid.Column="1"
+                                          HorizontalContentAlignment="Center"
+                                          VerticalContentAlignment="Center"
+                                          Click="EnableRadioWrap_OnClick">
+                                <ToggleButton.Style>
+                                    <Style TargetType="{x:Type ToggleButton}">
+                                        <Setter Property="Content" Value="ON" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="Content" Value="ON" />
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="False">
+                                                <Setter Property="Content" Value="OFF" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+
+                            <Label Grid.Row="9"
                                    Grid.Column="0"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
                                    Content="Intercom Audio Channel" />
                             <local:RadioChannelConfigUi x:Name="IntercomConfig"
-                                                        Grid.Row="22"
+                                                        Grid.Row="9"
                                                         Grid.Column="1"
                                                         ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.IntercomChannel}" />
 
-                            <Label Grid.Row="12"
+                            <Label Grid.Row="10"
                                Grid.Column="0"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
                                Content="Radio Audio Channel" />
                             <local:RadioChannelConfigUi x:Name="Radio1Config"
-                                                    Grid.Row="12"
+                                                    Grid.Row="10"
                                                     Grid.Column="1"
                                                     ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio1Channel}" />
 

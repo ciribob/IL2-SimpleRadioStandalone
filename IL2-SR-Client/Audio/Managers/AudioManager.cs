@@ -2,9 +2,12 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
+using System.Speech.AudioFormat;
 using System.Threading;
 using System.Windows;
+using System.Speech.Synthesis;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Utility;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.DSP;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Network;
@@ -74,6 +77,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
         private readonly GlobalSettingsStore _globalSettings = GlobalSettingsStore.Instance;
         private Preprocessor _speex;
         private readonly bool windowsN;
+        private int _errorCount = 0;
+        //Stopwatch _stopwatch = new Stopwatch();
+
+        object lockObj = new object();
+        private TextToSpeechManger _textToSpeech;
 
         private List<Guid> _subs = new List<Guid>();
         public AudioManager(bool windowsN)
@@ -185,13 +193,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
                 Environment.Exit(1);
             }
 
+            InitMicPassthrough(micOutput);
+            InitMicCapture(guid,ipAddress,port,inputManager);
+            InitTextToSpeech();
+        }
+
+        private void InitMicPassthrough(MMDevice micOutput)
+        {
             if (micOutput != null) // && micOutput !=speakers
             {
                 //TODO handle case when they're the same?
 
                 try
                 {
-                    _micWaveOut = new WasapiOut(micOutput, AudioClientShareMode.Shared, true, 40,windowsN);
+                    _micWaveOut = new WasapiOut(micOutput, AudioClientShareMode.Shared, true, 40, windowsN);
 
                     _micWaveOutBuffer = new BufferedWaveProvider(new WaveFormat(AudioManager.INPUT_SAMPLE_RATE, 16, 1));
                     _micWaveOutBuffer.ReadFully = true;
@@ -236,12 +251,15 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
                     Environment.Exit(1);
                 }
             }
+        }
 
+        private void InitMicCapture(string guid,IPAddress ipAddress,int port, InputDeviceManager inputManager)
+        {
             if (_audioInputSingleton.MicrophoneAvailable)
             {
                 try
                 {
-                    var device = (MMDevice) _audioInputSingleton.SelectedAudioInput.Value;
+                    var device = (MMDevice)_audioInputSingleton.SelectedAudioInput.Value;
 
                     if (device == null)
                     {
@@ -283,6 +301,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
                 var voiceSenderThread = new Thread(_udpVoiceHandler.Listen);
                 voiceSenderThread.Start();
             }
+        }
+
+        private void InitTextToSpeech()
+        {
+            _textToSpeech = new TextToSpeechManger(_clientAudioMixer);
         }
 
         private void WasapiCaptureOnRecordingStopped(object sender, StoppedEventArgs e)
@@ -531,14 +554,14 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
                 transmitOnRadio);
         }
 
-        private int _errorCount = 0;
-        //Stopwatch _stopwatch = new Stopwatch();
 
-        object lockObj = new object();
         public void StopEncoding()
         {
             lock(lockObj)
             {
+                _textToSpeech?.Dispose();
+                _textToSpeech = null;
+
                 _wasapiCapture?.StopRecording();
                 _wasapiCapture?.Dispose();
                 _wasapiCapture = null;
