@@ -559,7 +559,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                 () => { _toggleOverlayCallback(false); });
                             break;
                         }
-                        else if ((int)bindState.MainDevice.InputBind >= (int)InputBinding.Up100 &&
+                        else if ((int)bindState.MainDevice.InputBind >= (int)InputBinding.RadioChannel1 &&
                                  (int)bindState.MainDevice.InputBind <= (int)InputBinding.RadioChannelDown)
                         {
                             if (bindState.MainDevice.InputBind == _lastActiveBinding && !bindState.IsActive)
@@ -586,6 +586,22 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                         case InputBinding.RadioChannelDown:
                                             RadioHelper.RadioChannelDown(1);
                                             break;
+                                        case InputBinding.RadioChannel1:
+                                            RadioHelper.SelectRadioChannel(1,1);
+                                            break;
+                                        case InputBinding.RadioChannel2:
+                                            RadioHelper.SelectRadioChannel(2, 1);
+                                            break;
+                                        case InputBinding.RadioChannel3:
+                                            RadioHelper.SelectRadioChannel(3, 1);
+                                            break;
+                                        case InputBinding.RadioChannel4:
+                                            RadioHelper.SelectRadioChannel(4, 1);
+                                            break;
+                                        case InputBinding.RadioChannel5:
+                                            RadioHelper.SelectRadioChannel(5, 1);
+                                            break;
+
                                         default:
                                             break;
                                     }

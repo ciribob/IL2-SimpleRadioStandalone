@@ -15,6 +15,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
+using Sentry;
 
 namespace IL2_SR_Client
 {
@@ -29,6 +30,7 @@ namespace IL2_SR_Client
 
         public App()
         {
+            SentrySdk.Init("https://602501536e994652b8c7a3d3a399ffd2@o414743.ingest.sentry.io/5315044");
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionHandler);
 
             var location = AppDomain.CurrentDomain.BaseDirectory;

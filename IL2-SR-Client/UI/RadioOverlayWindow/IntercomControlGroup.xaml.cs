@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Network;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Utils;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
@@ -24,16 +25,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
         private void RadioSelectSwitch(object sender, RoutedEventArgs e)
         {
-            var currentRadio = _clientStateSingleton.PlayerGameState.radios[RadioId];
-
-            if (currentRadio.modulation != RadioInformation.Modulation.DISABLED)
-            {
-                if (_clientStateSingleton.PlayerGameState.control ==
-                    PlayerGameState.RadioSwitchControls.HOTAS)
-                {
-                    _clientStateSingleton.PlayerGameState.selected = (short) RadioId;
-                }
-            }
+            RadioHelper.SelectRadio(0);
         }
 
         private void RadioVolume_DragStarted(object sender, RoutedEventArgs e)
@@ -99,22 +91,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
                         RadioLabel.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E7E7E7"));
                         TunedCount.Foreground = RadioLabel.Foreground;
                     }
-
-                    int count = _connectClientsSingleton.ClientsOnFreq(currentRadio.freq, currentRadio.modulation);
-
-                    if (count > 0)
-                    {
-                        TunedCount.Content = "👤"+count;
-                    }
-                    else
-                    {
-                        TunedCount.Content = "";
-                    }
-
                 }
                 else
                 {
                     RadioActive.Fill = new SolidColorBrush(Colors.Orange);
+                }
+
+                int count = _connectClientsSingleton.ClientsOnFreq(currentRadio.freq, currentRadio.modulation);
+
+                if (count > 0)
+                {
+                    TunedCount.Content = "👤" + count;
+                }
+                else
+                {
+                    TunedCount.Content = "";
                 }
 
                 if (_dragging == false)
@@ -123,5 +114,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
                 }
             }
         }
+
     }
 }

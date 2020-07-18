@@ -24,7 +24,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Network
             {
                 var content =
                     new StringContent(
-                        $"v=1&tid=UA-115685293-1&cid={guid}&t=event&ec={eventCategory}&ea={eventAction}&el={UpdaterChecker.VERSION}",
+                        $"v=1&tid=UA-115685293-2&cid={guid}&t=event&ec={eventCategory}&ea={eventAction}&el={UpdaterChecker.VERSION}",
                         Encoding.ASCII, "application/x-www-form-urlencoded");
                 http.PostAsync("collect", content);
             }

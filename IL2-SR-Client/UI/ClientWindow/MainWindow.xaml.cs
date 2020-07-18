@@ -333,7 +333,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             ControlsProfile.SelectionChanged += OnProfileDropDownChanged;
 
-            Radio1.InputName = "Radio 1";
+            Radio1.InputName = "Select Radio";
             Radio1.ControlInputBinding = InputBinding.Switch1;
             Radio1.InputDeviceManager = InputManager;
 
@@ -341,7 +341,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             PTT.ControlInputBinding = InputBinding.Ptt;
             PTT.InputDeviceManager = InputManager;
 
-            Intercom.InputName = "Intercom Select";
+            Intercom.InputName = "Select Intercom";
             Intercom.ControlInputBinding = InputBinding.Intercom;
             Intercom.InputDeviceManager = InputManager;
 
@@ -356,6 +356,26 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             RadioChannelDown.InputName = "Radio Channel Down";
             RadioChannelDown.ControlInputBinding = InputBinding.RadioChannelDown;
             RadioChannelDown.InputDeviceManager = InputManager;
+
+            RadioChannel1.InputName = "Radio Channel 1";
+            RadioChannel1.ControlInputBinding = InputBinding.RadioChannel1;
+            RadioChannel1.InputDeviceManager = InputManager;
+
+            RadioChannel2.InputName = "Radio Channel 2";
+            RadioChannel2.ControlInputBinding = InputBinding.RadioChannel2;
+            RadioChannel2.InputDeviceManager = InputManager;
+
+            RadioChannel3.InputName = "Radio Channel 3";
+            RadioChannel3.ControlInputBinding = InputBinding.RadioChannel3;
+            RadioChannel3.InputDeviceManager = InputManager;
+
+            RadioChannel4.InputName = "Radio Channel 4";
+            RadioChannel4.ControlInputBinding = InputBinding.RadioChannel4;
+            RadioChannel4.InputDeviceManager = InputManager;
+
+            RadioChannel5.InputName = "Radio Channel 5";
+            RadioChannel5.ControlInputBinding = InputBinding.RadioChannel5;
+            RadioChannel5.InputDeviceManager = InputManager;
         }
 
         private void OnProfileDropDownChanged(object sender, SelectionChangedEventArgs e)
@@ -372,6 +392,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             RadioOverlay.LoadInputSettings();
             RadioChannelUp.LoadInputSettings();
             RadioChannelDown.LoadInputSettings();
+
+            RadioChannel1.LoadInputSettings();
+            RadioChannel2.LoadInputSettings();
+            RadioChannel3.LoadInputSettings();
+            RadioChannel4.LoadInputSettings();
+            RadioChannel5.LoadInputSettings();
         }
 
         private void ReloadRadioAudioChannelSettings()
@@ -467,8 +493,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             RadioSoundEffects.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioEffects);
             RadioSoundEffectsClipping.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioEffectsClipping);
-            
-   
+
+            EnableTextToSpeech.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.EnableTextToSpeech);
+            WrapNextRadio.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.WrapNextRadio);
         }
 
         private void Connect()
@@ -1226,11 +1253,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             try
             {
                 Process.Start(
-                    "https://www.paypal.me/ciaranfisher/3");
+                    "https://www.patreon.com/ciribob");
             }
             catch (Exception ex)
             {
             }
+        }
+
+        private void EnableTextToSpeech_OnClick(object sender, RoutedEventArgs e)
+        {
+            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.EnableTextToSpeech, (bool)EnableTextToSpeech.IsChecked);
+        }
+
+        private void EnableRadioWrap_OnClick(object sender, RoutedEventArgs e)
+        {
+            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.WrapNextRadio, (bool)WrapNextRadio.IsChecked);
         }
     }
 }

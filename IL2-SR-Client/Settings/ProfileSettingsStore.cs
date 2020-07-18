@@ -45,7 +45,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
         AlwaysAllowTransponderOverlay,
         RadioSwitchIsPTTOnlyWhenValid,
 
-        MIDSRadioEffect //if on and Radio TX effects are on the MIDS tone is used
+        MIDSRadioEffect, //if on and Radio TX effects are on the MIDS tone is used
+
+        WrapNextRadio, // if false radio up at 5 will stop
+
+        EnableTextToSpeech // if true - all changes are read out to channels or radios
+
     }
 
     public class ProfileSettingsStore
@@ -75,6 +80,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
             {ProfileSettingsKeys.RadioSwitchIsPTT.ToString(), "false"},
             {ProfileSettingsKeys.RadioSwitchIsPTTOnlyWhenValid.ToString(), "false"},
             {ProfileSettingsKeys.AlwaysAllowTransponderOverlay.ToString(), "false"},
+            {ProfileSettingsKeys.WrapNextRadio.ToString(), "true"},
+            {ProfileSettingsKeys.EnableTextToSpeech.ToString(), "false"},
         };
 
 

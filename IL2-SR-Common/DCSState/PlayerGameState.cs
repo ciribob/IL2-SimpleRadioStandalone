@@ -25,7 +25,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         public RadioSwitchControls control = RadioSwitchControls.HOTAS;
 
         [JsonNetworkIgnoreSerialization]
-        public short selected = 0;
+        public short selected = 1;
 
         public short coalition = 0;
         

@@ -14,6 +14,7 @@ using System.Windows.Threading;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Settings;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Utils;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Network;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Setting;
@@ -172,8 +173,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                 if (clientRadio.modulation != RadioInformation.Modulation.DISABLED &&
                                     radios.control == PlayerGameState.RadioSwitchControls.HOTAS)
                                 {
-                                    radios.selected = (short) radioId;
-                                    
+                                    RadioHelper.SelectRadio(radioId);
+                                  
                                     //turn on PTT
                                     if (radioSwitchPttWhenValid || radioSwitchPtt)
                                     {
