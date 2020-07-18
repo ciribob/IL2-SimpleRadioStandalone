@@ -40,7 +40,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
             sampleProvider = buffer.ToSampleProvider();
             mixer.AddMixerInput(sampleProvider);
 
-            SpeakMessage(new TextToSpeechMessage(){Message = "IL2-SRS Text to Speech Activated"});
+            SpeakMessage(new TextToSpeechMessage(){Message = "IL2-SRS Text to Speech Active"});
         }
         
         private void SpeakMessage(TextToSpeechMessage message)
