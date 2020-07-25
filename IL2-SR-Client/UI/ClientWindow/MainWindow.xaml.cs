@@ -496,6 +496,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             EnableTextToSpeech.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.EnableTextToSpeech);
             WrapNextRadio.IsChecked = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.WrapNextRadio);
+
+            //disable to set without triggering onchange
+            TextToSpeechVolume.IsEnabled = false;
+            TextToSpeechVolume.Value = double.Parse(_globalSettings.ProfileSettingsStore.GetClientSetting(ProfileSettingsKeys.TextToSpeechVolume).RawValue,CultureInfo.InvariantCulture);
+            TextToSpeechVolume.IsEnabled = true;
         }
 
         private void Connect()
@@ -1268,6 +1273,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         private void EnableRadioWrap_OnClick(object sender, RoutedEventArgs e)
         {
             _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.WrapNextRadio, (bool)WrapNextRadio.IsChecked);
+        }
+
+        private void TextToSpeechVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.TextToSpeechVolume, e.NewValue.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

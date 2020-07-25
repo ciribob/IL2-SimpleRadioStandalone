@@ -30,8 +30,7 @@ namespace Installer
     /// </summary>
     public partial class MainWindow
     {
-        private const string REG_PATH = "HKEY_CURRENT_USER\\SOFTWARE\\IL2-SR-Standalone";
-        private const string EXPORT_SRS_LUA = "pcall(function() local IL2Sr=require('lfs');dofile(IL2Sr.writedir()..[[Mods\\Services\\IL2-SRS\\Scripts\\IL2-SimpleRadioStandalone.lua]]); end,nil);";
+        private const string REG_PATH = "HKEY_CURRENT_USER\\SOFTWARE\\IL2-SRS";
         private readonly string _currentDirectory;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private ProgressBarDialog _progressBarDialog = null;
@@ -40,20 +39,6 @@ namespace Installer
         {
             SetupLogging();
             InitializeComponent();
-
-            if (IsIL2Running())
-            {
-                MessageBox.Show(
-                    "IL2 must now be closed before continuing the installation!\n\nClose IL2 and please try again.",
-                    "Please Close IL2",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-
-                Logger.Warn("IL2 is Running - Installer quit");
-
-                Environment.Exit(0);
-
-                return;
-            }
 
             var assembly = Assembly.GetExecutingAssembly();
             var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -64,21 +49,20 @@ namespace Installer
             //allows click and drag anywhere on the window
             containerPanel.MouseLeftButtonDown += GridPanel_MouseLeftButtonDown;
 
-            var srPathStr = ReadPath("SRPathStandalone");
+            var srPathStr = ReadPath("SRSPath");
             if (srPathStr != "")
             {
                 srPath.Text = srPathStr;
             }
 
-            var scriptsPath = ReadPath("ScriptsPath");
+            var scriptsPath = ReadPath("IL2Path");
             if (scriptsPath != "")
             {
                 IL2ScriptsPath.Text = scriptsPath;
             }
             else
             {
-                IL2ScriptsPath.Text = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) +
-                                      "\\Saved Games\\";
+                IL2ScriptsPath.Text = "";
             }
 
             //To get the location the assembly normally resides on disk or the install directory
@@ -94,39 +78,6 @@ namespace Installer
             Logger.Info("Listing Files / Directories for: "+_currentDirectory);
             ListFiles(_currentDirectory);
             Logger.Info("Finished Listing Files / Directories");
-
-            new Action(async () =>
-            {
-                await Task.Delay(1).ConfigureAwait(false);
-
-                if (((App)Application.Current).Arguments.Length > 0)
-                {
-                    if (((App)Application.Current).Arguments[0].Equals("-autoupdate"))
-                    {
-                        Application.Current.Dispatcher?.Invoke(() =>
-                            {
-                                Logger.Info("Silent Installer Running");
-                                var result = MessageBox.Show(
-                                    "Do you want to install the SRS Scripts required for the SRS Client to IL2?\n\nThis scripts are NOT required if you plan to just host a Server on this machine or use SRS without IL2. \n\nEAM mode can be used to use SRS with any game",
-                                    "Install Scripts?",
-                                    MessageBoxButton.YesNo, MessageBoxImage.Information);
-
-                                if (result == MessageBoxResult.Yes)
-                                {
-                                    InstallScriptsCheckbox.IsChecked = true;
-                                }
-                                else
-                                {
-                                    InstallScriptsCheckbox.IsChecked = false;
-                                }
-
-                                InstallReleaseButton(null, null);
-                            }
-                        ); //end-invoke
-                    }
-                }
-
-            }).Invoke();
 
             if (!CheckExtracted())
             {
@@ -147,9 +98,10 @@ namespace Installer
 
         private bool CheckExtracted()
         {
-            return File.Exists(_currentDirectory + "\\opus.dll") 
-                   && File.Exists(_currentDirectory + "\\awacs-radios.json")
-                   && File.Exists(_currentDirectory + "\\SR-ClientRadio.exe")&& File.Exists(_currentDirectory + "\\Scripts\\IL2-SRS\\Scripts\\IL2-SimpleRadioStandalone.lua");
+            return File.Exists(_currentDirectory + "\\opus.dll")
+                   && File.Exists(_currentDirectory + "\\speexdsp.dll")
+                   && File.Exists(_currentDirectory + "\\IL2-SR-ClientRadio.exe")
+                   && File.Exists(_currentDirectory + "\\IL2-SR-Server.exe");
         }
 
 
@@ -209,13 +161,13 @@ namespace Installer
             }
             else
             {
-                var paths = FindValidIL2Folders(IL2criptsPath);
+                var path = FindValidIL2Folder(IL2criptsPath);
 
-                if (paths.Count == 0)
+                if (path.Length == 0)
                 {
                     MessageBox.Show(
-                           "Unable to find IL2 Folder in Saved Games!\n\nPlease check the path to the \"Saved Games\" folder\n\nMake sure you are selecting the \"Saved Games\" folder - NOT the IL2 folder inside \"Saved Games\" and NOT the IL2 installation directory",
-                           "SR Standalone Installer",
+                           "Unable to find IL2 Game - Please check the path to the game directory",
+                           "IL2-SRS Installer",
                            MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
@@ -252,9 +204,9 @@ namespace Installer
                 }
                 else if (result == 1)
                 {
-                    _progressBarDialog.UpdateProgress(true, "Installed SRS Successfully!");
+                    _progressBarDialog.UpdateProgress(true, "Installed IL2-SRS Successfully!");
 
-                    Logger.Info($"Installed SRS Successfully!");
+                    Logger.Info($"Installed IL2-SRS Successfully!");
                 
                     //open to installation location
                     Process.Start("explorer.exe", srPath.Text);
@@ -265,7 +217,7 @@ namespace Installer
                     _progressBarDialog.UpdateProgress(true, "Error with Installation");
 
                     MessageBox.Show(
-                        "Error with installation - please post your installer-log.txt on the SRS Discord for Support",
+                        "Error with installation - please post your installer-log.txt on the SRS Discord for Support under IL2-SRS support",
                         "Installation Error",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 
@@ -283,47 +235,31 @@ namespace Installer
             {
                 QuitSimpleRadio();
 
-                var paths = new List<string>();
+                var path = "";
                 if (IL2ScriptsPath != null)
                 {
-                    paths = FindValidIL2Folders(IL2ScriptsPath);
+                    path = FindValidIL2Folder(IL2ScriptsPath);
 
-                    if (paths.Count == 0)
+                    if (path.Length == 0)
                     {
 
                         MessageBox.Show(
-                            "Unable to find IL2 Folder in Saved Games!\n\nPlease check the path to the \"Saved Games\" folder\n\nMake sure you are selecting the \"Saved Games\" folder - NOT the IL2 folder inside \"Saved Games\" and NOT the IL2 installation directory",
-                            "SR Standalone Installer",
+                            "Unable to find IL2 Game - Please check the path to the game directory",
+                            "IL2-SRS Installer",
                             MessageBoxButton.OK, MessageBoxImage.Error);
                         return 0;
                     }
 
-                    if (IsIL2Running())
-                    {
-                        MessageBox.Show(
-                            "IL2 must now be closed before continuing the installation!\n\nClose IL2 and please try again.",
-                            "Please Close IL2",
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-
-                        Logger.Warn("IL2 is Running - Installer stopped");
-
-                        return 0;
-                    }
 
                     Logger.Info($"Installing - Paths: \nProgram:{srPath} \nIL2:{IL2ScriptsPath} ");
 
-                    ClearVersionPreModsTechIL2(srPath, IL2ScriptsPath);
-                    ClearVersionPostModsTechIL2(srPath, IL2ScriptsPath);
-                    ClearVersionPostModsServicesIL2(srPath, IL2ScriptsPath);
+                    RemoveIL2Install(srPath, IL2ScriptsPath);
 
-                    foreach (var path in paths)
-                    {
-                        InstallScripts(path);
-                    }
+                    EnableTelemetry(path);
                 }
                 else
                 {
-                    Logger.Info($"Installing - Paths: \nProgram:{srPath} IL2: NO PATH - NO SCRIPTS");
+                    Logger.Info($"Installing - Paths: \nProgram:{srPath} IL2: NO PATH - NO CONFIG");
                 }
 
                 //install program
@@ -339,25 +275,21 @@ namespace Installer
                     InstallShortcuts(srPath);
                 }
 
-                InstallVCRedist();
 
                 if (IL2ScriptsPath != null)
                 {
-                    string message = "Installation / Update Completed Successfully!\nInstalled IL2 Scripts to: \n";
+                    string message = "Installation / Update Completed Successfully!\nConfigured IL2 at: \n";
 
-                    foreach (var path in paths)
-                    {
-                        message += ("\n" + path);
-                    }
-
-                    MessageBox.Show(message, "SR Standalone Installer",
+                    message += ("\n" + path);
+                    
+                    MessageBox.Show(message, "IL2-SRS Installer",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
                     string message = "Installation / Update Completed Successfully!";
 
-                    MessageBox.Show(message, "SR Standalone Installer",
+                    MessageBox.Show(message, "IL2-SRS Installer",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                     
@@ -367,7 +299,7 @@ namespace Installer
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Error Running Installer");
+                Logger.Error(ex, "Error Running IL2-SRS Installer");
 
             
                 return -1;
@@ -377,14 +309,6 @@ namespace Installer
         private string GetWorkingDirectory()
         {
             return new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString();
-        }
-
-        private void InstallVCRedist()
-        {
-            _progressBarDialog.UpdateProgress(false, $"Installing VC Redist x64");
-            Process.Start(GetWorkingDirectory() + "\\VC_redist.x64.exe", "/install /norestart /quiet /log \"vc_redist_2017_x64.log\"");
-            _progressBarDialog.UpdateProgress(false, $"Finished installing VC Redist x64");
-
         }
 
         static void ListFiles(string sDir)
@@ -407,196 +331,31 @@ namespace Installer
         }
 
 
-        private void ClearVersionPreModsTechIL2(string programPath, string IL2Path)
+        private void RemoveIL2Install(string programPath, string IL2Path)
         {
-            Logger.Info($"Removed previous SRS Version at {programPath} and {IL2Path}");
-           
-            var paths = FindValidIL2Folders(IL2Path);
+            Logger.Info($"Removed IL2-SRS Version at {programPath} and {IL2Path}");
 
-            foreach (var path in paths)
-            {
-                _progressBarDialog.UpdateProgress(false, $"Clearing Previous SRS at  {path}");
-                RemoveScriptsPreModsTechIL2(path + "\\Scripts");
-            }
+            var path = FindValidIL2Folder(IL2Path);
 
-            Logger.Info($"Removed SRS program files at {programPath}");
-            _progressBarDialog.UpdateProgress(false, $"Clearing Previous SRS at  {programPath}");
-            if (Directory.Exists(programPath) && File.Exists(programPath + "\\SR-ClientRadio.exe"))
+            _progressBarDialog.UpdateProgress(false, $"Removing IL2-SRS at {path}");
+
+            Logger.Info($"Removed IL2-SRS program files at {programPath}");
+            _progressBarDialog.UpdateProgress(false, $"Removing IL2-SRS at {programPath}");
+            if (Directory.Exists(programPath) && File.Exists(programPath + "\\IL2-SR-ClientRadio.exe"))
             {
-                DeleteFileIfExists(programPath + "\\SR-ClientRadio.exe");
+                DeleteFileIfExists(programPath + "\\IL2-SR-ClientRadio.exe");
                 DeleteFileIfExists(programPath + "\\opus.dll");
                 DeleteFileIfExists(programPath + "\\speexdsp.dll");
-                DeleteFileIfExists(programPath + "\\awacs-radios.json");
                 DeleteFileIfExists(programPath + "\\SRS-AutoUpdater.exe");
-                DeleteFileIfExists(programPath + "\\SR-Server.exe");
-                DeleteFileIfExists(programPath + "\\IL2-SimpleRadioStandalone.lua");
-                DeleteFileIfExists(programPath + "\\IL2-SRSGameGUI.lua");
-                DeleteFileIfExists(programPath + "\\IL2-SRS-AutoConnectGameGUI.lua");
-                DeleteFileIfExists(programPath + "\\IL2-SRS-OverlayGameGUI.lua");
-                DeleteFileIfExists(programPath + "\\IL2-SRS-Overlay.dlg");
+                DeleteFileIfExists(programPath + "\\IL2-SR-ClientRadio.exe");
                 DeleteFileIfExists(programPath + "\\serverlog.txt");
                 DeleteFileIfExists(programPath + "\\clientlog.txt");
-                DeleteFileIfExists(programPath + "\\IL2-SRS-hook.lua");
-                DeleteFileIfExists(programPath + "\\AudioEffects\\KY-58-RX-1600.wav");
-                DeleteFileIfExists(programPath + "\\AudioEffects\\KY-58-TX-1600.wav");
-                DeleteFileIfExists(programPath + "\\AudioEffects\\Radio-RX-1600.wav");
-                DeleteFileIfExists(programPath + "\\AudioEffects\\Radio-TX-1600.wav");
-                DeleteFileIfExists(programPath + "\\AudioEffects\\nato-tone-16k.wav");
-                DeleteFileIfExists(programPath + "\\AudioEffects\\nato-mids-tone.wav");
-                DeleteFileIfExists(programPath + "\\AudioEffects\\nato-mids-tone-out.wav");
-            }
-            Logger.Info($"Finished clearing scripts and program Pre Mods ");
-
-        }
-
-        private void ClearVersionPostModsTechIL2(string programPath, string IL2Path)
-        {
-            Logger.Info($"Removed SRS Version Post Mods at {programPath} and {IL2Path}");
-            
-            var paths = FindValidIL2Folders(IL2Path);
-
-            foreach (var path in paths)
-            {
-                _progressBarDialog.UpdateProgress(false, $"Removing SRS at {path}");
-                RemoveScriptsPostModsTechIL2(path);
-            }
-
-            Logger.Info($"Removed SRS program files at {programPath}");
-            _progressBarDialog.UpdateProgress(false, $"Removing SRS at {programPath}");
-            if (Directory.Exists(programPath) && File.Exists(programPath + "\\SR-ClientRadio.exe"))
-            {
-                DeleteFileIfExists(programPath + "\\SR-ClientRadio.exe");
-                DeleteFileIfExists(programPath + "\\opus.dll");
-                DeleteFileIfExists(programPath + "\\speexdsp.dll");
-                DeleteFileIfExists(programPath + "\\awacs-radios.json");
-                DeleteFileIfExists(programPath + "\\SRS-AutoUpdater.exe");
-                DeleteFileIfExists(programPath + "\\SR-Server.exe");
-                DeleteFileIfExists(programPath + "\\serverlog.txt");
-                DeleteFileIfExists(programPath + "\\clientlog.txt");
+              //  DeleteFileIfExists(programPath + "\\default.cfg");
+              //  DeleteFileIfExists(programPath + "\\global.cfg");
 
                 DeleteDirectory(programPath + "\\AudioEffects");
-                DeleteDirectory(programPath + "\\Scripts");
             }
-            Logger.Info($"Finished clearing scripts and program Post Mods ");
-        }
-
-        private void RemoveScriptsPostModsTechIL2(string path)
-        {
-            Logger.Info($"Removing SRS Scripts at {path}");
-            //SCRIPTS folder
-            if (File.Exists(path + "\\Scripts\\Export.lua"))
-            {
-                var contents = File.ReadAllText(path + "\\Scripts\\Export.lua");
-
-                if (contents.Contains("SimpleRadioStandalone.lua"))
-                {
-                    var lines = contents.Split('\n');
-
-                    StringBuilder sb = new StringBuilder();
-
-                    foreach (var line in lines)
-                    {
-                        if (!line.Contains("SimpleRadioStandalone.lua") && line.Trim().Length > 0)
-                        {
-                            sb.Append(line);
-                            sb.Append("\n");
-                        }
-                        else
-                        {
-                            Logger.Info($"Removed SRS Scripts from Export.lua");
-                        }
-                    }
-                    File.WriteAllText(path + "\\Scripts\\Export.lua", sb.ToString());
-                }
-            }
-
-            Logger.Info($"Removed Hooks file");
-            //Hooks Folder
-            DeleteFileIfExists(path + "\\Hooks\\IL2-SRS-Hook.lua");
-
-            //MODs folder
-            if (Directory.Exists(path+"\\Mods\\Tech\\IL2-SRS"))
-            {
-                Logger.Info($"Removed Mods/Tech/IL2-SRS folder");
-                Directory.Delete(path+"\\Mods\\Tech\\IL2-SRS",true);
-            }
-
-            Logger.Info($"Finished Removing Mods/Tech & Scripts for SRS");
-        }
-
-        private void ClearVersionPostModsServicesIL2(string programPath, string IL2Path)
-        {
-            Logger.Info($"Removed SRS Version Post Mods Services at {programPath} and {IL2Path}");
-
-            var paths = FindValidIL2Folders(IL2Path);
-
-            foreach (var path in paths)
-            {
-                _progressBarDialog.UpdateProgress(false, $"Removing SRS at {path}");
-                RemoveScriptsPostModsServicesIL2(path);
-            }
-
-            Logger.Info($"Removed SRS program files at {programPath}");
-            _progressBarDialog.UpdateProgress(false, $"Removing SRS at {programPath}");
-            if (Directory.Exists(programPath) && File.Exists(programPath + "\\SR-ClientRadio.exe"))
-            {
-                DeleteFileIfExists(programPath + "\\SR-ClientRadio.exe");
-                DeleteFileIfExists(programPath + "\\opus.dll");
-                DeleteFileIfExists(programPath + "\\speexdsp.dll");
-                DeleteFileIfExists(programPath + "\\awacs-radios.json");
-                DeleteFileIfExists(programPath + "\\SRS-AutoUpdater.exe");
-                DeleteFileIfExists(programPath + "\\SR-Server.exe");
-                DeleteFileIfExists(programPath + "\\serverlog.txt");
-                DeleteFileIfExists(programPath + "\\clientlog.txt");
-
-                DeleteDirectory(programPath + "\\AudioEffects");
-                DeleteDirectory(programPath + "\\Scripts");
-            }
-            Logger.Info($"Finished clearing scripts and program Post Mods ");
-        }
-
-        private void RemoveScriptsPostModsServicesIL2(string path)
-        {
-            Logger.Info($"Removing SRS Scripts at {path}");
-            //SCRIPTS folder
-            if (File.Exists(path + "\\Scripts\\Export.lua"))
-            {
-                var contents = File.ReadAllText(path + "\\Scripts\\Export.lua");
-
-                if (contents.Contains("SimpleRadioStandalone.lua"))
-                {
-                    var lines = contents.Split('\n');
-
-                    StringBuilder sb = new StringBuilder();
-
-                    foreach (var line in lines)
-                    {
-                        if (!line.Contains("SimpleRadioStandalone.lua") && line.Trim().Length > 0)
-                        {
-                            sb.Append(line);
-                            sb.Append("\n");
-                        }
-                        else
-                        {
-                            Logger.Info($"Removed SRS Scripts from Export.lua");
-                        }
-                    }
-                    File.WriteAllText(path + "\\Scripts\\Export.lua", sb.ToString());
-                }
-            }
-
-            Logger.Info($"Removed Hooks file");
-            //Hooks Folder
-            DeleteFileIfExists(path + "\\Hooks\\IL2-SRS-Hook.lua");
-
-            //MODs folder
-            if (Directory.Exists(path + "\\Mods\\Services\\IL2-SRS"))
-            {
-                Logger.Info($"Removed Mods/Services/IL2-SRS folder");
-                Directory.Delete(path + "\\Mods\\Services\\IL2-SRS", true);
-            }
-
-            Logger.Info($"Finished Removing Mods/Services & Scripts for SRS");
+            Logger.Info($"Finished clearing config and program ");
         }
 
         private static string ReadPath(string key)
@@ -621,10 +380,10 @@ namespace Installer
             try
             {
                 Registry.SetValue(REG_PATH,
-                    "SRPathStandalone",
+                    "SRSPath",
                     "");
                 Registry.SetValue(REG_PATH,
-                    "ScriptsPath",
+                    "IL2Path",
                     "");
             }
             catch (Exception ex)
@@ -635,8 +394,7 @@ namespace Installer
             {
                 using (var key = Registry.CurrentUser.OpenSubKey("SOFTWARE", true))
                 {
-                    key.DeleteSubKeyTree("IL2-SimpleRadioStandalone", false);
-                    key.DeleteSubKeyTree("IL2-SR-Standalone", false);
+                    key.DeleteSubKeyTree("IL2-SRS", false);
                 }
             }
             catch (Exception ex)
@@ -646,53 +404,21 @@ namespace Installer
 
         private void QuitSimpleRadio()
         {
-            Logger.Info($"Closing SRS Client & Server");
+            Logger.Info($"Closing IL2-SRS Client & Server");
 #if DEBUG
             return;
 #endif
             foreach (var clsProcess in Process.GetProcesses())
             {
-                if (clsProcess.ProcessName.ToLower().Trim().StartsWith("sr-server") || clsProcess.ProcessName.ToLower().Trim().StartsWith("sr-client"))
+                if (clsProcess.ProcessName.ToLower().Trim().StartsWith("il2-sr-") )
                 {
                     Logger.Info($"Found & Terminating {clsProcess.ProcessName}");
                     clsProcess.Kill();
                     clsProcess.WaitForExit(5000);
                     clsProcess.Dispose();
-
-                    
                 }
             }
             Logger.Info($"Closed SRS Client & Server");
-        }
-
-        private bool IsIL2Running()
-        {
-            foreach (var clsProcess in Process.GetProcesses())
-            {
-                if (clsProcess.ProcessName.ToLower().Trim().Equals("IL2"))
-                {
-                    return true;
-                    // bool suspended = true;
-                    // foreach (var thread in clsProcess.Threads)
-                    // {
-                    //     var t = (System.Diagnostics.ProcessThread)thread;
-                    //
-                    //     if (t.ThreadState == ThreadState.Wait && t.WaitReason == ThreadWaitReason.Suspended)
-                    //     {
-                    //         Logger.Info($"IL2 thread is suspended");
-                    //     }
-                    //     else
-                    //     {
-                    //         Logger.Info($"IL2 thread is not suspended");
-                    //         suspended = false;
-                    //     }
-                    // }
-                    //
-                    // return !suspended;
-                }
-            }
-
-            return false;
         }
 
         private void GridPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -714,7 +440,7 @@ namespace Installer
                 {
                     filename = filename + "\\";
                 }
-                filename = filename + "IL2-SimpleRadio-Standalone\\";
+                filename = filename + "IL2-SRS\\";
 
                 srPath.Text = filename;
             }
@@ -739,35 +465,25 @@ namespace Installer
         }
 
 
-        private static List<string> FindValidIL2Folders(string path)
+        private static string FindValidIL2Folder(string path)
         {
-            Logger.Info($"Finding IL2 Saved Games Path");
-            var paths = new List<string>();
-
+            Logger.Info($"Finding IL2 Game Path");
+        
             if(path == null || path.Length == 0)
             {
-                return paths;
+                return "";
             }
 
-            foreach (var directory in Directory.EnumerateDirectories(path))
+            //need bin & data folder at the root
+            if (Directory.Exists(path + "\\bin") && Directory.Exists(path + "\\data") &&
+                File.Exists(path + "\\data\\startup.cfg"))
             {
-                if (directory.ToUpper().Contains("IL2.") || directory.ToUpper().EndsWith("IL2"))
-                {
-                    //check for config/network.vault and options.lua
-                    var network = directory + "\\config\\network.vault";
-                    var config = directory + "\\config\\options.lua";
-                    if (File.Exists(network) || File.Exists(config))
-                    {
-                        Logger.Info($"Found IL2 Saved Games Path {directory}");
-                        paths.Add(directory);
-                    }
-                }
-               
+                Logger.Info($"Fould IL2 startup.cfg "+path);
+                return path;
             }
 
-            Logger.Info($"Finished Finding IL2 Saved Games Path");
-
-            return paths;
+            Logger.Info($"Could not find IL2 startup.cfg " + path);
+            return "";
         }
 
         private static void DeleteFileIfExists(string path)
@@ -786,7 +502,7 @@ namespace Installer
 
         private void InstallProgram(string path)
         {
-            Logger.Info($"Installing SRS Program to {path}");
+            Logger.Info($"Installing IL2-SRS Program to {path}");
             _progressBarDialog.UpdateProgress(false, $"Installing SRS at {path}");
             //sleep! WTF directory is lagging behind state here...
             Task.Delay(TimeSpan.FromMilliseconds(200)).Wait();
@@ -796,7 +512,6 @@ namespace Installer
             Logger.Info($"Creating Directories");
             CreateDirectory(path);
             CreateDirectory(path + "\\AudioEffects");
-            CreateDirectory(path + "\\Scripts");
 
             //sleep! WTF directory is lagging behind state here...
             Task.Delay(TimeSpan.FromMilliseconds(200)).Wait();
@@ -805,121 +520,80 @@ namespace Installer
             Logger.Info($"Copying binaries");
             File.Copy(_currentDirectory + "\\opus.dll", path + "\\opus.dll", true);
             File.Copy(_currentDirectory + "\\speexdsp.dll", path + "\\speexdsp.dll", true);
-            File.Copy(_currentDirectory + "\\awacs-radios.json", path + "\\awacs-radios.json", true);
-            
-            File.Copy(_currentDirectory + "\\SR-ClientRadio.exe", path + "\\SR-ClientRadio.exe", true);
-            File.Copy(_currentDirectory + "\\SR-Server.exe", path + "\\SR-Server.exe", true);
-            File.Copy(_currentDirectory + "\\SRS-AutoUpdater.exe", path + "\\SRS-AutoUpdater.exe", true);
+        //    File.Copy(_currentDirectory + "\\Readme.txt", path + "\\Readme.txt", true);
+            File.Copy(_currentDirectory + "\\IL2-SR-ClientRadio.exe", path + "\\IL2-SR-ClientRadio.exe", true);
+            File.Copy(_currentDirectory + "\\IL2-SR-Server.exe", path + "\\IL2-SR-Server.exe", true);
+            File.Copy(_currentDirectory + "\\IL2-SRS-AutoUpdater.exe", path + "\\IL2-SRS-AutoUpdater.exe", true);
 
             Logger.Info($"Copying directories");
             DirectoryCopy(_currentDirectory+"\\AudioEffects", path+"\\AudioEffects");
-            DirectoryCopy(_currentDirectory + "\\Scripts", path + "\\Scripts");
 
-            Logger.Info($"Finished installing SRS Program to {path}");
+            Logger.Info($"Finished installing IL2-SRS Program to {path}");
 
         }
 
         private void InstallShortcuts(string path)
         {
-            Logger.Info($"Adding SRS Shortcut");
-            string executablePath = Path.Combine(path, "SR-ClientRadio.exe");
+            Logger.Info($"Adding IL2-SRS Shortcut");
+            string executablePath = Path.Combine(path, "IL2-SR-ClientRadio.exe");
             string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "IL2-SRS Client.lnk");
 
             WshShell shell = new WshShell();
             IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
 
-            shortcut.Description = "IL2-SimpleRadio Standalone Client";
+            shortcut.Description = "IL2-SRS Client";
             shortcut.TargetPath = executablePath;
             shortcut.WorkingDirectory = path;
             shortcut.Save();
         }
 
-        private void InstallScripts(string path)
+        private void EnableTelemetry(string path)
         {
-            Logger.Info($"Installing Scripts to {path}");
-            _progressBarDialog.UpdateProgress(false, $"Creating Script folders @ {path}");
-            //Scripts Path
-            CreateDirectory(path+"\\Scripts");
-            CreateDirectory(path+"\\Scripts\\Hooks");
+            Logger.Info($"Installing Config to {path}");
+            _progressBarDialog.UpdateProgress(false, $"Enable SRS Telemetry @ {path}");
             
-            //Make Tech Path
-            CreateDirectory(path+"\\Mods"); 
-            CreateDirectory(path+"\\Mods\\Services");
-            CreateDirectory(path+ "\\Mods\\Services\\IL2-SRS");
+            var lines = File.ReadAllText(path + "\\data\\startup.cfg");
 
-            Task.Delay(TimeSpan.FromMilliseconds(100)).Wait();
-
-            _progressBarDialog.UpdateProgress(false, $"Updating / Creating Export.lua @ {path}");
-            Logger.Info($"Handling Export.lua");
-            //does it contain an export.lua?
-            if (File.Exists(path + "\\Scripts\\Export.lua"))
+            if (lines.Contains("telemetrydevice"))
             {
-                var contents = File.ReadAllText(path + "\\Scripts\\Export.lua");
-
-                contents.Split('\n');
-
-                if (contents.Contains("SimpleRadioStandalone.lua"))
+                //handle existing file
+                if (lines.Contains("127.0.0.1:4322") 
+                    || ( lines.Contains("\"127.0.0.1\"") && lines.Contains("4322")) 
+                    || lines.Contains("addr1"))
                 {
-                    Logger.Info($"Updating existing Export.lua with existing SRS install");
-                    var lines = contents.Split('\n');
-
-                    StringBuilder sb = new StringBuilder();
-
-                    foreach (var line in lines)
-                    {
-                        if (line.Contains("SimpleRadioStandalone.lua") )
-                        {
-                            sb.Append("\n");
-                            sb.Append(EXPORT_SRS_LUA);
-                            sb.Append("\n");
-                        }
-                        else if(line.Trim().Length>0)
-                        {
-                            sb.Append(line);
-                            sb.Append("\n");
-                        }
-                        
-                    }
-                    File.WriteAllText(path + "\\Scripts\\Export.lua", sb.ToString());
+                    //already there
+                    Logger.Info($"Config present at {path}");
                 }
                 else
                 {
-                    Logger.Info($"Appending to existing Export.lua");
-                    var writer = File.AppendText(path + "\\Scripts\\Export.lua");
+                    //extract telemetry
+                    var allLines = File.ReadAllLines(path + "\\data\\startup.cfg");
+                    
+                    for (int i=0;i<allLines.Length;i++)
+                    {
+                        if (allLines[i].Contains("addr") && !allLines[i].Contains("addr1"))
+                        {
+                            allLines[i] = allLines[i] + "\r\n\taddr1 = \"127.0.0.1:4322\"";
 
-                    writer.WriteLine("\n" + EXPORT_SRS_LUA + "\n");
-                    writer.Close();
+                            Logger.Info($"Appending addr1 - likely JetSeat in use {path}");
+                        }
+                    }
+
+                    File.WriteAllLines(path + "\\data\\startup.cfg", allLines);
                 }
             }
             else
             {
-                Logger.Info($"Creating new Export.lua");
-                var writer = File.CreateText(path + "\\Scripts\\Export.lua");
+                var telemetry =
+                    "[KEY = telemetrydevice]\r\n\taddr = \"127.0.0.1\"\r\n\tdecimation = 2\r\n\tenable = true\r\n\tport = 4322\r\n[END]";
+                File.AppendAllText(path + "\\data\\startup.cfg", telemetry);
 
-                writer.WriteLine("\n"+EXPORT_SRS_LUA+"\n");
-                writer.Close();
+                Logger.Info($"No Telemtry - Appending to config {path}");
             }
 
+            Logger.Info($"Config installed to {path}");
 
-            //Now sort out Scripts//Hooks folder contents
-            Logger.Info($"Creating / installing Hooks & Mods / Services");
-            _progressBarDialog.UpdateProgress(false, $"Creating / installing Hooks & Mods/Services @ {path}");
-            try
-            {
-                File.Copy(_currentDirectory + "\\Scripts\\Hooks\\IL2-SRS-hook.lua", path + "\\Scripts\\Hooks\\IL2-SRS-hook.lua",
-                    true);
-                DirectoryCopy(_currentDirectory + "\\Scripts\\IL2-SRS",path+"\\Mods\\Services\\IL2-SRS");
-            }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show(
-                    "Install files not found - Unable to install! \n\nMake sure you extract all the files in the zip then run the Installer",
-                    "Not Unzipped", MessageBoxButton.OK, MessageBoxImage.Error);
-                Environment.Exit(0);
-            }
-            Logger.Info($"Scripts installed to {path}");
-
-            _progressBarDialog.UpdateProgress(false, $"Installed Hooks & Mods/Services @ {path}");
+            _progressBarDialog.UpdateProgress(false, $"Installed IL2-SRS Config @ {path + "\\data\\startup.cfg"}");
         }
 
         public static void DeleteDirectory(string target_dir)
@@ -980,11 +654,9 @@ namespace Installer
                     }
                 ); //end-invoke
 
-                _progressBarDialog.UpdateProgress(false, $"Removing SRS");
+                _progressBarDialog.UpdateProgress(false, $"Removing IL2-SRS");
                 Logger.Info($"Removing - Paths: \nProgram:{srPath} \nIL2:{IL2ScriptsPath} ");
-                ClearVersionPreModsTechIL2(srPath, IL2ScriptsPath);
-                ClearVersionPostModsTechIL2(srPath, IL2ScriptsPath);
-                ClearVersionPostModsServicesIL2(srPath, IL2ScriptsPath);
+                RemoveIL2Install(srPath, IL2ScriptsPath);
 
 
                 DeleteRegKeys();
@@ -1005,43 +677,10 @@ namespace Installer
 
         private void RemoveShortcuts()
         {
-            Logger.Info($"Removed SRS Shortcut");
+            Logger.Info($"Removed IL2-SRS Shortcut");
             string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "IL2-SRS Client.lnk");
 
             DeleteFileIfExists(shortcutPath);
-        }
-
-        private void RemoveScriptsPreModsTechIL2(string path)
-        {
-            Logger.Info($"Removing SRS Pre Mods Scripts at {path}");
-            //does it contain an export.lua?
-            if (File.Exists(path + "\\Export.lua"))
-            {
-                var contents = File.ReadAllText(path + "\\Export.lua");
-
-                if (contents.Contains("SimpleRadioStandalone.lua"))
-                {
-                    Logger.Info($"Removed SRS from Export.lua");
-                    contents = contents.Replace("dofile(lfs.writedir()..[[Scripts\\IL2-SimpleRadioStandalone.lua]])",
-                        "");
-                    contents =
-                        contents.Replace(
-                            "local IL2Sr=require('lfs');dofile(IL2Sr.writedir()..[[Scripts\\IL2-SimpleRadioStandalone.lua]])",
-                            "");
-                    contents = contents.Trim();
-
-                    File.WriteAllText(path + "\\Export.lua", contents);
-                }
-            }
-
-            DeleteFileIfExists(path + "\\IL2-SimpleRadioStandalone.lua");
-            DeleteFileIfExists(path + "\\IL2-SRSGameGUI.lua");
-            DeleteFileIfExists(path + "\\IL2-SRS-AutoConnectGameGUI.lua");
-            DeleteFileIfExists(path + "\\IL2-SRS-Overlay.dlg");
-            DeleteFileIfExists(path + "\\IL2-SRS-OverlayGameGUI.lua");
-            DeleteFileIfExists(path + "\\Hooks\\IL2-SRS-Hook.lua");
-
-            Logger.Info($"Removed all SRS Scripts at {path}");
         }
 
         private void CreateDirectory(string path)
@@ -1083,30 +722,30 @@ namespace Installer
             if (!Directory.Exists(IL2ScriptsPath.Text))
             {
                 IL2ScriptsPath.Text = "";
-                Logger.Info($"SRS Scripts path not valid - ignoring uninstall of scripts: {IL2ScriptsPath.Text}");
+                Logger.Info($"IL2 path not valid - ignoring uninstall of config: {IL2ScriptsPath.Text}");
             }
 
             _progressBarDialog = new ProgressBarDialog();
             _progressBarDialog.Owner = this;
             _progressBarDialog.Show();
-            _progressBarDialog.UpdateProgress(false, "Uninstalling SRS");
+            _progressBarDialog.UpdateProgress(false, "Uninstalling IL2-SRS");
 
             var result = await UninstallSR(srPath.Text,IL2ScriptsPath.Text);
             if (result)
             {
-                _progressBarDialog.UpdateProgress(true, "Removed SRS Successfully!");
-                Logger.Info($"Removed SRS Successfully!");
+                _progressBarDialog.UpdateProgress(true, "Removed IL2-SRS Successfully!");
+                Logger.Info($"Removed IL2-SRS Successfully!");
 
                 MessageBox.Show(
-                    "SR Standalone Removed Successfully!\n\nContaining folder left just in case you want favourites or frequencies",
-                    "SR Standalone Installer",
+                    "IL2-SRS Removed Successfully!\n\nContaining folder left just in case you want favourites",
+                    "IL2-SRS Installer",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
                 _progressBarDialog.UpdateProgress(true, "Error with Uninstaller");
                 MessageBox.Show(
-                    "Error with uninstaller - please post your installer-log.txt on the SRS Discord for Support",
+                    "Error with uninstaller - please post your installer-log.txt on the SRS Discord for Support under IL2-SRS Support",
                     "Installation Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -1118,13 +757,12 @@ namespace Installer
             Environment.Exit(0);
         }
 
-        private void InstallScriptsCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        private void EnableSRSConfig_OnChecked(object sender, RoutedEventArgs e)
         {
             IL2ScriptsPath.IsEnabled = true;
-
         }
 
-        private void InstallScriptsCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        private void EnableSRSConfig_OnUnchecked(object sender, RoutedEventArgs e)
         {
             IL2ScriptsPath.IsEnabled = false;
 

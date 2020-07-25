@@ -61,7 +61,17 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Audio.Managers
                     {
                         synth.SelectVoiceByHints(VoiceGender.Female,VoiceAge.Adult,0, new CultureInfo("en-GB", false));
                         synth.Rate = 1;
-                        synth.Volume = 100;
+
+                        var vol = double.Parse(GlobalSettingsStore.Instance.ProfileSettingsStore.GetClientSetting(ProfileSettingsKeys.TextToSpeechVolume).RawValue, CultureInfo.InvariantCulture);
+                        
+                        var intVol = (int)(vol * 100.0);
+
+                        if (intVol > 100)
+                        {
+                            intVol = 100;
+                        }
+
+                        synth.Volume = intVol;
                         if (mixer.WaveFormat.Channels == 2)
                         {
                             synth.SetOutputToAudioStream(stream,
