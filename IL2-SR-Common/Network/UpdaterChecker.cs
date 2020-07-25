@@ -106,75 +106,72 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         {
             _logger.Warn($"New {branch} version available on GitHub: {version}");
 
-            var result = MessageBox.Show($"New {branch} version {version} available!\n\nDo you want to update? \n\nFollow the instructions on GitHub to update",
-                "Update available", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            var result = MessageBox.Show($"New {branch} version {version} available!\n\nDo you want to auto update? \n\nYes - Launch Auto Update \n\nNo - Manual update - launches browser\n\nCancel - ignores the update",
+                "Update available", MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
 
             if (result == MessageBoxResult.Yes)
             {
-                // try
-                // {
-                //     LaunchUpdater(beta);
-                // }
-                // catch (Exception ex)
-                // {
-                //     MessageBox.Show($"Unable to Auto Update - please download latest version manually",
-                //         "Auto Update Error", MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
-                //
-                //     Process.Start(url);
-                // }
-                Process.Start(url);
+                try
+                {
+                    LaunchUpdater(beta);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Unable to Auto Update - please download latest version manually",
+                        "Auto Update Error", MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
+                
+                    Process.Start(url);
+                }
             }
             else if (result == MessageBoxResult.No)
             {
                 //Process.Start(url);
             }
         }
-
-        // private static void LaunchUpdater(bool beta)
-        // {
-        //     WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-        //     bool hasAdministrativeRight = principal.IsInRole(WindowsBuiltInRole.Administrator);
-        //
-        //     if (!hasAdministrativeRight)
-        //     {
-        //        
-        //             var location = AppDomain.CurrentDomain.BaseDirectory;
-        //
-        //             ProcessStartInfo startInfo = new ProcessStartInfo
-        //             {
-        //                 UseShellExecute = true,
-        //                 WorkingDirectory = location,
-        //                 FileName = location + "SRS-AutoUpdater.exe",
-        //                 Verb = "runas"
-        //             };
-        //
-        //             if (beta)
-        //             {
-        //                 startInfo.Arguments = "-beta";
-        //             }
-        //           
-        //             try
-        //             {
-        //                 Process p = Process.Start(startInfo);
-        //             }
-        //             catch (System.ComponentModel.Win32Exception ex)
-        //             {
-        //                 MessageBox.Show(
-        //                     "SRS Auto Update Requires Admin Rights",
-        //                     "UAC Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-        //             }
-        //     }
-        //     else
-        //     {
-        //         if (beta)
-        //         {
-        //             Process.Start("SRS-AutoUpdater.exe", "-beta");
-        //         }
-        //         else
-        //         {
-        //             Process.Start("SRS-AutoUpdater.exe");
-        //         }
-        //     }
-        // }
+        private static void LaunchUpdater(bool beta)
+        {
+            WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+            bool hasAdministrativeRight = principal.IsInRole(WindowsBuiltInRole.Administrator);
+        
+            if (!hasAdministrativeRight)
+            {
+                var location = AppDomain.CurrentDomain.BaseDirectory;
+        
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = true,
+                    WorkingDirectory = location,
+                    FileName = location + "IL2-SRS-AutoUpdater.exe",
+                    Verb = "runas"
+                };
+    
+                if (beta)
+                {
+                    startInfo.Arguments = "-beta";
+                }
+              
+                try
+                {
+                    Process p = Process.Start(startInfo);
+                }
+                catch (System.ComponentModel.Win32Exception ex)
+                {
+                    MessageBox.Show(
+                        "IL2-SRS Auto Update Requires Admin Rights",
+                        "UAC Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            else
+            {
+                if (beta)
+                {
+                    Process.Start("IL2-SRS-AutoUpdater.exe", "-beta");
+                }
+                else
+                {
+                    Process.Start("IL2-SRS-AutoUpdater.exe");
+                }
+            }
+        }
     }
 }
