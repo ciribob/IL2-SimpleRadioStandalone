@@ -5,7 +5,7 @@
         xmlns:local="clr-namespace:Installer"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Title="IL2-SRS Installer"
-        Width="477.346"
+        Width="550"
         Height="408.114"
         ResizeMode="NoResize"
         mc:Ignorable="d">
@@ -13,7 +13,7 @@
         <Label x:Name="intro"
                Margin="10,3,10,0"
                VerticalAlignment="Top"
-               Content="SimpleRadio Standalone Installer -"
+               Content="IL2-SRS Installer -"
                FontSize="20" />
 
         <Label x:Name="step2"
@@ -23,7 +23,7 @@
                FontSize="20" />
 
         <TextBox x:Name="srPath"
-                 Width="330"
+                 Width="409"
                  Height="23"
                  Margin="10,87,0,0"
                  HorizontalAlignment="Left"
@@ -32,7 +32,7 @@
                  TextWrapping="Wrap" />
         <Button x:Name="srPathButton"
                 Width="75"
-                Margin="365,87,0,0"
+                Margin="443,87,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Click="Set_Install_Path"
@@ -46,7 +46,7 @@
 
 
         <TextBox x:Name="IL2ScriptsPath"
-                 Width="330"
+                 Width="409"
                  Height="23"
                  Margin="10,197,0,0"
                  HorizontalAlignment="Left"
@@ -55,7 +55,7 @@
                  TextWrapping="Wrap" />
         <Button x:Name="IL2PathButton"
                 Width="75"
-                Margin="365,198,0,0"
+                Margin="443,198,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Click="Set_Scripts_Path"
@@ -66,12 +66,12 @@
                   HorizontalAlignment="Center"
                   Width="165"
                   Height="20"
-                  Margin="146,322,133,37"
+                  Margin="193,268,182,91"
                   IsChecked="True" />
 
         <Button x:Name="InstallButton"
                 Width="197"
-                Margin="17,347,0,0"
+                Margin="53,293,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Click="InstallReleaseButton"
@@ -79,12 +79,12 @@
         <GridSplitter x:Name="gridSplitter"
                       Width="5"
                       Height="20"
-                      Margin="232,347,0,0"
+                      Margin="265,293,0,0"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top" />
         <Button x:Name="RemoveButton"
                 Width="206"
-                Margin="251,347,0,0"
+                Margin="287,293,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Click="Remove_Plugin"
@@ -97,21 +97,22 @@
                Content="Step 3: Install Or Remove IL2-SRS"
                FontSize="20" />
         <CheckBox x:Name="InstallScriptsCheckbox"
-            Content="Install IL2 Client Scripts - Only required for SRS Client NOT Server Only Installs"
+            Content="Enable SRS IL2 Interface - not required for Server Installations"
             Height="20"
-            Margin="17,162,10,197"
+            Margin="10,162,17,197"
             IsChecked="True"
-            Checked="InstallScriptsCheckbox_OnChecked"
-            Unchecked="InstallScriptsCheckbox_OnUnchecked"/>
-        <TextBlock Width="438"
-                   IsEnabled="False"
-            Height="60"
-            Margin="10,257,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            FontSize="12"
-            TextWrapping="Wrap"
-            />
+            Checked="EnableSRSConfig_OnChecked"
+            Unchecked="EnableSRSConfig_OnUnchecked"/>
+        <RichTextBox Name="HelpText" HorizontalAlignment="Left" Margin="53,330,0,0" VerticalAlignment="Top" Width="440" Height="29" IsReadOnly="True" IsDocumentEnabled="True" >
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text=" For Support please go to the SRS Discord: " />
+                    <Hyperlink NavigateUri="https://discord.gg/baw7g3t">
+                        <Run Text="https://discord.gg/baw7g3t"/>
+                    </Hyperlink>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
 
     </Grid>
 </Window>

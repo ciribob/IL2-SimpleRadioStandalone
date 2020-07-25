@@ -72,7 +72,7 @@ namespace AutoUpdater
         {
             foreach (var clsProcess in Process.GetProcesses())
             {
-                if (clsProcess.ProcessName.ToLower().Trim().StartsWith("sr-server") || clsProcess.ProcessName.ToLower().Trim().StartsWith("sr-client"))
+                if (clsProcess.ProcessName.ToLower().Trim().StartsWith("il2-sr-"))
                 {
                     clsProcess.Kill();
                     clsProcess.WaitForExit(5000);
@@ -100,8 +100,8 @@ namespace AutoUpdater
 
         private async Task<Uri> GetPathToLatestVersion()
         {
-            Status.Content = "Finding Latest SRS Version";
-            var githubClient = new GitHubClient(new ProductHeaderValue(GITHUB_USER_AGENT, "1.0.0.1"));
+            Status.Content = "Finding Latest IL2-SRS Version";
+            var githubClient = new GitHubClient(new ProductHeaderValue(GITHUB_USER_AGENT, "1.0.0.2"));
 
             var releases = await githubClient.Repository.Release.GetAll(GITHUB_USERNAME, GITHUB_REPOSITORY);
 
@@ -148,7 +148,7 @@ namespace AutoUpdater
 
         public void ShowError()
         {
-            MessageBox.Show("Error Auto Updating SRS - Please check internet connection and try again \n\nAlternatively: \n1. Download the latest IL2-SimpleRadioStandalone.zip from the SRS Github Release page\n2. Extract all the files to a temporary directory\n3. Run the installer.",
+            MessageBox.Show("Error Auto Updating IL2-SRS - Please check internet connection and try again \n\nAlternatively: \n1. Download the latest IL2-SimpleRadioStandalone.zip from the SRS Github Release page\n2. Extract all the files to a temporary directory\n3. Run the installer.",
                 "Auto Updater Error",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
@@ -213,10 +213,7 @@ namespace AutoUpdater
                 procInfo.FileName = Path.Combine(Path.Combine(_directory, "extract"), "installer.exe");
                 procInfo.UseShellExecute = false;
                 Process.Start(procInfo);
-
-
-                Process.Start(changelogURL);
-            }
+            } 
             
             Close();
         }

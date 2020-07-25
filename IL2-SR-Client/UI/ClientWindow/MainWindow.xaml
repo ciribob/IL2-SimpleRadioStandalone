@@ -853,7 +853,8 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
-
+                                <RowDefinition />
+                                <RowDefinition />
                             </Grid.RowDefinitions>
 
                             <Label Grid.Row="0"
@@ -1080,9 +1081,31 @@
                                    Grid.Column="0"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
+                                   Content="Text To Speech Volume" />
+
+                            <Slider x:Name="TextToSpeechVolume"
+                                    Grid.Row="8"
+                                    Grid.Column="1"
+                                    TickPlacement="BottomRight"
+                                    SmallChange="0.05" 
+                                    LargeChange="0.1"
+                                    IsSnapToTickEnabled="True"
+                                    TickFrequency="0.05"
+                                    Margin="10"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Maximum="1.0"
+                                    Value="1.0"
+                                    Minimum="0.1"
+                                    ValueChanged="TextToSpeechVolume_ValueChanged" />
+
+                            <Label Grid.Row="9"
+                                   Grid.Column="0"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalContentAlignment="Center"
                                    Content="Wrap Next Radio" />
                             <ToggleButton Name="WrapNextRadio"
-                                          Grid.Row="8"
+                                          Grid.Row="9"
                                           Grid.Column="1"
                                           HorizontalContentAlignment="Center"
                                           VerticalContentAlignment="Center"
@@ -1102,23 +1125,23 @@
                                 </ToggleButton.Style>
                             </ToggleButton>
 
-                            <Label Grid.Row="9"
+                            <Label Grid.Row="10"
                                    Grid.Column="0"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
                                    Content="Intercom Audio Channel" />
                             <local:RadioChannelConfigUi x:Name="IntercomConfig"
-                                                        Grid.Row="9"
+                                                        Grid.Row="10"
                                                         Grid.Column="1"
                                                         ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.IntercomChannel}" />
 
-                            <Label Grid.Row="10"
+                            <Label Grid.Row="11"
                                Grid.Column="0"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
                                Content="Radio Audio Channel" />
                             <local:RadioChannelConfigUi x:Name="Radio1Config"
-                                                    Grid.Row="10"
+                                                    Grid.Row="11"
                                                     Grid.Column="1"
                                                     ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio1Channel}" />
 
