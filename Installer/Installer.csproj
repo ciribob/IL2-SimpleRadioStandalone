@@ -226,6 +226,10 @@
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\IL2-SR-Client\IL2-SR-Client.csproj">
+      <Project>{CFF33E05-1D37-4807-B1F7-5A1488D8EC4F}</Project>
+      <Name>IL2-SR-Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\IL2-SR-Common\IL2-SR-Common.csproj">
       <Project>{CF8DA5C1-0105-4486-9E28-CB2321D8F122}</Project>
       <Name>IL2-SR-Common</Name>

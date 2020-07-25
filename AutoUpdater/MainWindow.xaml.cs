@@ -213,10 +213,7 @@ namespace AutoUpdater
                 procInfo.FileName = Path.Combine(Path.Combine(_directory, "extract"), "installer.exe");
                 procInfo.UseShellExecute = false;
                 Process.Start(procInfo);
-
-
-                Process.Start(changelogURL);
-            }
+            } 
             
             Close();
         }

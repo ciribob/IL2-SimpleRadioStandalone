@@ -103,7 +103,16 @@
             IsChecked="True"
             Checked="EnableSRSConfig_OnChecked"
             Unchecked="EnableSRSConfig_OnUnchecked"/>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="53,330,0,0" TextWrapping="Wrap" Text="For Support please go to the SRS Discord: " VerticalAlignment="Top" Width="440" Height="29"/>
+        <RichTextBox Name="HelpText" HorizontalAlignment="Left" Margin="53,330,0,0" VerticalAlignment="Top" Width="440" Height="29" IsReadOnly="True" IsDocumentEnabled="True" >
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text=" For Support please go to the SRS Discord: " />
+                    <Hyperlink NavigateUri="https://discord.gg/baw7g3t">
+                        <Run Text="https://discord.gg/baw7g3t"/>
+                    </Hyperlink>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
 
     </Grid>
 </Window>
