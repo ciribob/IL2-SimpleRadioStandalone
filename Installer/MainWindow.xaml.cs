@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -9,8 +10,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Utils;
 using IWshRuntimeLibrary;
 using MahApps.Metro.Controls;
 using Microsoft.Win32;
@@ -93,6 +96,14 @@ namespace Installer
 
                 return;
             }
+
+            var hyperlinks = WPFElementHelper.GetVisuals(HelpText).OfType<Hyperlink>();
+            foreach (var link in hyperlinks)
+                link.RequestNavigate += new System.Windows.Navigation.RequestNavigateEventHandler((sender, args) =>
+                {
+                    Process.Start(new ProcessStartInfo(args.Uri.AbsoluteUri));
+                    args.Handled = true;
+                });
 
         }
 
@@ -265,10 +276,10 @@ namespace Installer
                 //install program
                 InstallProgram(srPath);
 
-                WritePath(srPath, "SRPathStandalone");
+                WritePath(srPath, "SRSPath");
 
                 if(IL2ScriptsPath!=null)
-                    WritePath(IL2ScriptsPath, "ScriptsPath");
+                    WritePath(IL2ScriptsPath, "IL2Path");
 
                 if (shortcut)
                 {
@@ -292,16 +303,13 @@ namespace Installer
                     MessageBox.Show(message, "IL2-SRS Installer",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                    
-
+                
                 return 1;
-
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, "Error Running IL2-SRS Installer");
 
-            
                 return -1;
             }
         }
