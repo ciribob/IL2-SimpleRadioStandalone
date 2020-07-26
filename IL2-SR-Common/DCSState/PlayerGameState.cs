@@ -81,7 +81,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             {
                 channel = 1,
                 expansion = false,
-                freq = START_FREQ,
+                freq = START_FREQ+CHANNEL_OFFSET,//add offset as channel 1
                 freqMode = RadioInformation.FreqMode.OVERLAY,
                 freqMax = 3e+8,
                 freqMin = 2e+8,
@@ -95,7 +95,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         [JsonIgnore]
         public long LastUpdate { get; set; }
-
 
         // override object.Equals
         public override bool Equals(object compare)
@@ -168,7 +167,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
             return diff < 500;
         }
-
         public RadioInformation CanHearTransmission(double frequency,
             RadioInformation.Modulation modulation,
             long sendingUnitId,
