@@ -53,6 +53,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
                 ServerVersion.Content = SRSClientSyncHandler.ServerVersion;
 
+                SecondRadio.Content = settings.GetSettingAsBool(ServerSettingsKeys.SECOND_RADIO_ENABLED)
+                    ? "ON"
+                    : "OFF";
+
+                ChannelLimit.Content = settings.GetSetting(ServerSettingsKeys.CHANNEL_LIMIT);
             }
             catch (IndexOutOfRangeException ex)
             {

@@ -78,8 +78,10 @@
         <Separator Width="130" Margin="0 2" />
 
         <radioOverlayWindow:RadioControlGroup x:Name="Radio1" RadioId="1" />
-
         <Separator Width="130" Margin="0 2" />
+        
+        <radioOverlayWindow:RadioControlGroup x:Name="Radio2" RadioId="2" />
+        <Separator Name="Radio2Seperator" Width="130" Margin="0 2" />
 
         <local:IntercomControlGroup x:Name="Intercom" RadioId="0" />
        

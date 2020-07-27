@@ -86,11 +86,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons
 
         private ClientStateSingleton()
         {
+            PlayerGameState = new PlayerGameState();
             RadioSendingState = new RadioSendingState();
-            RadioReceivingState = new RadioReceivingState[2];
+            RadioReceivingState = new RadioReceivingState[PlayerGameState.radios.Length];
 
             ShortGUID = ShortGuid.NewGuid();
-            PlayerGameState = new PlayerGameState();
+           
 
             // The following members are not updated due to events. Therefore we need to setup a polling action so that they are
             // periodically checked.

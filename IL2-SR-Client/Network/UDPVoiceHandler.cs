@@ -170,11 +170,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                             {
                                 var clientRadio = _clientStateSingleton.PlayerGameState.radios[radioId];
 
-                                if (clientRadio.modulation != RadioInformation.Modulation.DISABLED &&
-                                    radios.control == PlayerGameState.RadioSwitchControls.HOTAS)
+                                if (RadioHelper.SelectRadio(radioId))
                                 {
-                                    RadioHelper.SelectRadio(radioId);
-                                  
                                     //turn on PTT
                                     if (radioSwitchPttWhenValid || radioSwitchPtt)
                                     {

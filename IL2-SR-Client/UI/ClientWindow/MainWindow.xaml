@@ -297,7 +297,13 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
-                                    <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
                             </Grid.RowDefinitions>
 
                             <Label x:Name="DeviceLabel"
@@ -317,61 +323,78 @@
                                                    Grid.Row="1"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.Switch1}"
-                                                   InputName="Select Radio" />
+                                                   InputName="Select First Radio" />
+                            <local:InputBindingControl x:Name="Radio2"
+                                                       Grid.Row="2"
+                                                       Grid.ColumnSpan="5"
+                                                       ControlInputBinding="{x:Static settings:InputBinding.Switch2}"
+                                                       InputName="Select Second Radio" />
                             <local:InputBindingControl x:Name="PTT"
-                                                   Grid.Row="2"
+                                                   Grid.Row="3"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.Ptt}"
                                                    InputName="Common PTT" />
                             <local:InputBindingControl x:Name="Intercom"
-                                                   Grid.Row="3"
+                                                   Grid.Row="4"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.Intercom}"
-                                                   InputName="Select Radio" />
+                                                   InputName="Select Intercom" />
 
                             <local:InputBindingControl x:Name="RadioOverlay"
-                                                   Grid.Row="4"
+                                                   Grid.Row="5"
                                                    Grid.ColumnSpan="6"
                                                    ControlInputBinding="{x:Static settings:InputBinding.OverlayToggle}"
                                                    InputName="Overlay Toggle" />
 
                             <local:InputBindingControl x:Name="RadioChannelUp"
-                                                   Grid.Row="5"
+                                                   Grid.Row="6"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.RadioChannelUp}"
                                                    InputName="Radio Channel Up" />
 
                             <local:InputBindingControl x:Name="RadioChannelDown"
-                                                   Grid.Row="6"
+                                                   Grid.Row="7"
                                                    Grid.ColumnSpan="5"
                                                    ControlInputBinding="{x:Static settings:InputBinding.RadioChannelDown}"
                                                    InputName="Radio Channel Down" />
                             <local:InputBindingControl x:Name="RadioChannel1"
-                                                       Grid.Row="7"
+                                                       Grid.Row="8"
                                                        Grid.ColumnSpan="5"
                                                        ControlInputBinding="{x:Static settings:InputBinding.RadioChannel1}"
                                                        InputName="Radio Channel 1" />
                             <local:InputBindingControl x:Name="RadioChannel2"
-                                                       Grid.Row="8"
+                                                       Grid.Row="9"
                                                        Grid.ColumnSpan="5"
                                                        ControlInputBinding="{x:Static settings:InputBinding.RadioChannel2}"
                                                        InputName="Radio Channel 2" />
                             <local:InputBindingControl x:Name="RadioChannel3"
-                                                       Grid.Row="9"
+                                                       Grid.Row="10"
                                                        Grid.ColumnSpan="5"
                                                        ControlInputBinding="{x:Static settings:InputBinding.RadioChannel3}"
                                                        InputName="Radio Channel 3" />
                             <local:InputBindingControl x:Name="RadioChannel4"
-                                                       Grid.Row="10"
+                                                       Grid.Row="11"
                                                        Grid.ColumnSpan="5"
                                                        ControlInputBinding="{x:Static settings:InputBinding.RadioChannel4}"
                                                        InputName="Radio Channel 4" />
 
                             <local:InputBindingControl x:Name="RadioChannel5"
-                                                       Grid.Row="11"
+                                                       Grid.Row="12"
                                                        Grid.ColumnSpan="5"
                                                        ControlInputBinding="{x:Static settings:InputBinding.RadioChannel5}"
                                                        InputName="Radio Channel 5" />
+
+                            <local:InputBindingControl x:Name="NextRadio"
+                                                       Grid.Row="13"
+                                                       Grid.ColumnSpan="5"
+                                                       ControlInputBinding="{x:Static settings:InputBinding.NextRadio}"
+                                                       InputName="Select Next Radio" />
+
+                            <local:InputBindingControl x:Name="PreviousRadio"
+                                                       Grid.Row="14"
+                                                       Grid.ColumnSpan="5"
+                                                       ControlInputBinding="{x:Static settings:InputBinding.PreviousRadio}"
+                                                       InputName="Select Previous Radio" />
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>

@@ -5,7 +5,7 @@
              xmlns:local="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Server.UI"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Width="330"
-             Height="300"
+             Height="360"
              mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto"  Margin="0,0,0,0" >
         <StackPanel Orientation="Vertical" Margin="5" >
@@ -16,6 +16,10 @@
                     <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
@@ -216,8 +220,58 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"/>
 
-              
-                
+
+                <Label Content="Enable Second Radio" 
+                       Grid.Row="19"
+                       Grid.Column="0" 
+                       Grid.ColumnSpan="2"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"/>
+
+                <Button x:Name="EnableSecondRadioToggle"
+                        Content="{Binding EnableSecondRadioText}" 
+                        Grid.Row="19"
+                        Grid.Column="2"
+                        Width="75"
+                        Height="20"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"/>
+
+                <Label Content="Channel Limit" 
+                       Grid.Row="20"
+                       Grid.Column="0" 
+                       Grid.ColumnSpan="2"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"/>
+
+                <StackPanel Orientation="Vertical"
+                            Grid.Row="20"
+                            Grid.Column="2">
+                    <Grid  Width="75">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" FontSize="10" Content="5" HorizontalAlignment="Left" />
+                        <Label HorizontalAlignment="Right" Grid.Column="1" FontSize="10" Content="25" />
+                    </Grid>
+                    <Slider 
+                        Value="{Binding ChannelLimit}"
+                        Width="75"
+                        Height="40"
+                        VerticalAlignment="Center"
+                        Interval="5"
+                        Minimum="5"
+                        Maximum="25"
+                        TickFrequency="5"
+                        TickPlacement="TopLeft"
+                        IsSnapToTickEnabled="True"
+                        HorizontalAlignment="Center">
+
+                    </Slider>
+
+
+                </StackPanel>
             </Grid>
         </StackPanel>
     </ScrollViewer>

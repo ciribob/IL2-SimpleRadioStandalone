@@ -28,11 +28,15 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.ClientList
 
         public string ClientGuid { get; set; }
 
-        public int Channel
+        public string Channel
         {
             get => channel;
             set
             {
+                if (value == null || value == "")
+                {
+                    value = "";
+                }
                 if (channel != value)
                 {
                     channel = value;
@@ -42,7 +46,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.ClientList
         }
 
         private string _name = "";
-        private int channel;
+        private string channel = "";
 
         public string Name
         {

@@ -333,9 +333,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             ControlsProfile.SelectionChanged += OnProfileDropDownChanged;
 
-            Radio1.InputName = "Select Radio";
+            Radio1.InputName = "Select First Radio";
             Radio1.ControlInputBinding = InputBinding.Switch1;
             Radio1.InputDeviceManager = InputManager;
+
+            Radio2.InputName = "Select Second Radio";
+            Radio2.ControlInputBinding = InputBinding.Switch2;
+            Radio2.InputDeviceManager = InputManager;
 
             PTT.InputName = "Push To Talk - PTT";
             PTT.ControlInputBinding = InputBinding.Ptt;
@@ -376,6 +380,14 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             RadioChannel5.InputName = "Radio Channel 5";
             RadioChannel5.ControlInputBinding = InputBinding.RadioChannel5;
             RadioChannel5.InputDeviceManager = InputManager;
+
+            NextRadio.InputName = "Select Next Radio / Intercom";
+            NextRadio.ControlInputBinding = InputBinding.NextRadio;
+            NextRadio.InputDeviceManager = InputManager;
+
+            PreviousRadio.InputName = "Select Previous Radio / Intercom";
+            PreviousRadio.ControlInputBinding = InputBinding.PreviousRadio;
+            PreviousRadio.InputDeviceManager = InputManager;
         }
 
         private void OnProfileDropDownChanged(object sender, SelectionChangedEventArgs e)

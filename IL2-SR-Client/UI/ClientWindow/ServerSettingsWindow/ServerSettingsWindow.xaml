@@ -22,6 +22,9 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        
         </Grid.RowDefinitions>
         <Label Grid.Row="0"
                Grid.Column="0"
@@ -101,7 +104,33 @@
                VerticalContentAlignment="Center"
                Content="Unknown" />
 
-        <Button Grid.Row="6"
+        <Label Grid.Row="6"
+               Grid.Column="0"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="Channel Limit" />
+
+        <Label Name="ChannelLimit"
+               Grid.Row="6"
+               Grid.Column="1"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="Unknown" />
+
+        <Label Grid.Row="7"
+               Grid.Column="0"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="Second Radio Enabled" />
+
+        <Label Name="SecondRadio"
+               Grid.Row="7"
+               Grid.Column="1"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="Unknown" />
+
+        <Button Grid.Row="8"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Width="80"
