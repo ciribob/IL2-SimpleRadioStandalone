@@ -878,6 +878,8 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
                             </Grid.RowDefinitions>
 
                             <Label Grid.Row="0"
@@ -1162,14 +1164,24 @@
                                Grid.Column="0"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
-                               Content="Radio Audio Channel" />
+                               Content="First Radio Audio Channel" />
                             <local:RadioChannelConfigUi x:Name="Radio1Config"
                                                     Grid.Row="11"
                                                     Grid.Column="1"
                                                     ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio1Channel}" />
 
+                            <Label Grid.Row="12"
+                                   Grid.Column="0"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalContentAlignment="Center"
+                                   Content="Second Radio Audio Channel" />
+                            <local:RadioChannelConfigUi x:Name="Radio2Config"
+                                                        Grid.Row="12"
+                                                        Grid.Column="1"
+                                                        ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio2Channel}" />
 
-                            
+
+
                         </Grid>
                     </GroupBox>
 

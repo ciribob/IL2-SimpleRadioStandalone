@@ -581,15 +581,30 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                     {
                                         
                                         case InputBinding.RadioChannelUp:
-                                            RadioHelper.RadioChannelUp(1);
+
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.RadioChannelUp(1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.RadioChannelUp(ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+                                          
                                             break;
                                         case InputBinding.RadioChannelDown:
-                                            RadioHelper.RadioChannelDown(1);
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.RadioChannelDown(1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.RadioChannelDown(ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
                                             break;
                                         case InputBinding.RadioChannel1:
 
-                                            if (ClientStateSingleton.Instance.PlayerGameState.radios[2].modulation ==
-                                                RadioInformation.Modulation.DISABLED)
+                                            if (!RadioHelper.IsSecondRadioAvailable())
                                             {
                                                 RadioHelper.SelectRadioChannel(1, 1);
                                             }
@@ -600,8 +615,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
 
                                             break;
                                         case InputBinding.RadioChannel2:
-                                            if (ClientStateSingleton.Instance.PlayerGameState.radios[2].modulation ==
-                                                RadioInformation.Modulation.DISABLED)
+                                            if (!RadioHelper.IsSecondRadioAvailable())
                                             {
                                                 RadioHelper.SelectRadioChannel(2, 1);
                                             }
@@ -611,8 +625,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                             }
                                             break;
                                         case InputBinding.RadioChannel3:
-                                            if (ClientStateSingleton.Instance.PlayerGameState.radios[2].modulation ==
-                                                RadioInformation.Modulation.DISABLED)
+                                            if (!RadioHelper.IsSecondRadioAvailable())
                                             {
                                                 RadioHelper.SelectRadioChannel(3, 1);
                                             }
@@ -622,8 +635,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                             }
                                             break;
                                         case InputBinding.RadioChannel4:
-                                            if (ClientStateSingleton.Instance.PlayerGameState.radios[2].modulation ==
-                                                RadioInformation.Modulation.DISABLED)
+                                            if (!RadioHelper.IsSecondRadioAvailable())
                                             {
                                                 RadioHelper.SelectRadioChannel(4, 1);
                                             }
@@ -633,8 +645,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                             }
                                             break;
                                         case InputBinding.RadioChannel5:
-                                            if (ClientStateSingleton.Instance.PlayerGameState.radios[2].modulation ==
-                                                RadioInformation.Modulation.DISABLED)
+                                            if (!RadioHelper.IsSecondRadioAvailable())
                                             {
                                                 RadioHelper.SelectRadioChannel(5, 1);
                                             }

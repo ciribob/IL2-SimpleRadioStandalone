@@ -415,6 +415,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         private void ReloadRadioAudioChannelSettings()
         {
             Radio1Config.Reload();
+            Radio2Config.Reload();
             IntercomConfig.Reload();
         }
 

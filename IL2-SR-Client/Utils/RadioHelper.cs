@@ -58,6 +58,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             return false;
         }
 
+        public static bool IsSecondRadioAvailable()
+        {
+            return ClientStateSingleton.Instance.PlayerGameState.radios[2].modulation !=
+                   RadioInformation.Modulation.DISABLED;
+        }
+
         public static RadioInformation GetRadio(int radio)
         {
             var IL2PlayerRadioInfo = ClientStateSingleton.Instance.PlayerGameState;
@@ -85,11 +91,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
 
             currentRadio.channel = channel;
 
-            MessageHub.Instance.Publish(new TextToSpeechMessage()
+            if (IsSecondRadioAvailable())
             {
-                Message = "Channel " + channel
-            });
-
+                MessageHub.Instance.Publish(new TextToSpeechMessage()
+                {
+                    Message = "Channel " + channel+" Radio "+radioId
+                });
+            }
+            else
+            {
+                MessageHub.Instance.Publish(new TextToSpeechMessage()
+                {
+                    Message = "Channel " + channel
+                });
+            }
+            
             MessageHub.Instance.Publish(new PlayerStateUpdate());
         }
 
@@ -127,10 +143,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                     currentRadio.channel = chan;
 
                     MessageHub.Instance.Publish(new PlayerStateUpdate());
-                    MessageHub.Instance.Publish(new TextToSpeechMessage()
+                    if (IsSecondRadioAvailable())
                     {
-                        Message = "Channel "+chan
-                    });
+                        MessageHub.Instance.Publish(new TextToSpeechMessage()
+                        {
+                            Message = "Channel " + chan + " Radio " + radioId
+                        });
+                    }
+                    else
+                    {
+                        MessageHub.Instance.Publish(new TextToSpeechMessage()
+                        {
+                            Message = "Channel " + chan
+                        });
+                    }
                 }
             }
         }
@@ -169,10 +195,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
 
                     currentRadio.channel = chan;
 
-                    MessageHub.Instance.Publish(new TextToSpeechMessage()
+                    if (IsSecondRadioAvailable())
                     {
-                        Message = "Channel " + chan
-                    });
+                        MessageHub.Instance.Publish(new TextToSpeechMessage()
+                        {
+                            Message = "Channel " + chan + " Radio " + radioId
+                        });
+                    }
+                    else
+                    {
+                        MessageHub.Instance.Publish(new TextToSpeechMessage()
+                        {
+                            Message = "Channel " + chan
+                        });
+                    }
 
                     MessageHub.Instance.Publish(new PlayerStateUpdate());
                     

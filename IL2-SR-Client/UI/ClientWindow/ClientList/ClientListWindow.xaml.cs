@@ -48,7 +48,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.ClientList
                     if (srClient.GameState.radios[2] != null &&
                         srClient.GameState.radios[2].modulation == RadioInformation.Modulation.AM)
                     {
-                        client.Channel += ("-" + srClient.GameState.radios[2].channel);
+                        client.Channel += ("-" + srClient.GameState.radios[2].Channel);
                     }
                 }
                 else
