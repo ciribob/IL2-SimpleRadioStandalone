@@ -88,7 +88,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
                     //show
                     Radio2.Visibility = Visibility.Visible;
                     Radio2Seperator.Visibility = Visibility.Visible;
-                    MinHeight = _originalMinHeight + Radio1.Height + 10;
+                    MinHeight = _originalMinHeight + 55 + 10;
                     Recalculate();
                 }
 

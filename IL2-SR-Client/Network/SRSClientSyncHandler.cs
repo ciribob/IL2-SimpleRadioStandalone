@@ -461,7 +461,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             }
 
             Logger.Error("Disconnecting from server");
+
             ClientStateSingleton.Instance.IsConnected = false;
+            ClientStateSingleton.Instance.PlayerGameState.selected = 1;
+            ClientStateSingleton.Instance.PlayerGameState.radios[2].modulation = RadioInformation.Modulation.DISABLED;
+
 
             //CallOnMain(false);
         }
