@@ -41,9 +41,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
 
             _aspectRatio = MinWidth / MinHeight;
 
-               
             _originalMinHeight = MinHeight;
-
 
             AllowsTransparency = true;
             Opacity = _globalSettings.GetPositionSetting(GlobalSettingsKeys.RadioOpacity).DoubleValue;
@@ -82,6 +80,31 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
            
             Radio1.RepaintRadioStatus();
             Radio1.RepaintRadioReceive();
+
+            if (IL2PlayerRadioInfo.radios[2].modulation != RadioInformation.Modulation.DISABLED)
+            {
+                if (Radio2.Visibility == Visibility.Collapsed)
+                {
+                    //show
+                    Radio2.Visibility = Visibility.Visible;
+                    Radio2Seperator.Visibility = Visibility.Visible;
+                    MinHeight = _originalMinHeight + 55 + 10;
+                    Recalculate();
+                }
+
+                Radio2.RepaintRadioStatus();
+                Radio2.RepaintRadioReceive();
+            }
+            else
+            {
+                if (Radio2.Visibility != Visibility.Collapsed)
+                {
+                    Radio2.Visibility = Visibility.Collapsed;
+                    MinHeight = _originalMinHeight;
+                    Radio2Seperator.Visibility = Visibility.Collapsed;
+                    Recalculate();
+                }
+            }
 
             Intercom.RepaintRadioStatus();
 
@@ -189,7 +212,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Overlay
                 Width = sizeInfo.NewSize.Height * _aspectRatio;
             else
                 Height = sizeInfo.NewSize.Width / _aspectRatio;
-
 
             // Console.WriteLine(this.Height +" width:"+ this.Width);
         }

@@ -11,6 +11,7 @@ using Ciribob.IL2.SimpleRadio.Standalone.Client.Settings;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.PresetChannels;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
+using Ciribob.IL2.SimpleRadio.Standalone.Common.Setting;
 using Easy.MessageHub;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
@@ -18,7 +19,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
     public static class RadioHelper
     {
      
-        public static bool SelectRadio(int radioId)
+        public static bool SelectRadio(int radioId, bool tts = true)
         {
             var radio = GetRadio(radioId);
 
@@ -33,7 +34,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                     ClientStateSingleton.Instance.PlayerGameState.selected = (short) radioId;
 
                     //only send audio if we switched
-                    if (current != ClientStateSingleton.Instance.PlayerGameState.selected)
+                    if (tts && current != ClientStateSingleton.Instance.PlayerGameState.selected)
                     {
                         if (radioId == 0)
                         {
@@ -46,7 +47,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                         {
                             MessageHub.Instance.Publish(new TextToSpeechMessage()
                             {
-                                Message = "Selected Radio"
+                                Message = "Selected Radio "+radioId
                             });
                         }
                     }
@@ -55,6 +56,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             }
 
             return false;
+        }
+
+        public static bool IsSecondRadioAvailable()
+        {
+            return ClientStateSingleton.Instance.PlayerGameState.radios[2].modulation !=
+                   RadioInformation.Modulation.DISABLED;
         }
 
         public static RadioInformation GetRadio(int radio)
@@ -74,7 +81,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
         {
             var currentRadio = GetRadio(radioId);
 
-            if (currentRadio == null)
+            if (currentRadio == null || currentRadio.modulation == RadioInformation.Modulation.INTERCOM)
             {
                 return;
             }
@@ -84,11 +91,21 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
 
             currentRadio.channel = channel;
 
-            MessageHub.Instance.Publish(new TextToSpeechMessage()
+            if (IsSecondRadioAvailable())
             {
-                Message = "Channel " + channel
-            });
-
+                MessageHub.Instance.Publish(new TextToSpeechMessage()
+                {
+                    Message = "Channel " + channel+" Radio "+radioId
+                });
+            }
+            else
+            {
+                MessageHub.Instance.Publish(new TextToSpeechMessage()
+                {
+                    Message = "Channel " + channel
+                });
+            }
+            
             MessageHub.Instance.Publish(new PlayerStateUpdate());
         }
 
@@ -96,7 +113,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
         {
             var currentRadio = RadioHelper.GetRadio(radioId);
 
-            if (currentRadio != null)
+            if (currentRadio != null && currentRadio.modulation != RadioInformation.Modulation.INTERCOM)
             {
                 if (currentRadio.modulation != RadioInformation.Modulation.DISABLED
                     && ClientStateSingleton.Instance.PlayerGameState.control ==
@@ -106,7 +123,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                     
                     var chan = currentRadio.channel+1;
 
-                    if (chan > PlayerGameState.CHANNEL_LIMIT)
+                    var limit = SyncedServerSettings.Instance.GetSettingInt(ServerSettingsKeys.CHANNEL_LIMIT);
+                    if (chan > limit)
                     {
                         if (wrap)
                         {
@@ -114,7 +132,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                         }
                         else
                         {
-                            chan = 5;
+                            chan = limit;
                         }
                     }
 
@@ -125,10 +143,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                     currentRadio.channel = chan;
 
                     MessageHub.Instance.Publish(new PlayerStateUpdate());
-                    MessageHub.Instance.Publish(new TextToSpeechMessage()
+                    if (IsSecondRadioAvailable())
                     {
-                        Message = "Channel "+chan
-                    });
+                        MessageHub.Instance.Publish(new TextToSpeechMessage()
+                        {
+                            Message = "Channel " + chan + " Radio " + radioId
+                        });
+                    }
+                    else
+                    {
+                        MessageHub.Instance.Publish(new TextToSpeechMessage()
+                        {
+                            Message = "Channel " + chan
+                        });
+                    }
                 }
             }
         }
@@ -137,7 +165,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
         {
             var currentRadio = RadioHelper.GetRadio(radioId);
 
-            if (currentRadio != null)
+            if (currentRadio != null && currentRadio.modulation != RadioInformation.Modulation.INTERCOM)
             {
                 if (currentRadio.modulation != RadioInformation.Modulation.DISABLED
                     && ClientStateSingleton.Instance.PlayerGameState.control ==
@@ -147,11 +175,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
 
                     var chan = currentRadio.channel - 1;
 
+                    var limit = SyncedServerSettings.Instance.GetSettingInt(ServerSettingsKeys.CHANNEL_LIMIT);
+                    
                     if (chan < 1)
                     {
                         if (wrap)
                         {
-                            chan = PlayerGameState.CHANNEL_LIMIT;
+                            chan = limit;
                         }
                         else
                         {
@@ -165,10 +195,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
 
                     currentRadio.channel = chan;
 
-                    MessageHub.Instance.Publish(new TextToSpeechMessage()
+                    if (IsSecondRadioAvailable())
                     {
-                        Message = "Channel " + chan
-                    });
+                        MessageHub.Instance.Publish(new TextToSpeechMessage()
+                        {
+                            Message = "Channel " + chan + " Radio " + radioId
+                        });
+                    }
+                    else
+                    {
+                        MessageHub.Instance.Publish(new TextToSpeechMessage()
+                        {
+                            Message = "Channel " + chan
+                        });
+                    }
 
                     MessageHub.Instance.Publish(new PlayerStateUpdate());
                     
@@ -196,5 +236,101 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             }
         }
 
+        public static void PreviousRadio()
+        {
+            var selected = ClientStateSingleton.Instance.PlayerGameState.selected;
+
+            if (selected - 1 < 0)
+            {
+                //radio 2 if its not disabled - else one
+                for (int i = ClientStateSingleton.Instance.PlayerGameState.radios.Length - 1; i >= 0; i--)
+                {
+                    if (SelectRadio(i))
+                    {
+                        return;
+                    }
+
+                }
+            }
+            else
+            {
+                for (int i = selected-1; i >= 0; i--)
+                {
+                    if (SelectRadio(i))
+                    {
+                        return;
+                    }
+
+                }
+            }
+            //looped
+            SelectRadio(0);
+        }
+
+        public static void NextRadio()
+        {
+            var selected = ClientStateSingleton.Instance.PlayerGameState.selected;
+
+            if (selected + 1 > ClientStateSingleton.Instance.PlayerGameState.radios.Length)
+            {
+                SelectRadio(0);
+            }
+            else
+            {
+                //find next radios
+                for (int i = selected + 1; i < ClientStateSingleton.Instance.PlayerGameState.radios.Length; i++)
+                {
+                    if (SelectRadio(i))
+                    {
+                        return;
+                    }
+                }
+            }
+            //looped
+            SelectRadio(0);
+        }
+
+        private static string BuildRadioStatus(int radio)
+        {
+            var selected = ClientStateSingleton.Instance.PlayerGameState.selected;
+
+            var builder = new StringBuilder();
+
+            var radio1 = GetRadio(radio);
+
+            int radio1Count = ConnectedClientsSingleton.Instance.ClientsOnFreq(radio1.freq, radio1.modulation);
+
+            if (radio == 0)
+            {
+                builder.Append("Intercom ");
+            }
+            else
+            {
+                builder.Append($"Radio {radio} ");
+                builder.Append($" - Channel {radio1.Channel}.");
+            }
+
+            builder.Append($", {radio1Count} Connected.");
+
+            builder.Append(".\n");
+
+            return builder.ToString();
+        }
+
+        public static void ReadStatus()
+        {
+            var selected = ClientStateSingleton.Instance.PlayerGameState.selected;
+
+            if (selected >= 0)
+            {
+                MessageHub.Instance.Publish(new TextToSpeechMessage()
+                {
+                    Message = BuildRadioStatus(selected)
+                });
+            }
+
+
+
+        }
     }
 }

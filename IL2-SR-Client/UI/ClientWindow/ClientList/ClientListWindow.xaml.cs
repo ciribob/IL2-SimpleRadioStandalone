@@ -1,23 +1,11 @@
-﻿using Ciribob.IL2.SimpleRadio.Standalone.Common.Network;
-using MahApps.Metro.Controls;
+﻿using MahApps.Metro.Controls;
 using NLog;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
+using Ciribob.IL2.SimpleRadio.Standalone.Common;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.ClientList
 {
@@ -34,6 +22,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.ClientList
         public ClientListWindow()
         {
             InitializeComponent();
+            ClientList.ItemsSource = _clientList;
             UpdateList();
 
             _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
@@ -43,19 +32,32 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.ClientList
 
         private void UpdateList()
         {
-
             _clientList.Clear();
             foreach (var srClient in ConnectedClientsSingleton.Instance.Values)
             {
-                _clientList.Add(new ClientListModel()
+                var client = new ClientListModel()
                 {
-                    Channel =  srClient.GameState.radios[1].Channel,
                     Name = srClient.Name,
                     Coalition = srClient.Coalition
-                });
-            }
+                };
 
-            ClientList.ItemsSource = _clientList;
+                if (srClient.GameState.radios.Length >= 3)
+                {
+                    client.Channel = srClient.GameState.radios[1].Channel + "";
+
+                    if (srClient.GameState.radios[2] != null &&
+                        srClient.GameState.radios[2].modulation == RadioInformation.Modulation.AM)
+                    {
+                        client.Channel += ("-" + srClient.GameState.radios[2].Channel);
+                    }
+                }
+                else
+                {
+                    client.Channel = srClient.GameState.radios[1].Channel + "";
+                }
+
+                _clientList.Add(client);
+            }
         }
 
         private void UpdateTimer_Tick(object sender, EventArgs e)
