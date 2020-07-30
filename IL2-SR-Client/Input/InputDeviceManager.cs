@@ -660,6 +660,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                         case InputBinding.NextRadio:
                                             RadioHelper.NextRadio();
                                             break;
+                                        case InputBinding.ReadStatus:
+                                            RadioHelper.ReadStatus();
+                                            break;
 
                                         default:
                                             break;

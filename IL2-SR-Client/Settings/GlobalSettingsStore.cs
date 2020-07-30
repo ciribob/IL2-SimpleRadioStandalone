@@ -159,17 +159,15 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
         ToggleEncryption = 128,
         ModifierToggleEncryption = 228,
 
-        EncryptionKeyIncrease = 129,
-        ModifierEncryptionKeyIncrease = 229,
-
-        EncryptionKeyDecrease = 130,
-        ModifierEncryptionEncryptionKeyDecrease = 230,
+        ReadStatus = 130,
+        ModifierReadStatus = 230,
 
         RadioChannelUp = 131,
         ModifierRadioChannelUp = 231,
 
         RadioChannelDown = 132,
         ModifierRadioChannelDown = 232,
+
     }
 
 

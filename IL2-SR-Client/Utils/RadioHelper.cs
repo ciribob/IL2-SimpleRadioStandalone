@@ -19,7 +19,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
     public static class RadioHelper
     {
      
-        public static bool SelectRadio(int radioId)
+        public static bool SelectRadio(int radioId, bool tts = true)
         {
             var radio = GetRadio(radioId);
 
@@ -34,7 +34,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                     ClientStateSingleton.Instance.PlayerGameState.selected = (short) radioId;
 
                     //only send audio if we switched
-                    if (current != ClientStateSingleton.Instance.PlayerGameState.selected)
+                    if (tts && current != ClientStateSingleton.Instance.PlayerGameState.selected)
                     {
                         if (radioId == 0)
                         {
@@ -81,7 +81,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
         {
             var currentRadio = GetRadio(radioId);
 
-            if (currentRadio == null)
+            if (currentRadio == null || currentRadio.modulation == RadioInformation.Modulation.INTERCOM)
             {
                 return;
             }
@@ -113,7 +113,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
         {
             var currentRadio = RadioHelper.GetRadio(radioId);
 
-            if (currentRadio != null)
+            if (currentRadio != null && currentRadio.modulation != RadioInformation.Modulation.INTERCOM)
             {
                 if (currentRadio.modulation != RadioInformation.Modulation.DISABLED
                     && ClientStateSingleton.Instance.PlayerGameState.control ==
@@ -165,7 +165,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
         {
             var currentRadio = RadioHelper.GetRadio(radioId);
 
-            if (currentRadio != null)
+            if (currentRadio != null && currentRadio.modulation != RadioInformation.Modulation.INTERCOM)
             {
                 if (currentRadio.modulation != RadioInformation.Modulation.DISABLED
                     && ClientStateSingleton.Instance.PlayerGameState.control ==
@@ -288,6 +288,54 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
             }
             //looped
             SelectRadio(0);
+        }
+
+        private static string BuildRadioStatus(int radio)
+        {
+            var selected = ClientStateSingleton.Instance.PlayerGameState.selected;
+
+            var builder = new StringBuilder();
+
+            var radio1 = GetRadio(radio);
+
+            int radio1Count = ConnectedClientsSingleton.Instance.ClientsOnFreq(radio1.freq, radio1.modulation);
+
+            if (radio == 0)
+            {
+                builder.Append("Intercom ");
+            }
+            else
+            {
+                builder.Append($"Radio {radio} ");
+                builder.Append($" - Channel {radio1.Channel}.");
+            }
+            
+            if (selected == radio)
+            {
+                builder.Append(" Selected");
+            }
+
+            builder.Append($", {radio1Count} Connected.");
+
+            builder.Append(".\n");
+
+            return builder.ToString();
+        }
+
+        public static void ReadStatus()
+        {
+            var selected = ClientStateSingleton.Instance.PlayerGameState.selected;
+
+            if (selected >= 0)
+            {
+                MessageHub.Instance.Publish(new TextToSpeechMessage()
+                {
+                    Message = BuildRadioStatus(selected)
+                });
+            }
+
+
+
         }
     }
 }

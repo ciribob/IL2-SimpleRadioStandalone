@@ -388,6 +388,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             PreviousRadio.InputName = "Select Previous Radio / Intercom";
             PreviousRadio.ControlInputBinding = InputBinding.PreviousRadio;
             PreviousRadio.InputDeviceManager = InputManager;
+
+            ReadStatus.InputName = "Read Status (TTS on required)";
+            ReadStatus.ControlInputBinding = InputBinding.ReadStatus;
+            ReadStatus.InputDeviceManager = InputManager;
         }
 
         private void OnProfileDropDownChanged(object sender, SelectionChangedEventArgs e)
@@ -399,17 +403,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         private void ReloadInputBindings()
         {
             Radio1.LoadInputSettings();
+            Radio2.LoadInputSettings();
             PTT.LoadInputSettings();
             Intercom.LoadInputSettings();
             RadioOverlay.LoadInputSettings();
             RadioChannelUp.LoadInputSettings();
             RadioChannelDown.LoadInputSettings();
-
             RadioChannel1.LoadInputSettings();
             RadioChannel2.LoadInputSettings();
             RadioChannel3.LoadInputSettings();
             RadioChannel4.LoadInputSettings();
             RadioChannel5.LoadInputSettings();
+            NextRadio.LoadInputSettings();
+            PreviousRadio.LoadInputSettings();
+            ReadStatus.LoadInputSettings();
         }
 
         private void ReloadRadioAudioChannelSettings()
@@ -512,6 +519,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             //disable to set without triggering onchange
             TextToSpeechVolume.IsEnabled = false;
+            TextToSpeechVolume.ValueChanged += TextToSpeechVolume_ValueChanged;
             TextToSpeechVolume.Value = double.Parse(_globalSettings.ProfileSettingsStore.GetClientSetting(ProfileSettingsKeys.TextToSpeechVolume).RawValue,CultureInfo.InvariantCulture);
             TextToSpeechVolume.IsEnabled = true;
         }
@@ -1290,7 +1298,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
         private void TextToSpeechVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.TextToSpeechVolume, e.NewValue.ToString(CultureInfo.InvariantCulture));
+            if(TextToSpeechVolume.IsEnabled)
+                _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.TextToSpeechVolume, e.NewValue.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

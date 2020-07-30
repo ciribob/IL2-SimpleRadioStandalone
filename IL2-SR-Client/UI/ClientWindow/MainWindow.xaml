@@ -304,6 +304,7 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
+                                <RowDefinition />
                             </Grid.RowDefinitions>
 
                             <Label x:Name="DeviceLabel"
@@ -395,6 +396,12 @@
                                                        Grid.ColumnSpan="5"
                                                        ControlInputBinding="{x:Static settings:InputBinding.PreviousRadio}"
                                                        InputName="Select Previous Radio" />
+
+                            <local:InputBindingControl x:Name="ReadStatus"
+                                                       Grid.Row="15"
+                                                       Grid.ColumnSpan="5"
+                                                       ControlInputBinding="{x:Static settings:InputBinding.ReadStatus}"
+                                                       InputName="Read Status (TTS on required)" />
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>
@@ -1122,7 +1129,8 @@
                                     Maximum="1.0"
                                     Value="1.0"
                                     Minimum="0.1"
-                                    ValueChanged="TextToSpeechVolume_ValueChanged" />
+                                    IsEnabled="False"
+                                     />
 
                             <Label Grid.Row="9"
                                    Grid.Column="0"
