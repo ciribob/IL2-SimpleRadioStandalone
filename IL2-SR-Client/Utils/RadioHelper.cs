@@ -309,11 +309,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Utils
                 builder.Append($"Radio {radio} ");
                 builder.Append($" - Channel {radio1.Channel}.");
             }
-            
-            if (selected == radio)
-            {
-                builder.Append(" Selected");
-            }
 
             builder.Append($", {radio1Count} Connected.");
 
