@@ -18,7 +18,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         [JsonIL2IgnoreSerialization]
         public volatile bool ptt = false;
 
-        public RadioInformation[] radios = new RadioInformation[2]; //1 + intercom
+        public RadioInformation[] radios = new RadioInformation[3]; //2 + intercom
 
         [JsonNetworkIgnoreSerialization]
         [JsonIL2IgnoreSerialization]
@@ -44,10 +44,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         [JsonNetworkIgnoreSerialization]
         [JsonIL2IgnoreSerialization]
         public static readonly double CHANNEL_OFFSET = 1000000; //for channel <> Freq conversion
-
-        [JsonNetworkIgnoreSerialization]
-        [JsonIL2IgnoreSerialization]
-        public static readonly int CHANNEL_LIMIT = 5;
 
         [JsonNetworkIgnoreSerialization]
         [JsonIL2IgnoreSerialization]
@@ -81,21 +77,33 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
             {
                 channel = 1,
                 expansion = false,
-                freq = START_FREQ,
+                freq = START_FREQ+CHANNEL_OFFSET,//add offset as channel 1
                 freqMode = RadioInformation.FreqMode.OVERLAY,
                 freqMax = 3e+8,
                 freqMin = 2e+8,
                 modulation = RadioInformation.Modulation.AM,
                 volMode = RadioInformation.VolumeMode.OVERLAY,
                 volume = 1.0f,
-                name = "RADIO",
+                name = "RADIO 1",
+            };
+            radios[2] = new RadioInformation()
+            {
+                channel = 1,
+                expansion = false,
+                freq = START_FREQ + CHANNEL_OFFSET,//add offset as channel 1
+                freqMode = RadioInformation.FreqMode.OVERLAY,
+                freqMax = 3e+8,
+                freqMin = 2e+8,
+                modulation = RadioInformation.Modulation.DISABLED,
+                volMode = RadioInformation.VolumeMode.OVERLAY,
+                volume = 1.0f,
+                name = "RADIO 2",
             };
 
         }
 
         [JsonIgnore]
         public long LastUpdate { get; set; }
-
 
         // override object.Equals
         public override bool Equals(object compare)
@@ -168,7 +176,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
             return diff < 500;
         }
-
         public RadioInformation CanHearTransmission(double frequency,
             RadioInformation.Modulation modulation,
             long sendingUnitId,

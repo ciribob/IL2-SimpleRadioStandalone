@@ -104,6 +104,19 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.UI.MainWindow
         public string ListeningPort
             => ServerSettingsStore.Instance.GetServerSetting(ServerSettingsKeys.SERVER_PORT).StringValue;
 
+        public string EnableSecondRadioText
+            => ServerSettingsStore.Instance.GetGeneralSetting(ServerSettingsKeys.SECOND_RADIO_ENABLED).BoolValue ? "ON" : "OFF";
+        public int ChannelLimit
+        {
+            get => ServerSettingsStore.Instance.GetGeneralSetting(ServerSettingsKeys.CHANNEL_LIMIT).IntValue;
+            set
+            {
+                ServerSettingsStore.Instance.SetGeneralSetting(ServerSettingsKeys.CHANNEL_LIMIT,
+                    value.ToString());
+                _eventAggregator.PublishOnBackgroundThread(new ServerSettingsChangedMessage());
+            }
+        }
+
         public void Handle(ServerStateMessage message)
         {
             IsServerRunning = message.IsRunning;
@@ -206,6 +219,16 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.UI.MainWindow
             var newSetting = ShowTransmitterNameText != "ON";
             ServerSettingsStore.Instance.SetGeneralSetting(ServerSettingsKeys.SHOW_TRANSMITTER_NAME, newSetting);
             NotifyOfPropertyChange(() => ShowTransmitterNameText);
+
+            _eventAggregator.PublishOnBackgroundThread(new ServerSettingsChangedMessage());
+        }
+
+
+        public void EnableSecondRadioToggle()
+        {
+            var newSetting = EnableSecondRadioText != "ON";
+            ServerSettingsStore.Instance.SetGeneralSetting(ServerSettingsKeys.SECOND_RADIO_ENABLED, newSetting);
+            NotifyOfPropertyChange(() => EnableSecondRadioText);
 
             _eventAggregator.PublishOnBackgroundThread(new ServerSettingsChangedMessage());
         }

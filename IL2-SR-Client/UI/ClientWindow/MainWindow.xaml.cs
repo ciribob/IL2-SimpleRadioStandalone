@@ -333,9 +333,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             ControlsProfile.SelectionChanged += OnProfileDropDownChanged;
 
-            Radio1.InputName = "Select Radio";
+            Radio1.InputName = "Select First Radio";
             Radio1.ControlInputBinding = InputBinding.Switch1;
             Radio1.InputDeviceManager = InputManager;
+
+            Radio2.InputName = "Select Second Radio";
+            Radio2.ControlInputBinding = InputBinding.Switch2;
+            Radio2.InputDeviceManager = InputManager;
 
             PTT.InputName = "Push To Talk - PTT";
             PTT.ControlInputBinding = InputBinding.Ptt;
@@ -376,6 +380,18 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             RadioChannel5.InputName = "Radio Channel 5";
             RadioChannel5.ControlInputBinding = InputBinding.RadioChannel5;
             RadioChannel5.InputDeviceManager = InputManager;
+
+            NextRadio.InputName = "Select Next Radio / Intercom";
+            NextRadio.ControlInputBinding = InputBinding.NextRadio;
+            NextRadio.InputDeviceManager = InputManager;
+
+            PreviousRadio.InputName = "Select Previous Radio / Intercom";
+            PreviousRadio.ControlInputBinding = InputBinding.PreviousRadio;
+            PreviousRadio.InputDeviceManager = InputManager;
+
+            ReadStatus.InputName = "Read Status (TTS on required)";
+            ReadStatus.ControlInputBinding = InputBinding.ReadStatus;
+            ReadStatus.InputDeviceManager = InputManager;
         }
 
         private void OnProfileDropDownChanged(object sender, SelectionChangedEventArgs e)
@@ -387,22 +403,26 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         private void ReloadInputBindings()
         {
             Radio1.LoadInputSettings();
+            Radio2.LoadInputSettings();
             PTT.LoadInputSettings();
             Intercom.LoadInputSettings();
             RadioOverlay.LoadInputSettings();
             RadioChannelUp.LoadInputSettings();
             RadioChannelDown.LoadInputSettings();
-
             RadioChannel1.LoadInputSettings();
             RadioChannel2.LoadInputSettings();
             RadioChannel3.LoadInputSettings();
             RadioChannel4.LoadInputSettings();
             RadioChannel5.LoadInputSettings();
+            NextRadio.LoadInputSettings();
+            PreviousRadio.LoadInputSettings();
+            ReadStatus.LoadInputSettings();
         }
 
         private void ReloadRadioAudioChannelSettings()
         {
             Radio1Config.Reload();
+            Radio2Config.Reload();
             IntercomConfig.Reload();
         }
 
@@ -499,6 +519,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
             //disable to set without triggering onchange
             TextToSpeechVolume.IsEnabled = false;
+            TextToSpeechVolume.ValueChanged += TextToSpeechVolume_ValueChanged;
             TextToSpeechVolume.Value = double.Parse(_globalSettings.ProfileSettingsStore.GetClientSetting(ProfileSettingsKeys.TextToSpeechVolume).RawValue,CultureInfo.InvariantCulture);
             TextToSpeechVolume.IsEnabled = true;
         }
@@ -1277,7 +1298,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
 
         private void TextToSpeechVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.TextToSpeechVolume, e.NewValue.ToString(CultureInfo.InvariantCulture));
+            if(TextToSpeechVolume.IsEnabled)
+                _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.TextToSpeechVolume, e.NewValue.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

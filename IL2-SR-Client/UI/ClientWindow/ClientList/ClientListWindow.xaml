@@ -16,12 +16,14 @@
                 <Grid Margin="0,2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5*" />
-                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="0.5*" />
+                        <ColumnDefinition Width="0.5*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding Name}" />
+                    <TextBlock Text="{Binding Name}"  Grid.Column="0" />
+                    <TextBlock Text="{Binding Channel}"  Grid.Column="1" />
                  
                     <Ellipse Width="12"
-                             Grid.Column="1"
+                             Grid.Column="2"
                  Height="12"
                  Margin="2"
                  HorizontalAlignment="Right"

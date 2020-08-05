@@ -60,6 +60,18 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
         [JsonNetworkIgnoreSerialization]
         public int channel = 1;
 
+        [JsonNetworkIgnoreSerialization]
+        public int Channel {
+            get
+            {
+                if (modulation == Modulation.AM)
+                {
+                    return (int) Math.Floor((freq - PlayerGameState.START_FREQ) /PlayerGameState.CHANNEL_OFFSET);
+                }
+                return 0;
+            }
+        }
+
         /**
          * Used to determine if we should send an update to the server or not
          * We only need to do that if something that would stop us Receiving happens which

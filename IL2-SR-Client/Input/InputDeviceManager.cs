@@ -581,25 +581,87 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                     {
                                         
                                         case InputBinding.RadioChannelUp:
-                                            RadioHelper.RadioChannelUp(1);
+
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.RadioChannelUp(1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.RadioChannelUp(ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+                                          
                                             break;
                                         case InputBinding.RadioChannelDown:
-                                            RadioHelper.RadioChannelDown(1);
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.RadioChannelDown(1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.RadioChannelDown(ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
                                             break;
                                         case InputBinding.RadioChannel1:
-                                            RadioHelper.SelectRadioChannel(1,1);
+
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(1, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(1, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+
                                             break;
                                         case InputBinding.RadioChannel2:
-                                            RadioHelper.SelectRadioChannel(2, 1);
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(2, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(2, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
                                             break;
                                         case InputBinding.RadioChannel3:
-                                            RadioHelper.SelectRadioChannel(3, 1);
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(3, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(3, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
                                             break;
                                         case InputBinding.RadioChannel4:
-                                            RadioHelper.SelectRadioChannel(4, 1);
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(4, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(4, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
                                             break;
                                         case InputBinding.RadioChannel5:
-                                            RadioHelper.SelectRadioChannel(5, 1);
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(5, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(5, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+                                            break;
+                                        case InputBinding.PreviousRadio:
+                                            RadioHelper.PreviousRadio();
+                                            break;
+                                        case InputBinding.NextRadio:
+                                            RadioHelper.NextRadio();
+                                            break;
+                                        case InputBinding.ReadStatus:
+                                            RadioHelper.ReadStatus();
                                             break;
 
                                         default:

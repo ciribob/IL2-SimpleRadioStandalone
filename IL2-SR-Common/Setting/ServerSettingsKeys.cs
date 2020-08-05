@@ -18,7 +18,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Setting
         SHOW_TUNED_COUNT,
         GLOBAL_LOBBY_FREQUENCIES,
         SHOW_TRANSMITTER_NAME,
-        UPNP_ENABLED
+        UPNP_ENABLED,
+        SECOND_RADIO_ENABLED,
+        CHANNEL_LIMIT,
     }
 
     public class DefaultServerSettings
@@ -36,6 +38,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Setting
             { ServerSettingsKeys.GLOBAL_LOBBY_FREQUENCIES.ToString(), "248.22" },
             { ServerSettingsKeys.UPNP_ENABLED.ToString(), "false" },
             { ServerSettingsKeys.SHOW_TRANSMITTER_NAME.ToString(), "true" },
+            { ServerSettingsKeys.SECOND_RADIO_ENABLED.ToString(), "false" },
+            { ServerSettingsKeys.CHANNEL_LIMIT.ToString(), "5" },
         };
     }
 }

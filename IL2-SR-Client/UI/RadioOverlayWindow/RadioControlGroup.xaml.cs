@@ -19,7 +19,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.RadioOverlayWindow
     /// </summary>
     public partial class RadioControlGroup : UserControl
     {
-        private const double MHz = 1000000;
         private bool _dragging;
         private readonly ClientStateSingleton _clientStateSingleton = ClientStateSingleton.Instance;
         private readonly ConnectedClientsSingleton _connectClientsSingleton = ConnectedClientsSingleton.Instance;
