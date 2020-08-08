@@ -50,7 +50,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
         WrapNextRadio, // if false radio up at 5 will stop
 
         EnableTextToSpeech, // if true - all changes are read out to channels or radios
-        TextToSpeechVolume
+        TextToSpeechVolume,
+        PTTReleaseDelay, // How long to hold the PTT after release
     }
 
     public class ProfileSettingsStore
@@ -83,6 +84,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
             {ProfileSettingsKeys.WrapNextRadio.ToString(), "true"},
             {ProfileSettingsKeys.EnableTextToSpeech.ToString(), "false"},
             {ProfileSettingsKeys.TextToSpeechVolume.ToString(), "1.0"},
+
+            {ProfileSettingsKeys.PTTReleaseDelay.ToString(), "0"},
         };
 
 
