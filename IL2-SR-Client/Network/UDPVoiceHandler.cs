@@ -58,6 +58,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
         private ulong _packetNumber = 1;
 
         private volatile bool _ptt;
+        private long _lastPTTPress; // to handle dodgy PTT - release time
 
         private volatile bool _ready;
 
@@ -153,7 +154,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
                 var radioSwitchPtt = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioSwitchIsPTT);
                 var radioSwitchPttWhenValid = _globalSettings.ProfileSettingsStore.GetClientSettingBool(ProfileSettingsKeys.RadioSwitchIsPTTOnlyWhenValid);
-
+                
+                //store the current PTT state and radios
+                var currentRadioId = radios.selected;
+                var currentPtt = _ptt;
+                
                 var ptt = false;
                 foreach (var inputBindState in pressed)
                 {
@@ -175,7 +180,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                     //turn on PTT
                                     if (radioSwitchPttWhenValid || radioSwitchPtt)
                                     {
+                                        _lastPTTPress = DateTime.Now.Ticks;
                                         ptt = true;
+                                        //Store last release time
                                     }
                                 }
                                 else
@@ -183,6 +190,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                     //turn on PTT even if not valid radio switch
                                     if (radioSwitchPtt)
                                     {
+                                        _lastPTTPress = DateTime.Now.Ticks;
                                         ptt = true;
                                     }
                                 }
@@ -191,12 +199,28 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                         }
                         else if (inputBindState.MainDevice.InputBind == InputBinding.Ptt)
                         {
+                            _lastPTTPress = DateTime.Now.Ticks;
                             ptt = true;
                         }
                     }
                 }
 
                 //if length is zero - no keybinds or no PTT pressed set to false
+                var diff = new TimeSpan(DateTime.Now.Ticks - _lastPTTPress);
+
+                //Release the PTT ONLY if X ms have passed and we didnt switch radios to handle
+                //shitty buttons
+                var releaseTime = _globalSettings.ProfileSettingsStore
+                    .GetClientSetting(ProfileSettingsKeys.PTTReleaseDelay).IntValue;
+                
+                if (!ptt
+                    && releaseTime > 0
+                    && diff.TotalMilliseconds <= releaseTime
+                    && currentRadioId == radios.selected)
+                {
+                        ptt = true;
+                }
+
                 _ptt = ptt;
             });
 

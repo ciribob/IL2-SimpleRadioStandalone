@@ -394,9 +394,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                 }
             }
 
-            //disconnected - reset IL2 Info
-            ClientStateSingleton.Instance.PlayerGameState.LastUpdate = 0;
-
             //clear the clients list
             _clients.Clear();
 
