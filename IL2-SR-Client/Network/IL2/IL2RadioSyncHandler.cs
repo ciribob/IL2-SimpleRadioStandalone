@@ -147,8 +147,9 @@ So if someone on Server has ParentID!=-1 but ParentID=12345 - this means that in
 
                 if (controlDataMessage.Coalition == 0)
                 {
-                    //ignore! We randomly get 0 Coalition when we shouldnt
-                    Logger.Info("Likely Incorrect Coalition 0 message - ignoring!");
+                    //WE SOMETIMES RECEIVE AND INCORRECT COALITION MESSAGE - Just kept it for now?>
+                    playerRadioInfo.vehicleId = controlDataMessage.ParentVehicleClientID;
+                    playerRadioInfo.coalition = controlDataMessage.Coalition;
                 }
                 else
                 {
