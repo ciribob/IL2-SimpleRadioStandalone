@@ -166,7 +166,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common
 
         public bool IsCurrent()
         {
-            return LastUpdate > DateTime.Now.Ticks - 100000000;
+            return new TimeSpan(DateTime.Now.Ticks - LastUpdate).TotalSeconds < 20;
         }
 
         //comparing doubles is risky - check that we're close enough to hear (within 100hz)

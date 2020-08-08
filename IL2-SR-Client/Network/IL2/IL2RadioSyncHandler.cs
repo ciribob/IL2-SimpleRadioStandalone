@@ -113,6 +113,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
         public void ProcessUDPMessage(IL2UDPMessage message)
         {
             _clientStateSingleton.IL2ExportLastReceived = DateTime.Now.Ticks;
+            _clientStateSingleton.PlayerGameState.LastUpdate = DateTime.Now.Ticks;
 
             bool update = false;
 
@@ -136,14 +137,28 @@ So if someone on Server has ParentID!=-1 but ParentID=12345 - this means that in
 
                 playerRadioInfo.unitId = dataMessage.ClientID;
 
+                Logger.Debug($"ClientID {dataMessage.ClientID}");
+
                 _clientStateSingleton.LastSeenName = dataMessage.PlayerName;
             }
             else if (message is ControlDataMessage controlDataMessage)
             {
                 update =playerRadioInfo.vehicleId!=controlDataMessage.ParentVehicleClientID || playerRadioInfo.coalition != controlDataMessage.Coalition;
 
-                playerRadioInfo.vehicleId = controlDataMessage.ParentVehicleClientID;
-                playerRadioInfo.coalition = controlDataMessage.Coalition;
+                if (controlDataMessage.Coalition == 0)
+                {
+                    //WE SOMETIMES RECEIVE AND INCORRECT COALITION MESSAGE - Just kept it for now?>
+                    playerRadioInfo.vehicleId = controlDataMessage.ParentVehicleClientID;
+                    playerRadioInfo.coalition = controlDataMessage.Coalition;
+                }
+                else
+                {
+                    playerRadioInfo.vehicleId = controlDataMessage.ParentVehicleClientID;
+                    playerRadioInfo.coalition = controlDataMessage.Coalition;
+                }
+
+                Logger.Debug($"Coalition Update {controlDataMessage.Coalition}");
+                Logger.Debug($"ParentVehicleClientID {controlDataMessage.ParentVehicleClientID}");
             }
             else if (message is SRSAddressMessage srs)
             {
@@ -167,68 +182,6 @@ So if someone on Server has ParentID!=-1 but ParentID=12345 - this means that in
                 MessageHub.Instance.Publish(new PlayerStateUpdate());
             }
         }
-
-
-        //send updated radio info back to IL2 for ingame GUI
-        private void SendRadioUpdateToIL2()
-        {
-            if (_il2RadioUpdateSender == null)
-            {
-                _il2RadioUpdateSender = new UdpClient();
-            }
-
-            try
-            {
-                var connectedClientsSingleton = ConnectedClientsSingleton.Instance;
-                int[] tunedClients = new int[11];
-
-                if (_clientStateSingleton.IsConnected
-                    && _clientStateSingleton.PlayerGameState !=null
-                    )
-                {
-
-                    for (int i = 0; i < tunedClients.Length; i++)
-                    {
-                        var clientRadio = _clientStateSingleton.PlayerGameState.radios[i];
-                        
-                        if (clientRadio.modulation != RadioInformation.Modulation.DISABLED)
-                        {
-                            tunedClients[i] = connectedClientsSingleton.ClientsOnFreq(clientRadio.freq, clientRadio.modulation);
-                        }
-                    }
-                }
-                
-                //get currently transmitting or receiving
-                var combinedState = new CombinedRadioState()
-                {
-                    GameState = _clientStateSingleton.PlayerGameState,
-                    RadioSendingState = _clientStateSingleton.RadioSendingState,
-                    RadioReceivingState = _clientStateSingleton.RadioReceivingState,
-                    ClientCountConnected = _clients.Total,
-                    TunedClients = tunedClients,
-                };
-
-                var message = JsonConvert.SerializeObject(combinedState, new JsonSerializerSettings
-                {
-                 //   NullValueHandling = NullValueHandling.Ignore,
-                    ContractResolver = new JsonIL2PropertiesResolver(),
-                }) + "\n";
-
-                var byteData =
-                    Encoding.UTF8.GetBytes(message);
-
-                //Logger.Info("Sending Update over UDP 7080 IL2 - 7082 Flight Panels: \n"+message);
-
-                _il2RadioUpdateSender.Send(byteData, byteData.Length,
-                    new IPEndPoint(IPAddress.Parse("127.0.0.1"),
-                        _globalSettings.GetNetworkSetting(GlobalSettingsKeys.OutgoingIL2UDPInfo))); //send to IL2
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e, "Exception Sending IL2 Radio Update Message");
-            }
-        }
-
 
         public void Stop()
         {
