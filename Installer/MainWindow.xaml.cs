@@ -555,12 +555,47 @@ namespace Installer
             shortcut.Save();
         }
 
+        private bool IsReadOnly(string path)
+        {
+            var file = new FileInfo(path);
+
+            return file.IsReadOnly;
+        }
+
+        private void SetReadOnly(string path,bool readOnly)
+        {
+            var file = new FileInfo(path);
+
+            if (readOnly)
+            {
+                Logger.Info($"Config present at {path} set to Read Only");
+                File.SetAttributes(path, FileAttributes.ReadOnly);
+            }
+            else
+            {
+                Logger.Info($"Config present at {path} set to Writable");
+                File.SetAttributes(path, ~FileAttributes.ReadOnly);
+            }
+        }
+
         private void EnableTelemetry(string path)
         {
-            Logger.Info($"Installing Config to {path}");
-            _progressBarDialog.UpdateProgress(false, $"Enable SRS Telemetry @ {path}");
+            var cfgPath = path + "\\data\\startup.cfg";
+            Logger.Info($"Installing Config to {cfgPath}");
+
+            //check if its read only
+            bool readOnly = IsReadOnly(cfgPath);
+
+            if (readOnly)
+            {
+                Logger.Info($"Config present at {path} is Read Only");
+                //temporarily make readable
+                SetReadOnly(cfgPath, false);
+            }
+
+            _progressBarDialog.UpdateProgress(false, $"Enable SRS Telemetry @ {cfgPath}");
             
-            var lines = File.ReadAllText(path + "\\data\\startup.cfg");
+            var lines = File.ReadAllText(cfgPath);
 
             if (lines.Contains("telemetrydevice"))
             {
@@ -575,7 +610,7 @@ namespace Installer
                 else
                 {
                     //extract telemetry
-                    var allLines = File.ReadAllLines(path + "\\data\\startup.cfg");
+                    var allLines = File.ReadAllLines(cfgPath);
                     
                     for (int i=0;i<allLines.Length;i++)
                     {
@@ -583,25 +618,31 @@ namespace Installer
                         {
                             allLines[i] = allLines[i] + "\r\n\taddr1 = \"127.0.0.1:4322\"";
 
-                            Logger.Info($"Appending addr1 - likely JetSeat in use {path}");
+                            Logger.Info($"Appending addr1 - likely JetSeat in use {cfgPath}");
                         }
                     }
 
-                    File.WriteAllLines(path + "\\data\\startup.cfg", allLines);
+                    File.WriteAllLines(cfgPath, allLines);
                 }
             }
             else
             {
                 var telemetry =
                     "[KEY = telemetrydevice]\r\n\taddr = \"127.0.0.1\"\r\n\tdecimation = 2\r\n\tenable = true\r\n\tport = 4322\r\n[END]";
-                File.AppendAllText(path + "\\data\\startup.cfg", telemetry);
+                File.AppendAllText(cfgPath, telemetry);
 
-                Logger.Info($"No Telemtry - Appending to config {path}");
+                Logger.Info($"No Telemtry - Appending to config {cfgPath}");
             }
 
-            Logger.Info($"Config installed to {path}");
+            Logger.Info($"Config installed to {cfgPath}");
 
-            _progressBarDialog.UpdateProgress(false, $"Installed IL2-SRS Config @ {path + "\\data\\startup.cfg"}");
+            if (readOnly)
+            {
+                SetReadOnly(cfgPath,true);
+            }
+
+
+            _progressBarDialog.UpdateProgress(false, $"Installed IL2-SRS Config @ {cfgPath}");
         }
 
         public static void DeleteDirectory(string target_dir)

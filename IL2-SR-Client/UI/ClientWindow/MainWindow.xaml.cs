@@ -522,6 +522,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             TextToSpeechVolume.ValueChanged += TextToSpeechVolume_ValueChanged;
             TextToSpeechVolume.Value = double.Parse(_globalSettings.ProfileSettingsStore.GetClientSetting(ProfileSettingsKeys.TextToSpeechVolume).RawValue,CultureInfo.InvariantCulture);
             TextToSpeechVolume.IsEnabled = true;
+
+            //disable to set without triggering onchange
+            PTTReleaseDelay.IsEnabled = false;
+            PTTReleaseDelay.ValueChanged += PushToTalkReleaseDelay_ValueChanged;
+            PTTReleaseDelay.Value = double.Parse(_globalSettings.ProfileSettingsStore.GetClientSetting(ProfileSettingsKeys.PTTReleaseDelay).RawValue, CultureInfo.InvariantCulture);
+            PTTReleaseDelay.IsEnabled = true;
         }
 
         private void Connect()
@@ -1300,6 +1306,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
         {
             if(TextToSpeechVolume.IsEnabled)
                 _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.TextToSpeechVolume, e.NewValue.ToString(CultureInfo.InvariantCulture));
+        }
+
+        private void PushToTalkReleaseDelay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (PTTReleaseDelay.IsEnabled)
+                _globalSettings.ProfileSettingsStore.SetClientSetting(ProfileSettingsKeys.PTTReleaseDelay, e.NewValue.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

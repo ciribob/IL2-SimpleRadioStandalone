@@ -887,6 +887,9 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
                             </Grid.RowDefinitions>
 
                             <Label Grid.Row="0"
@@ -1162,29 +1165,65 @@
                                    Grid.Column="0"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
+                                   Content="Push to Talk Release Delay (ms)" />
+
+                            <StackPanel Grid.Row="10"
+                                        Grid.Column="1"  Margin="10">
+
+                                <Slider x:Name="PTTReleaseDelay"
+                                        TickPlacement="BottomRight"
+                                        SmallChange="20" 
+                                        LargeChange="50"
+                                        IsSnapToTickEnabled="True"
+                                        TickFrequency="50"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Maximum="300"
+                                        Value="0"
+                                        Minimum="0"
+                                        IsEnabled="False"
+                                />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" FontSize="10" Content="0" HorizontalAlignment="Left" ></Label>
+                                    <Label Grid.Column="1" FontSize="10" Content="150" HorizontalAlignment="Center" ></Label>
+                                    <Label Grid.Column="2" FontSize="10" Content="300" HorizontalAlignment="Right" ></Label>
+                                </Grid>
+
+                            </StackPanel>
+                            
+
+                            <Label Grid.Row="11"
+                                   Grid.Column="0"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalContentAlignment="Center"
                                    Content="Intercom Audio Channel" />
                             <local:RadioChannelConfigUi x:Name="IntercomConfig"
-                                                        Grid.Row="10"
+                                                        Grid.Row="11"
                                                         Grid.Column="1"
                                                         ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.IntercomChannel}" />
 
-                            <Label Grid.Row="11"
+                            <Label Grid.Row="12"
                                Grid.Column="0"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
                                Content="First Radio Audio Channel" />
                             <local:RadioChannelConfigUi x:Name="Radio1Config"
-                                                    Grid.Row="11"
+                                                    Grid.Row="12"
                                                     Grid.Column="1"
                                                     ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio1Channel}" />
 
-                            <Label Grid.Row="12"
+                            <Label Grid.Row="13"
                                    Grid.Column="0"
                                    HorizontalContentAlignment="Center"
                                    VerticalContentAlignment="Center"
                                    Content="Second Radio Audio Channel" />
                             <local:RadioChannelConfigUi x:Name="Radio2Config"
-                                                        Grid.Row="12"
+                                                        Grid.Row="13"
                                                         Grid.Column="1"
                                                         ProfileSettingKey="{x:Static settings:ProfileSettingsKeys.Radio2Channel}" />
 
