@@ -247,7 +247,6 @@
     <Compile Include="Network\NetCoreServer\TcpServer.cs" />
     <Compile Include="Network\NetCoreServer\TcpSession.cs" />
     <Compile Include="Network\SRSClientSession.cs" />
-    <Compile Include="Network\UDPPositionHandler.cs" />
     <Compile Include="Network\UDPVoiceRouter.cs" />
     <Compile Include="UI\ClientAdmin\ClientAdminViewModel.cs" />
     <Compile Include="UI\ClientAdmin\ClientViewModel.cs" />

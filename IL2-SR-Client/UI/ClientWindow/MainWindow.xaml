@@ -1178,7 +1178,7 @@
                                         TickFrequency="50"
                                         VerticalAlignment="Center"
                                         VerticalContentAlignment="Center"
-                                        Maximum="300"
+                                        Maximum="500"
                                         Value="0"
                                         Minimum="0"
                                         IsEnabled="False"
@@ -1190,8 +1190,8 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Label Grid.Column="0" FontSize="10" Content="0" HorizontalAlignment="Left" ></Label>
-                                    <Label Grid.Column="1" FontSize="10" Content="150" HorizontalAlignment="Center" ></Label>
-                                    <Label Grid.Column="2" FontSize="10" Content="300" HorizontalAlignment="Right" ></Label>
+                                    <Label Grid.Column="1" FontSize="10" Content="250" HorizontalAlignment="Center" ></Label>
+                                    <Label Grid.Column="2" FontSize="10" Content="500" HorizontalAlignment="Right" ></Label>
                                 </Grid>
 
                             </StackPanel>

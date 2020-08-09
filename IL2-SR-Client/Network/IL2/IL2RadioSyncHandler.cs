@@ -145,11 +145,16 @@ So if someone on Server has ParentID!=-1 but ParentID=12345 - this means that in
             {
                 update =playerRadioInfo.vehicleId!=controlDataMessage.ParentVehicleClientID || playerRadioInfo.coalition != controlDataMessage.Coalition;
 
+                Logger.Info($"Coalition Update {controlDataMessage.Coalition}");
+                Logger.Info($"ParentVehicleClientID {controlDataMessage.ParentVehicleClientID}");
+
                 if (controlDataMessage.Coalition == 0)
                 {
                     //WE SOMETIMES RECEIVE AND INCORRECT COALITION MESSAGE - Just kept it for now?>
-                    playerRadioInfo.vehicleId = controlDataMessage.ParentVehicleClientID;
-                    playerRadioInfo.coalition = controlDataMessage.Coalition;
+                    // playerRadioInfo.vehicleId = controlDataMessage.ParentVehicleClientID;
+                    // playerRadioInfo.coalition = controlDataMessage.Coalition;
+
+                    Logger.Info($"Coalition Update {controlDataMessage.Coalition}");
                 }
                 else
                 {
@@ -157,8 +162,7 @@ So if someone on Server has ParentID!=-1 but ParentID=12345 - this means that in
                     playerRadioInfo.coalition = controlDataMessage.Coalition;
                 }
 
-                Logger.Debug($"Coalition Update {controlDataMessage.Coalition}");
-                Logger.Debug($"ParentVehicleClientID {controlDataMessage.ParentVehicleClientID}");
+               
             }
             else if (message is SRSAddressMessage srs)
             {

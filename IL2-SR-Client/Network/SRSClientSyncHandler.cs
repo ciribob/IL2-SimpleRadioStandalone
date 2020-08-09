@@ -212,6 +212,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                     {
                         try
                         {
+                            Logger.Debug("Received update from Server: " + (line));
                             var serverMessage = JsonConvert.DeserializeObject<NetworkMessage>(line);
                             decodeErrors = 0; //reset counter
                             if (serverMessage != null)
