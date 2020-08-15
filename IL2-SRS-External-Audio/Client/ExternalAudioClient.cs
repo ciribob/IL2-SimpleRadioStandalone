@@ -23,29 +23,32 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.ExternalAudio
         private bool _finished = false;
         private PlayerGameState gameState;
         private UdpVoiceHandler udpVoiceHandler;
+        private string name;
 
-        public ExternalAudioClient(string mp3Path, double freq, string modulation, int coalition, int port)
+        public ExternalAudioClient(string mp3Path, double freq, string modulation, int coalition, int port, string name)
         {
             this.mp3Path = mp3Path;
             this.freq = freq;
             this.modulation = modulation;
             this.coalition = coalition;
             this.port = port;
+            this.name = name;
         }
 
         public void Start()
         {
 
             MessageHub.Instance.Subscribe<ReadyMessage>(ReadyToSend);
-            
+            MessageHub.Instance.Subscribe<DisconnectedMessage>(Disconnected);
+
 
             gameState = new PlayerGameState();
             gameState.radios[1].modulation = (RadioInformation.Modulation)(modulation == "AM" ? 0 : 1);
             gameState.radios[1].freq = this.freq * 1000000; // get into Hz
-            gameState.radios[1].name = "Robot";
+            gameState.radios[1].name = name;
             gameState.coalition = (short) this.coalition;
 
-            var srsClientSyncHandler = new SRSClientSyncHandler(Guid, gameState);
+            var srsClientSyncHandler = new SRSClientSyncHandler(Guid, gameState,name);
 
             srsClientSyncHandler.TryConnect(new IPEndPoint(IPAddress.Loopback, port));
 
@@ -71,6 +74,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.ExternalAudio
             }
         }
 
+        private void Disconnected(DisconnectedMessage disconnected)
+        {
+            _finished = true;
+        }
+
         private void SendAudio()
         {
             Console.WriteLine("Sending Audio");
@@ -80,8 +88,15 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.ExternalAudio
                 //can use timer to run through it
                 Thread.Sleep(40);
 
-                udpVoiceHandler.Send(opusByte, opusByte.Length);
-
+                if (!_finished)
+                {
+                    udpVoiceHandler.Send(opusByte, opusByte.Length);
+                }
+                else
+                {
+                    Console.WriteLine("Client Disconnected");
+                    return;
+                }
             }
 
             //get all the audio as Opus frames of 40 ms

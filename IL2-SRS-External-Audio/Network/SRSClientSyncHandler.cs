@@ -29,12 +29,14 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
 
         private static readonly int MAX_DECODE_ERRORS = 5;
+        private string name;
 
 
-        public SRSClientSyncHandler(string guid, PlayerGameState gameState)
+        public SRSClientSyncHandler(string guid, PlayerGameState gameState, string name)
         {
             _guid = guid;
             this.gameState = gameState;
+            this.name = name;
         }
 
 
@@ -99,7 +101,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                         Client = new SRClient
                         {
                             Coalition = gameState.coalition,
-                            Name = "BeepBoop - Robot - "+_guid,
+                            Name = this.name,
                             ClientGuid = _guid,
                             GameState = gameState
                         },
