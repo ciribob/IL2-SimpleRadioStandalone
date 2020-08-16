@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Network;
@@ -17,8 +18,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.ExternalAudio
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private string mp3Path;
-        private double freq;
-        private string modulation;
+        private double[] freq;
+        private RadioInformation.Modulation[] modulation;
+        private byte[] modulationBytes;
         private int coalition;
         private readonly int port;
 
@@ -30,7 +32,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.ExternalAudio
         private string name;
         private readonly float volume;
 
-        public ExternalAudioClient(string mp3Path, double freq, string modulation, int coalition, int port, string name, float volume)
+        public ExternalAudioClient(string mp3Path, double[] freq, RadioInformation.Modulation[] modulation, int coalition, int port, string name, float volume)
         {
             this.mp3Path = mp3Path;
             this.freq = freq;
@@ -39,6 +41,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.ExternalAudio
             this.port = port;
             this.name = name;
             this.volume = volume;
+
+            this.modulationBytes = new byte[modulation.Length];
+            for (int i = 0; i < modulationBytes.Length; i++)
+            {
+                modulationBytes[i] = (byte)modulation[i];
+            }
         }
 
         public void Start()
@@ -47,17 +55,20 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.ExternalAudio
             MessageHub.Instance.Subscribe<ReadyMessage>(ReadyToSend);
             MessageHub.Instance.Subscribe<DisconnectedMessage>(Disconnected);
 
-
             gameState = new PlayerGameState();
-            gameState.radios[1].modulation = (RadioInformation.Modulation)(modulation == "AM" ? 0 : 1);
-            gameState.radios[1].freq = this.freq * 1000000; // get into Hz
+            gameState.radios[1].modulation = modulation[0];
+            gameState.radios[1].freq = freq[0]; // get into Hz
             gameState.radios[1].name = name;
             gameState.coalition = (short) this.coalition;
 
             Logger.Info($"Starting with params:");
             Logger.Info($"Path or Text to Say: {mp3Path} ");
-            Logger.Info($"Frequency: {gameState.radios[1].freq} Hz ");
-            Logger.Info($"Modulation: {gameState.radios[1].modulation} ");
+
+            for (int i = 0; i < freq.Length; i++)
+            {
+                Logger.Info($"Frequency: {freq[i]} Hz - {modulation[i]} ");
+            }
+
             Logger.Info($"Coalition: {coalition} ");
             Logger.Info($"IP: 127.0.0.1 ");
             Logger.Info($"Port: {port} ");
@@ -116,7 +127,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.ExternalAudio
                 {
                     if (count < opusBytes.Count)
                     {
-                        udpVoiceHandler.Send(opusBytes[count], opusBytes[count].Length);
+                        udpVoiceHandler.Send(opusBytes[count], opusBytes[count].Length, freq,modulationBytes);
                         count++;
 
                         if (count % 50 == 0)
