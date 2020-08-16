@@ -71,8 +71,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.ExternalAudio
 
                 if (modulation.Count != freqDouble.Count)
                 {
-                    Console.WriteLine(
-                        $"Number of frequencies ({freqDouble.Count}) does not match number of modulations {modulation.Count} - They must match!\n\n For example: 251.0,252.0 AM,AM ");
+                    Console.WriteLine($"Number of frequencies ({freqDouble.Count}) does not match number of modulations ({modulation.Count}) - They must match!" +
+                                      $"\n\nFor example: 251.0,252.0 AM,AM ");
                     Console.WriteLine("QUITTING!");
                 }
                 else
