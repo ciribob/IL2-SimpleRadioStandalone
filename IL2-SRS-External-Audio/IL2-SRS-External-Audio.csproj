@@ -57,6 +57,7 @@
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -66,8 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\AudioGenerator.cs" />
     <Compile Include="Audio\EventDrivenResampler.cs" />
-    <Compile Include="Audio\MP3OpusReader.cs" />
     <Compile Include="Client\ExternalAudioClient.cs" />
     <Compile Include="Client\Program.cs" />
     <Compile Include="Models\DisconnectedMessage.cs" />

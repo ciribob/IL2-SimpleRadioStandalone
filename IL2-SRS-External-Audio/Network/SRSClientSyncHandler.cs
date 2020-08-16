@@ -15,7 +15,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 {
     public class SRSClientSyncHandler
     {
-        public delegate void ConnectCallback(bool result, bool connectionError, string connection);
+
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -54,6 +54,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             {
                 try
                 {
+                    Logger.Info($"Connecting to server @{_serverEndpoint.Address}:{_serverEndpoint.Port} ");
                     _tcpClient.SendTimeout = 90000;
                     _tcpClient.NoDelay = true;
 
@@ -62,6 +63,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
                     if (_tcpClient.Connected)
                     {
+                        Logger.Info($"Connected to {_serverEndpoint.Address}:{_serverEndpoint.Port} ");
                         _tcpClient.NoDelay = true;
                         ClientSyncLoop();
                     }
@@ -94,7 +96,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
             {
                 try
                 {
-                    
+                    Logger.Info($"Sending client sync to {_serverEndpoint.Address}:{_serverEndpoint.Port} ");
                     //start the loop off by sending a SYNC Request
                     SendToServer(new NetworkMessage
                     {
@@ -150,7 +152,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                                         Disconnect();
                                         break;
                                     default:
-                                        Logger.Error("Recevied unknown " + line);
+                                        Logger.Error("Received unknown Message " + line);
                                         break;
                                 }
                             }
@@ -233,7 +235,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
                 MessageHub.Instance.Publish(new DisconnectedMessage());
             }
 
-            Logger.Error("Disconnecting from server");
+            Logger.Info("Disconnecting from server");
 
         }
     }

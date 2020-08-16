@@ -64,9 +64,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network
 
             byte[] message = _guidAsciiBytes;
 
+            Logger.Info($"Sending UDP Ping");
             // Force immediate ping once to avoid race condition before starting to listen
             _listener.Send(message, message.Length, _serverEndpoint);
 
+            Thread.Sleep(3000);
+            Logger.Info($"Ping Sent");
         }
 
 
