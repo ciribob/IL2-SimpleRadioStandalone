@@ -352,6 +352,7 @@ namespace Installer
             if (Directory.Exists(programPath) && File.Exists(programPath + "\\IL2-SR-ClientRadio.exe"))
             {
                 DeleteFileIfExists(programPath + "\\IL2-SR-ClientRadio.exe");
+                DeleteFileIfExists(programPath + "\\IL2-SRS-External-Audio.exe");
                 DeleteFileIfExists(programPath + "\\opus.dll");
                 DeleteFileIfExists(programPath + "\\speexdsp.dll");
                 DeleteFileIfExists(programPath + "\\SRS-AutoUpdater.exe");
@@ -532,6 +533,7 @@ namespace Installer
             File.Copy(_currentDirectory + "\\IL2-SR-ClientRadio.exe", path + "\\IL2-SR-ClientRadio.exe", true);
             File.Copy(_currentDirectory + "\\IL2-SR-Server.exe", path + "\\IL2-SR-Server.exe", true);
             File.Copy(_currentDirectory + "\\IL2-SRS-AutoUpdater.exe", path + "\\IL2-SRS-AutoUpdater.exe", true);
+            File.Copy(_currentDirectory + "\\IL2-SRS-External-Audio.exe", path + "\\IL2-SRS-External-Audio.exe", true);
 
             Logger.Info($"Copying directories");
             DirectoryCopy(_currentDirectory+"\\AudioEffects", path+"\\AudioEffects");

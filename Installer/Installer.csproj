@@ -257,6 +257,7 @@ copy /Y "$(SolutionDir)IL2-SR-Client\bin\x64\Release\speexdsp.dll" "$(SolutionDi
 xcopy /Y /e "$(SolutionDir)IL2-SR-Client\AudioEffects" "$(SolutionDir)install-build\AudioEffects"
 copy /Y "$(SolutionDir)Installer\bin\x64\Release\Installer.exe" "$(SolutionDir)install-build\Installer.exe"
 copy /Y "$(SolutionDir)AutoUpdater\bin\Release\IL2-SRS-AutoUpdater.exe" "$(SolutionDir)install-build\IL2-SRS-AutoUpdater.exe" 
+copy /Y "$(SolutionDir)IL2-SRS-External-Audio\bin\Release\IL2-SRS-External-Audio.exe" "$(SolutionDir)install-build\IL2-SRS-External-Audio.exe" 
 </PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

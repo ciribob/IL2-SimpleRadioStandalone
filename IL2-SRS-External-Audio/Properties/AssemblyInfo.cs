@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("IL2-SRS-External-Audio")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("External audio input for IL2-SimpleRadio Standalone")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("IL2-SRS-External-Audio")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("Ciribob - GitHub.com/Ciribob")]
+[assembly: AssemblyProduct("IL2-SimpleRadio Standalone")]
+[assembly: AssemblyCopyright("Copyright ©  2020 - Ciribob")]
+[assembly: AssemblyTrademark("Ciribob - GitHub.com/Ciribob")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
