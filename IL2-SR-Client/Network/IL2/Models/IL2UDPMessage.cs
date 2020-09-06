@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
 using NLog;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2.Models
@@ -24,6 +25,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2.Models
 
         public static List<IL2UDPMessage> Process(byte[] message)
         {
+            Logger.Debug( "UDP Data IL2");
+
             Stream stream = new MemoryStream(message);
 
             stream.Seek(10, SeekOrigin.Current);
@@ -52,11 +55,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2.Models
                 byte part2 = (byte) stream.ReadByte();
 
                 int msgTypeInt = BitConverter.ToUInt16(new[] {part1, part2}, 0);
+                Logger.Debug($"UDP DATA {msgTypeInt}");
 
                 uint eventSize = (uint) stream.ReadByte();
                 
                 try
                 {
+                    
                     MessageType msgType = (MessageType)msgTypeInt;
 
                     // Type float corresponds to float IEEE 754 floating point type;

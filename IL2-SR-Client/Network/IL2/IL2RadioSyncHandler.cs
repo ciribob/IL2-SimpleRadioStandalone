@@ -75,6 +75,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
                         if (bytes.Length > 2)
                         {
                             var messages = IL2UDPMessage.Process(bytes);
+
+                            //IL2 running
+                            _clientStateSingleton.IL2ExportLastReceived = DateTime.Now.Ticks;
+                            _clientStateSingleton.PlayerGameState.LastUpdate = DateTime.Now.Ticks;
+
                             foreach (var msg in messages)
                             {
                                 Logger.Debug($"Recevied Message from IL2 {msg.ToString()}");
@@ -112,9 +117,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
 
         public void ProcessUDPMessage(IL2UDPMessage message)
         {
-            _clientStateSingleton.IL2ExportLastReceived = DateTime.Now.Ticks;
-            _clientStateSingleton.PlayerGameState.LastUpdate = DateTime.Now.Ticks;
-
             bool update = false;
 
             var playerRadioInfo = _clientStateSingleton.PlayerGameState;
@@ -153,16 +155,13 @@ So if someone on Server has ParentID!=-1 but ParentID=12345 - this means that in
                     //WE SOMETIMES RECEIVE AND INCORRECT COALITION MESSAGE - Just kept it for now?>
                     // playerRadioInfo.vehicleId = controlDataMessage.ParentVehicleClientID;
                     // playerRadioInfo.coalition = controlDataMessage.Coalition;
-
-                    Logger.Info($"Coalition Update {controlDataMessage.Coalition}");
+                    Logger.Info($"Ignore Coalition Update for Spectator");
                 }
                 else
                 {
                     playerRadioInfo.vehicleId = controlDataMessage.ParentVehicleClientID;
                     playerRadioInfo.coalition = controlDataMessage.Coalition;
                 }
-
-               
             }
             else if (message is SRSAddressMessage srs)
             {
