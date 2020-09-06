@@ -77,6 +77,12 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.ExternalAudio.Audio
 
             Logger.Info($"Read MP3 @ {mp3Reader.WaveFormat}");
 
+            if (mp3Reader.WaveFormat.SampleRate < INPUT_SAMPLE_RATE)
+            {
+                Logger.Error($"Sample rate of MP3 too low - must be 16000 or higher and was - {mp3Reader.WaveFormat}");
+                Environment.Exit(1);
+            }
+
             int read = mp3Reader.Read(buffer, 0, (int)bytes);
             BufferedWaveProvider bufferedWaveProvider = new BufferedWaveProvider(mp3Reader.WaveFormat)
             {

@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Network.Models;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Network;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
+using Ciribob.IL2.SimpleRadio.Standalone.Overlay;
 using Easy.MessageHub;
 using Newtonsoft.Json;
 using NLog;
@@ -40,26 +43,23 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Network.IL2
             _udpCommandHandler = new UDPCommandHandler();
             il2RadioSyncHandler = new IL2RadioSyncHandler();
 
-            _clearRadio = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) { Interval = TimeSpan.FromSeconds(1) };
+            _clearRadio = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) { Interval = TimeSpan.FromSeconds(5) };
             _clearRadio.Tick += CheckIfRadioIsStale;
             Start();
         }
 
         private void CheckIfRadioIsStale(object sender, EventArgs e)
         {
+            //kept current by any UDP traffic from IL2
             if (!_clientStateSingleton.PlayerGameState.IsCurrent())
             {
-                //check if we've had an update
-                if (_clientStateSingleton.PlayerGameState.LastUpdate > 0)
-                {
-                    _clientStateSingleton.PlayerGameState.LastUpdate = -1;
-                    Logger.Info("Reset Radio state - no longer connected");
-                    _clientStateSingleton.PlayerGameState.coalition = 0;
-                    _clientStateSingleton.PlayerGameState.unitId = 0;
-                    _clientStateSingleton.PlayerGameState.vehicleId = -1;
-                    
-                    MessageHub.Instance.Publish(new PlayerStateUpdate());
-                }
+                _clientStateSingleton.PlayerGameState.LastUpdate = -1;
+                Logger.Info("Reset Radio state - IL2 not running");
+                _clientStateSingleton.PlayerGameState.coalition = 0;
+                _clientStateSingleton.PlayerGameState.unitId = 0;
+                _clientStateSingleton.PlayerGameState.vehicleId = -1;
+
+                MessageHub.Instance.Publish(new PlayerStateUpdate());
             }
         }
 
