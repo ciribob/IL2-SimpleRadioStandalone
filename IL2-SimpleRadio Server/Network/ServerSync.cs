@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using System.Windows;
 using Caliburn.Micro;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
@@ -12,9 +11,7 @@ using Ciribob.IL2.SimpleRadio.Standalone.Common.Network;
 using Ciribob.IL2.SimpleRadio.Standalone.Common.Setting;
 using Ciribob.IL2.SimpleRadio.Standalone.Server.Settings;
 using NetCoreServer;
-using Newtonsoft.Json;
 using NLog;
-using Open.Nat;
 using LogManager = NLog.LogManager;
 
 namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
@@ -97,7 +94,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
 
         public void HandleDisconnect(SRSClientSession state)
         {
-            Logger.Info("Disconnecting Client");
+            Logger.Info("Disconnecting Client: {0}", state.SRSGuid);
 
             if ((state != null) && (state.SRSGuid != null))
             {
@@ -108,7 +105,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
 
                 if (client != null)
                 {
-                    Logger.Info("Removed Disconnected Client " + state.SRSGuid);
+                    Logger.Info("Removed Disconnected Client: {0}", state.SRSGuid);
                     client.ClientSession = null;
 
                    
@@ -138,7 +135,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
         {
             try
             {
-                Logger.Debug($"Received:  Msg - {message.MsgType} from {state.SRSGuid}");
+                Logger.Trace($"Received:  Msg - {message.MsgType} from {state.SRSGuid}");
 
                 if (!HandleConnectedClient(state, message))
                 {
@@ -217,10 +214,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
 
                 srClient.ClientSession = state;
 
-                //add to proper list
+                // add to proper list
                 _clients[srClient.ClientGuid] = srClient;
 
                 state.SRSGuid = srClient.ClientGuid;
+                Logger.Debug($"Client connected: {state.SRSGuid} ({srClient.Name}) from {clientIp}");
 
                 _eventAggregator.PublishOnUIThread(new ServerStateMessage(true,
                     new List<SRClient>(_clients.Values)));
@@ -267,6 +265,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                     client.Name = message.Client.Name;
                     client.Coalition = message.Client.Coalition;
                     client.Seat = message.Client.Seat;
+
+                    Logger.Debug($"Client metadata update: {message.Client.ClientGuid} ({message.Client.Name}) coalition {message.Client.Coalition}");
 
                     //send update to everyone
                     //Remove Client Radio Info
@@ -347,6 +347,8 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                     client.GameState = message.Client.GameState;
                     client.Seat = message.Client.Seat;
 
+                    Logger.Debug($"Client radio update: {message.Client.ClientGuid} ({message.Client.Name}) Coalition {message.Client.Coalition}, Radios {PrettyPrint(message.Client.GameState.radios)}");
+
                     TimeSpan lastSent = new TimeSpan(DateTime.Now.Ticks - client.LastRadioUpdateSent);
 
                     //send update to everyone
@@ -374,6 +376,16 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
                     }
                 }
             }
+        }
+
+        private string PrettyPrint(RadioInformation[] radios)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(var radio in radios)
+            {
+                sb.Append($"CH-{radio.channel} ({radio.freq}) ");
+            }
+            return sb.ToString(); 
         }
 
         private void HandleRadioClientsSync(SRSClientSession session, NetworkMessage message)
@@ -404,6 +416,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Server.Network
             };
 
             Multicast(update.Encode());
+            Logger.Trace($"Client sync: Guid {message.Client.ClientGuid}, name {message.Client.Name}, coalition {message.Client.Coalition}");
         }
 
         public void RequestStop()
