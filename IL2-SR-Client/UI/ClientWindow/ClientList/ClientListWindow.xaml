@@ -5,9 +5,11 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       Title="Connected Clients"
+                      MinWidth="300"
+                            MinHeight="390"
                       Width="300"
                       Height="390"
-                      ResizeMode="NoResize"
+                      ResizeMode="CanResizeWithGrip"
                       xmlns:clients="clr-namespace:Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.ClientList"
                      >
     <ListBox Name="ClientList" HorizontalContentAlignment="Stretch" Padding="5" >
