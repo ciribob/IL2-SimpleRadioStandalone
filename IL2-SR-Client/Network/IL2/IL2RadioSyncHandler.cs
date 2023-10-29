@@ -157,6 +157,12 @@ So if someone on Server has ParentID!=-1 but ParentID=12345 - this means that in
                     // playerRadioInfo.coalition = controlDataMessage.Coalition;
                     Logger.Info($"Ignore Coalition Update for Spectator");
                 }
+                else if (controlDataMessage.Coalition > 2)
+                {
+                    // Modifying WW1 coalitions to just behave as their WW2 counterparts
+                    playerRadioInfo.vehicleId = controlDataMessage.ParentVehicleClientID;
+                    playerRadioInfo.coalition = (short)(controlDataMessage.Coalition - 2);
+                }
                 else
                 {
                     playerRadioInfo.vehicleId = controlDataMessage.ParentVehicleClientID;

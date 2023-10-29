@@ -1,8 +1,10 @@
 ﻿using MahApps.Metro.Controls;
 using NLog;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Threading;
 using Ciribob.IL2.SimpleRadio.Standalone.Client.Singletons;
 using Ciribob.IL2.SimpleRadio.Standalone.Common;
@@ -33,6 +35,11 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.ClientList
         private void UpdateList()
         {
             _clientList.Clear();
+
+            //first create temporary list to sort
+            var tempList = new List<ClientListModel>();
+
+
             foreach (var srClient in ConnectedClientsSingleton.Instance.Values)
             {
                 var client = new ClientListModel()
@@ -56,7 +63,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI.ClientWindow.ClientList
                     client.Channel = srClient.GameState.radios[1].Channel + "";
                 }
 
-                _clientList.Add(client);
+                tempList.Add(client);
+            }
+
+            foreach (var clientListModel in tempList.OrderByDescending(model => model.Coalition)
+                .ThenBy(model => model.Name.ToLower()).ToList())
+            {
+                _clientList.Add(clientListModel);
             }
         }
 
