@@ -168,6 +168,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
         RadioChannelDown = 132,
         ModifierRadioChannelDown = 232,
 
+        RadioChannel6 = 133,
+        ModifierRadioChannel6 = 233,
+
     }
 
 

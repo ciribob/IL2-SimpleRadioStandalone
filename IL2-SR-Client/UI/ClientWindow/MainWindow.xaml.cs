@@ -381,6 +381,10 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             RadioChannel5.ControlInputBinding = InputBinding.RadioChannel5;
             RadioChannel5.InputDeviceManager = InputManager;
 
+            RadioChannel6.InputName = "Radio Channel 6";
+            RadioChannel6.ControlInputBinding = InputBinding.RadioChannel6;
+            RadioChannel6.InputDeviceManager = InputManager;
+
             NextRadio.InputName = "Select Next Radio / Intercom";
             NextRadio.ControlInputBinding = InputBinding.NextRadio;
             NextRadio.InputDeviceManager = InputManager;
@@ -414,6 +418,7 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             RadioChannel3.LoadInputSettings();
             RadioChannel4.LoadInputSettings();
             RadioChannel5.LoadInputSettings();
+            RadioChannel6.LoadInputSettings();
             NextRadio.LoadInputSettings();
             PreviousRadio.LoadInputSettings();
             ReadStatus.LoadInputSettings();

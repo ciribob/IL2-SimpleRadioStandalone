@@ -654,6 +654,16 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                                 RadioHelper.SelectRadioChannel(5, ClientStateSingleton.Instance.PlayerGameState.selected);
                                             }
                                             break;
+                                        case InputBinding.RadioChannel6:
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(6, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(6, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+                                            break;
                                         case InputBinding.PreviousRadio:
                                             RadioHelper.PreviousRadio();
                                             break;
