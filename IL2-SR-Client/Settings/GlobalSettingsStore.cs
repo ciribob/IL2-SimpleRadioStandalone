@@ -126,26 +126,26 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
         RadioChannel5 = 117,
         ModifierRadioChannel5 = 217,
 
-        Up0001 = 118,
-        ModifierUp0001 = 218,
+        RadioChannel6 = 118,
+        ModifierRadioChannel6 = 218,
 
-        Down100 = 119,
-        ModifierDown100 = 219,
+        RadioChannel7 = 119,
+        ModifierRadioChannel7 = 219,
 
-        Down10 = 120,
-        ModifierDown10 = 220,
+        RadioChannel8 = 120,
+        ModifierRadioChannel8 = 220,
 
-        Down1 = 121,
-        ModifierDown1 = 221,
+        RadioChannel9 = 121,
+        ModifierRadioChannel9 = 221,
 
-        Down01 = 122,
-        ModifierDown01 = 222,
+        RadioChannel10 = 122,
+        ModifierRadioChannel10 = 222,
 
-        Down001 = 123,
-        ModifierDown001 = 223,
+        RadioChannel11 = 123,
+        ModifierRadioChannel11 = 223,
 
-        Down0001 = 124,
-        ModifierDown0001 = 224,
+        RadioChannel12 = 124,
+        ModifierRadioChannel12 = 224,
 
         NextRadio = 125,
         ModifierNextRadio = 225,
@@ -167,9 +167,6 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
 
         RadioChannelDown = 132,
         ModifierRadioChannelDown = 232,
-
-        RadioChannel6 = 133,
-        ModifierRadioChannel6 = 233,
 
     }
 
