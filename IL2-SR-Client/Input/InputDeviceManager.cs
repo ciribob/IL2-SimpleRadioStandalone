@@ -654,6 +654,76 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.Settings
                                                 RadioHelper.SelectRadioChannel(5, ClientStateSingleton.Instance.PlayerGameState.selected);
                                             }
                                             break;
+                                        case InputBinding.RadioChannel6:
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(6, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(6, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+                                            break;
+                                        case InputBinding.RadioChannel7:
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(7, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(7, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+                                            break;
+                                        case InputBinding.RadioChannel8:
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(8, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(8, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+                                            break;
+                                        case InputBinding.RadioChannel9:
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(9, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(9, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+                                            break;
+                                        case InputBinding.RadioChannel10:
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(10, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(10, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+                                            break;
+                                        case InputBinding.RadioChannel11:
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(11, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(11, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+                                            break;
+                                        case InputBinding.RadioChannel12:
+                                            if (!RadioHelper.IsSecondRadioAvailable())
+                                            {
+                                                RadioHelper.SelectRadioChannel(12, 1);
+                                            }
+                                            else
+                                            {
+                                                RadioHelper.SelectRadioChannel(12, ClientStateSingleton.Instance.PlayerGameState.selected);
+                                            }
+                                            break;
                                         case InputBinding.PreviousRadio:
                                             RadioHelper.PreviousRadio();
                                             break;

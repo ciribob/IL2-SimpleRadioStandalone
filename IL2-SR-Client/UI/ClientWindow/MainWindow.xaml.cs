@@ -381,6 +381,34 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             RadioChannel5.ControlInputBinding = InputBinding.RadioChannel5;
             RadioChannel5.InputDeviceManager = InputManager;
 
+            RadioChannel6.InputName = "Radio Channel 6";
+            RadioChannel6.ControlInputBinding = InputBinding.RadioChannel6;
+            RadioChannel6.InputDeviceManager = InputManager;
+
+            RadioChannel7.InputName = "Radio Channel 7";
+            RadioChannel7.ControlInputBinding = InputBinding.RadioChannel7;
+            RadioChannel7.InputDeviceManager = InputManager;
+
+            RadioChannel8.InputName = "Radio Channel 8";
+            RadioChannel8.ControlInputBinding = InputBinding.RadioChannel8;
+            RadioChannel8.InputDeviceManager = InputManager;
+
+            RadioChannel9.InputName = "Radio Channel 9";
+            RadioChannel9.ControlInputBinding = InputBinding.RadioChannel9;
+            RadioChannel9.InputDeviceManager = InputManager;
+
+            RadioChannel10.InputName = "Radio Channel 10";
+            RadioChannel10.ControlInputBinding = InputBinding.RadioChannel10;
+            RadioChannel10.InputDeviceManager = InputManager;
+
+            RadioChannel11.InputName = "Radio Channel 11";
+            RadioChannel11.ControlInputBinding = InputBinding.RadioChannel11;
+            RadioChannel11.InputDeviceManager = InputManager;
+
+            RadioChannel12.InputName = "Radio Channel 12";
+            RadioChannel12.ControlInputBinding = InputBinding.RadioChannel12;
+            RadioChannel12.InputDeviceManager = InputManager;
+
             NextRadio.InputName = "Select Next Radio / Intercom";
             NextRadio.ControlInputBinding = InputBinding.NextRadio;
             NextRadio.InputDeviceManager = InputManager;
@@ -414,6 +442,13 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Client.UI
             RadioChannel3.LoadInputSettings();
             RadioChannel4.LoadInputSettings();
             RadioChannel5.LoadInputSettings();
+            RadioChannel6.LoadInputSettings();
+            RadioChannel7.LoadInputSettings();
+            RadioChannel8.LoadInputSettings();
+            RadioChannel9.LoadInputSettings();
+            RadioChannel10.LoadInputSettings();
+            RadioChannel11.LoadInputSettings();
+            RadioChannel12.LoadInputSettings();
             NextRadio.LoadInputSettings();
             PreviousRadio.LoadInputSettings();
             ReadStatus.LoadInputSettings();
