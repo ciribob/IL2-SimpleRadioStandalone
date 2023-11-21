@@ -21,6 +21,9 @@ namespace Ciribob.IL2.SimpleRadio.Standalone.Common.Setting
         UPNP_ENABLED,
         SECOND_RADIO_ENABLED,
         CHANNEL_LIMIT,
+        DSERVER_RCON_ADDRESS,
+        DSERVER_RCON_USERNAME,
+        DSERVER_RCON_PASSWORD
     }
 
     public class DefaultServerSettings
