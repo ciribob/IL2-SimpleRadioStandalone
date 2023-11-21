@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Ciribob.IL2.SimpleRadio.Standalone.ExternalAudio</RootNamespace>
     <AssemblyName>IL2-SRS-External-Audio</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
