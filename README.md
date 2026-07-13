@@ -1,11 +1,14 @@
 # IL2-SimpleRadio Standalone
 An open source Stand alone Radio for IL2
 
-Please obtain the latest release from the Releases page
+> [!IMPORTANT]
+> **This original IL2-SRS repository is now read-only and retained as a reference.**
+>
+> Active development, releases and support have moved to the [IL2-SRS Community Edition fork](https://github.com/riaanjutte/IL2-SimpleRadioStandalone).
 
-## Community Edition
+## Current Community Edition
 
-For the actively maintained IL2-SRS Community Edition, including support for IL-2 Great Battles and IL-2 Korea:
+The Community Edition supports IL-2 Great Battles and IL-2 Korea.
 
 **[Download the latest Community Edition Auto Updater](https://github.com/riaanjutte/IL2-SimpleRadioStandalone/releases/latest/download/IL2-SRS-AutoUpdater.exe)**
 
