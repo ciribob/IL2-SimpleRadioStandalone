@@ -10,6 +10,8 @@ An open source Stand alone Radio for IL2
 
 The Community Edition supports IL-2 Great Battles and IL-2 Korea.
 
+For downloads, setup instructions, screenshots and guides, visit the **[official IL2-SRS Community Edition website](https://srsforil2.com)**.
+
 **[Download the latest Community Edition Auto Updater](https://github.com/riaanjutte/IL2-SimpleRadioStandalone/releases/latest/download/IL2-SRS-AutoUpdater.exe)**
 
 Source code and release notes are available in the [Community Edition repository](https://github.com/riaanjutte/IL2-SimpleRadioStandalone).
